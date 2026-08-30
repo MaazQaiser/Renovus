@@ -1,0 +1,646 @@
+import type { SalesQuestion } from "@/types/sales-assessment";
+
+/**
+ * PHASE 2 — Channel Deep Dives of `1_Sales_Agent_Questionnaire_v3.md`:
+ * M-RFP (RFPs & proposals), M-OUT (outbound / inside sales),
+ * M-REL (relationships & referrals), M-FLD (field sales & events),
+ * and CAP (the capacity check that always runs at the end).
+ * ★ questions are the ones kept for used-but-not-dominant channels.
+ */
+
+export const MODULE_QUESTIONS: SalesQuestion[] = [
+  // ── M-RFP — RFPs & proposals ──────────────────────────────────────────
+  {
+    id: "M-RFP.1",
+    section: "m-rfp",
+    sessionKey: "deepdive",
+    module: "M-RFP",
+    question:
+      "How many RFPs or formal opportunities did you actually see last year — and your own estimate of how many existed in your market that you never saw?",
+    why: "Coverage ratio; a large gap is the strongest trigger for the opportunity-discovery AI candidate.",
+    type: "single-choice",
+    required: true,
+    supportsText: true,
+    supportsSpeech: true,
+    asksConfidence: true,
+    star: true,
+    order: 23,
+    options: [
+      { id: "under-10", label: "Fewer than 10 seen last year" },
+      { id: "10-25", label: "10–25 seen" },
+      { id: "25-75", label: "25–75 seen" },
+      { id: "over-75", label: "More than 75 seen" },
+      { id: "unknown", label: "No idea what exists in the market that we never see" },
+    ],
+    followUps: [
+      {
+        id: "M-RFP.1.f1",
+        prompt: "If a competitor your size sees 200 a year — high, low, about right?",
+        when: {
+          kind: "includes",
+          tokens: ["no idea", "don't know", "dont know", "unknown", "not sure"],
+        },
+        options: [
+          { id: "high", label: "That sounds high" },
+          { id: "about-right", label: "About right" },
+          { id: "low", label: "That sounds low" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "M-RFP.2",
+    section: "m-rfp",
+    sessionKey: "deepdive",
+    module: "M-RFP",
+    question:
+      "Of the ones you saw: how many did you decline, how many did you start and abandon partway, and roughly how many hours died with the abandoned ones?",
+    type: "single-choice",
+    required: true,
+    supportsText: true,
+    supportsSpeech: true,
+    asksConfidence: true,
+    order: 24,
+    options: [
+      { id: "decline-most", label: "We decline most and rarely abandon one once started" },
+      { id: "decline-some", label: "We decline some, and abandon one or two partway a year" },
+      { id: "abandon-often", label: "We start too many and abandon several every year" },
+      { id: "rarely-decline", label: "We rarely decline anything" },
+    ],
+    followUps: [
+      {
+        id: "M-RFP.2.f1",
+        prompt: "Because everything fits, or because saying no is hard here?",
+        when: { kind: "optionIds", ids: ["rarely-decline"] },
+        options: [
+          { id: "fits", label: "Genuinely, most of it fits" },
+          { id: "hard-to-say-no", label: "Saying no is hard here" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "M-RFP.3",
+    section: "m-rfp",
+    sessionKey: "deepdive",
+    module: "M-RFP",
+    question:
+      "Who makes the go / no-go call, and when — before work starts, or once someone's already invested?",
+    type: "single-choice",
+    required: true,
+    supportsText: true,
+    supportsSpeech: true,
+    asksConfidence: false,
+    order: 25,
+    options: [
+      { id: "formal-early", label: "A named owner decides against criteria before work starts" },
+      { id: "informal-early", label: "A gut call by one person, but made early" },
+      { id: "late", label: "It gets decided once someone has already invested time" },
+      { id: "never", label: "Nobody really decides — we just carry on" },
+    ],
+    followUps: [
+      {
+        id: "M-RFP.3.f1",
+        prompt: "Whose gut, and has it ever been overruled?",
+        when: { kind: "optionIds", ids: ["informal-early", "late", "never"] },
+      },
+    ],
+  },
+  {
+    id: "M-RFP.4",
+    section: "m-rfp",
+    sessionKey: "deepdive",
+    module: "M-RFP",
+    question:
+      "A typical response: how many working hours across everyone who touches it, and how many elapsed days start to submission? And the worst case you remember?",
+    why: "Hours times count is the annual proposal cost, the number Tkxel puts on the discovery table.",
+    type: "single-choice",
+    required: true,
+    supportsText: true,
+    supportsSpeech: true,
+    asksConfidence: true,
+    star: true,
+    order: 26,
+    options: [
+      { id: "under-20", label: "Under 20 hours, wrapped up within a week" },
+      { id: "20-50", label: "20–50 hours over a couple of weeks" },
+      { id: "50-100", label: "50–100 hours over several weeks" },
+      { id: "over-100", label: "More than 100 hours, often over a month" },
+    ],
+    followUps: [
+      {
+        id: "M-RFP.4.f1",
+        prompt: "Whose hours mostly — a proposal writer, or your most senior people?",
+        when: { kind: "always" },
+        options: [
+          { id: "writer", label: "A proposal or bid writer" },
+          { id: "senior", label: "Our most senior people" },
+          { id: "mixed", label: "A mix of both" },
+        ],
+      },
+      {
+        id: "M-RFP.4.f2",
+        prompt: "So a 40-hour job takes 20 days — where does it sit waiting?",
+        when: { kind: "optionIds", ids: ["50-100", "over-100"] },
+      },
+    ],
+  },
+  {
+    id: "M-RFP.5",
+    section: "m-rfp",
+    sessionKey: "deepdive",
+    module: "M-RFP",
+    question:
+      "What share of a response is written fresh versus reused from past work — and where does past work and pricing history live? Can anyone search it, or is it 'ask {{name}}'?",
+    why: "High reuse plus an unsearchable library is the textbook setup for AI-assisted drafting.",
+    type: "single-choice",
+    required: true,
+    supportsText: true,
+    supportsSpeech: true,
+    asksConfidence: false,
+    order: 27,
+    options: [
+      { id: "searchable", label: "Mostly reused, from a library anyone can search" },
+      { id: "drive", label: "Mostly reused, but scattered across drives and old folders" },
+      { id: "ask-person", label: "Mostly reused, and you have to ask one particular person" },
+      { id: "fresh", label: "Mostly written fresh each time" },
+    ],
+    followUps: [
+      {
+        id: "M-RFP.5.f1",
+        prompt: "And when they're on leave?",
+        when: { kind: "optionIds", ids: ["ask-person"] },
+      },
+    ],
+  },
+  {
+    id: "M-RFP.6",
+    section: "m-rfp",
+    sessionKey: "deepdive",
+    module: "M-RFP",
+    question:
+      "Wins last year, and your win rate — telling me what you divide by: everything submitted, or only decided deals? Are loss reasons recorded anywhere?",
+    type: "single-choice",
+    required: true,
+    supportsText: true,
+    supportsSpeech: true,
+    asksConfidence: true,
+    star: true,
+    order: 28,
+    options: [
+      { id: "tracked", label: "We know the rate and loss reasons are recorded" },
+      { id: "rate-only", label: "We know the rate but loss reasons aren't recorded" },
+      { id: "informal", label: "We usually know why we lose, but nothing is written down" },
+      { id: "unknown", label: "Nobody could quote a win rate" },
+    ],
+    followUps: [
+      {
+        id: "M-RFP.6.f1",
+        prompt: "Don't compute — the number people quote internally, and I'll mark how solid it is.",
+        when: {
+          kind: "includes",
+          tokens: ["calculate", "compute", "work it out", "divide", "let me check"],
+        },
+      },
+      {
+        id: "M-RFP.6.f2",
+        prompt: "The last three losses — could someone look up why?",
+        when: { kind: "optionIds", ids: ["informal", "rate-only"] },
+      },
+    ],
+  },
+  {
+    id: "M-RFP.7",
+    section: "m-rfp",
+    sessionKey: "deepdive",
+    module: "M-RFP",
+    question:
+      "Two close-mechanics ones: how much discounting does it take to sign — rough average off first price, including free scope? And from verbal yes to signed contract — how long, and what slows it?",
+    type: "single-choice",
+    required: true,
+    supportsText: true,
+    supportsSpeech: true,
+    asksConfidence: true,
+    order: 29,
+    options: [
+      { id: "none", label: "Little or no discounting, and signature follows within days" },
+      { id: "light", label: "Under 10% off, signature in a week or two" },
+      { id: "moderate", label: "10–20% off, signature takes several weeks" },
+      { id: "heavy", label: "More than 20% off or significant free scope, signature drags on" },
+    ],
+  },
+
+  // ── M-OUT — Outbound / inside sales ───────────────────────────────────
+  {
+    id: "M-OUT.1",
+    section: "m-out",
+    sessionKey: "deepdive",
+    module: "M-OUT",
+    question:
+      "Describe the outbound motion in three lines: who reaches out, on which channels, how many attempts in a typical week?",
+    type: "single-choice",
+    required: true,
+    supportsText: true,
+    supportsSpeech: true,
+    asksConfidence: false,
+    star: true,
+    order: 30,
+    options: [
+      { id: "dedicated", label: "A dedicated rep runs sequences every week, hundreds of attempts" },
+      { id: "part-time", label: "Someone does it alongside other work, tens of attempts a week" },
+      { id: "founder", label: "The founder reaches out personally when time allows" },
+      { id: "tried-once", label: "We tried it once and it stopped" },
+    ],
+    followUps: [
+      {
+        id: "M-OUT.1.f1",
+        prompt: "What was tried, for how long, and why did it stop?",
+        when: { kind: "optionIds", ids: ["tried-once"] },
+      },
+    ],
+  },
+  {
+    id: "M-OUT.2",
+    section: "m-out",
+    sessionKey: "deepdive",
+    module: "M-OUT",
+    question: "Of every 100 attempts, roughly how many become a real conversation?",
+    why: "Decides whether outbound has a volume problem or a message problem.",
+    type: "single-choice",
+    required: true,
+    supportsText: true,
+    supportsSpeech: true,
+    asksConfidence: true,
+    star: true,
+    order: 31,
+    options: [
+      { id: "under-1", label: "Fewer than 1 in 100" },
+      { id: "1-3", label: "About 1–3 in 100" },
+      { id: "3-10", label: "About 3–10 in 100" },
+      { id: "over-10", label: "More than 10 in 100" },
+      { id: "unknown", label: "Nobody tracks it" },
+    ],
+    followUps: [
+      {
+        id: "M-OUT.2.f1",
+        prompt: "Last month — how many first conversations came from outbound versus everything else?",
+        when: { kind: "optionIds", ids: ["unknown"] },
+      },
+    ],
+  },
+  {
+    id: "M-OUT.3",
+    section: "m-out",
+    sessionKey: "deepdive",
+    module: "M-OUT",
+    question: "A prospect says 'good timing next year, not now.' What happens to them?",
+    why: "\"Nothing\" is the most common, most fixable leak.",
+    type: "single-choice",
+    required: true,
+    supportsText: true,
+    supportsSpeech: true,
+    asksConfidence: false,
+    order: 32,
+    options: [
+      { id: "nurture", label: "They go into a nurture sequence with a dated task" },
+      { id: "crm-task", label: "A CRM reminder is set for the right month" },
+      { id: "rep-note", label: "The rep keeps a note somewhere personal" },
+      { id: "nothing", label: "Honestly — nothing happens" },
+    ],
+    followUps: [
+      {
+        id: "M-OUT.3.f1",
+        prompt: "Did anyone actually go back to a 'not now' from last year? One example?",
+        when: { kind: "optionIds", ids: ["rep-note", "crm-task", "nothing"] },
+      },
+    ],
+  },
+  {
+    id: "M-OUT.4",
+    section: "m-out",
+    sessionKey: "deepdive",
+    module: "M-OUT",
+    question:
+      "A new enquiry lands through the website or a referral email. Honestly — how long before a human responds?",
+    type: "single-choice",
+    required: true,
+    supportsText: true,
+    supportsSpeech: true,
+    asksConfidence: true,
+    star: true,
+    order: 33,
+    options: [
+      { id: "hours", label: "Within a couple of hours" },
+      { id: "same-day", label: "Same day" },
+      { id: "next-day", label: "Next working day" },
+      { id: "days", label: "Several days, sometimes longer" },
+      { id: "unknown", label: "Nobody knows — it depends who sees it" },
+    ],
+    followUps: [
+      {
+        id: "M-OUT.4.f1",
+        prompt: "Including ones landing Friday afternoon?",
+        when: { kind: "optionIds", ids: ["hours", "same-day"] },
+      },
+    ],
+  },
+  {
+    id: "M-OUT.5",
+    section: "m-out",
+    sessionKey: "deepdive",
+    module: "M-OUT",
+    question:
+      "Between first meeting and proposal, what does a prospect receive from you — case studies, references, a pilot, or mostly silence until the proposal?",
+    type: "single-choice",
+    required: true,
+    supportsText: true,
+    supportsSpeech: true,
+    asksConfidence: false,
+    order: 34,
+    options: [
+      { id: "structured", label: "A structured pack — case studies and references, every time" },
+      { id: "pilot", label: "A pilot or proof of concept where it fits" },
+      { id: "ad-hoc", label: "Whatever the person happens to pull together" },
+      { id: "silence", label: "Mostly silence until the proposal lands" },
+    ],
+    followUps: [
+      {
+        id: "M-OUT.5.f1",
+        prompt: "Easy for the team to find, or rebuilt each time?",
+        when: { kind: "optionIds", ids: ["structured", "pilot", "ad-hoc"] },
+        options: [
+          { id: "easy", label: "Easy to find" },
+          { id: "rebuilt", label: "Rebuilt each time" },
+        ],
+      },
+    ],
+  },
+
+  // ── M-REL — Relationships & referrals ─────────────────────────────────
+  {
+    id: "M-REL.1",
+    section: "m-rel",
+    sessionKey: "deepdive",
+    module: "M-REL",
+    question:
+      "The new clients of the last three years — deal by deal if you can: how did each actually arrive, and which individuals originated them? Roles or names; I'm looking for concentration, not credit.",
+    type: "single-choice",
+    required: true,
+    supportsText: true,
+    supportsSpeech: true,
+    asksConfidence: false,
+    star: true,
+    order: 35,
+    options: [
+      { id: "one-person", label: "Nearly all of them trace back to one person" },
+      { id: "two-three", label: "Two or three people originated most of them" },
+      { id: "spread", label: "Spread fairly evenly across the team" },
+      { id: "inbound", label: "They mostly arrived without anyone originating them" },
+    ],
+    followUps: [
+      {
+        id: "M-REL.1.f1",
+        prompt: "Just the last three new clients — the specific story of each?",
+        when: {
+          kind: "includes",
+          tokens: ["generally", "usually", "mostly", "typically", "word of mouth"],
+        },
+      },
+    ],
+  },
+  {
+    id: "M-REL.2",
+    section: "m-rel",
+    sessionKey: "deepdive",
+    module: "M-REL",
+    question:
+      "Where does relationship history live — CRM, individual inboxes, people's heads, a mix? Be blunt.",
+    why: "\"Inboxes and heads\" triggers the relationship-capture candidate and defines the continuity risk.",
+    type: "single-choice",
+    required: true,
+    supportsText: true,
+    supportsSpeech: true,
+    asksConfidence: false,
+    star: true,
+    order: 36,
+    options: [
+      { id: "crm", label: "CRM" },
+      { id: "inboxes", label: "Individual inboxes" },
+      { id: "heads", label: "People's heads" },
+      { id: "mix", label: "A mix" },
+    ],
+    followUps: [
+      {
+        id: "M-REL.2.f1",
+        prompt: "If I opened it, would your top ten relationships have a note from the last quarter?",
+        when: { kind: "optionIds", ids: ["crm", "mix"] },
+      },
+    ],
+  },
+  {
+    id: "M-REL.3",
+    section: "m-rel",
+    sessionKey: "deepdive",
+    module: "M-REL",
+    question:
+      "Do accounts get reviewed on any cadence — who, how often, anything written down? And how does expansion work usually surface: the client asks, a partner spots it, a scheduled review finds it?",
+    type: "single-choice",
+    required: true,
+    supportsText: true,
+    supportsSpeech: true,
+    asksConfidence: false,
+    order: 37,
+    options: [
+      { id: "scheduled", label: "Scheduled reviews with written outputs; reviews surface expansion" },
+      { id: "partner-spots", label: "No fixed cadence, but a partner or lead usually spots the opening" },
+      { id: "client-asks", label: "Expansion happens when the client asks" },
+      { id: "informal", label: "Informally, constantly — nothing scheduled or written" },
+    ],
+    followUps: [
+      {
+        id: "M-REL.3.f1",
+        prompt: "The last sit-down about an account with no problem — just growth — when was it?",
+        when: { kind: "optionIds", ids: ["informal", "client-asks", "partner-spots"] },
+      },
+    ],
+  },
+  {
+    id: "M-REL.4",
+    section: "m-rel",
+    sessionKey: "deepdive",
+    module: "M-REL",
+    question:
+      "An account's relationship owner is suddenly unavailable — leave, illness, departure. What actually happens to that account? And when a relationship goes quiet for months, does anyone notice?",
+    type: "single-choice",
+    required: true,
+    supportsText: true,
+    supportsSpeech: true,
+    asksConfidence: false,
+    star: true,
+    order: 38,
+    options: [
+      { id: "handover", label: "There's a named backup and a documented handover" },
+      { id: "team-steps-in", label: "The team steps in and works it out" },
+      { id: "drifts", label: "It drifts until someone remembers" },
+      { id: "at-risk", label: "Honestly, that account would be at real risk" },
+    ],
+    followUps: [
+      {
+        id: "M-REL.4.f1",
+        prompt: "Has that actually happened? How did it go?",
+        when: { kind: "optionIds", ids: ["team-steps-in", "handover"] },
+      },
+    ],
+  },
+  {
+    id: "M-REL.5",
+    section: "m-rel",
+    sessionKey: "deepdive",
+    module: "M-REL",
+    question:
+      "Do you ask happy clients for introductions — with any structure, or when it happens it happens?",
+    type: "single-choice",
+    required: true,
+    supportsText: true,
+    supportsSpeech: true,
+    asksConfidence: false,
+    order: 39,
+    options: [
+      { id: "structured", label: "Yes — there's a point in the relationship where we always ask" },
+      { id: "sometimes", label: "Sometimes, when someone remembers" },
+      { id: "unstructured", label: "When it happens it happens — no structure at all" },
+      { id: "never", label: "We don't ask" },
+    ],
+    followUps: [
+      {
+        id: "M-REL.5.f1",
+        prompt: "Which three clients would say yes tomorrow if someone simply asked?",
+        when: { kind: "optionIds", ids: ["sometimes", "unstructured", "never"] },
+      },
+    ],
+  },
+
+  // ── M-FLD — Field sales & events ──────────────────────────────────────
+  {
+    id: "M-FLD.1",
+    section: "m-fld",
+    sessionKey: "deepdive",
+    module: "M-FLD",
+    question:
+      "What does the field/event motion look like over a year — how many events or visit cycles, covering which territories, at what rough cost each?",
+    type: "single-choice",
+    required: true,
+    supportsText: true,
+    supportsSpeech: true,
+    asksConfidence: true,
+    star: true,
+    order: 40,
+    options: [
+      { id: "1-3", label: "One to three events or visit cycles a year" },
+      { id: "4-8", label: "Four to eight a year" },
+      { id: "9-20", label: "Nine to twenty a year" },
+      { id: "over-20", label: "More than twenty a year" },
+    ],
+  },
+  {
+    id: "M-FLD.2",
+    section: "m-fld",
+    sessionKey: "deepdive",
+    module: "M-FLD",
+    question:
+      "What does a season actually produce — contacts, real conversations, deals you can trace back to it?",
+    type: "single-choice",
+    required: true,
+    supportsText: true,
+    supportsSpeech: true,
+    asksConfidence: true,
+    star: true,
+    order: 41,
+    options: [
+      { id: "traced-deals", label: "Contacts, conversations and deals we can trace back" },
+      { id: "conversations", label: "Real conversations, but no deal we can attribute" },
+      { id: "contacts", label: "Mostly a pile of contacts" },
+      { id: "untracked", label: "Nobody tracks what comes out of it" },
+    ],
+    followUps: [
+      {
+        id: "M-FLD.2.f1",
+        prompt: "The best client you got this way — which event or visit, and how long ago?",
+        when: { kind: "optionIds", ids: ["untracked", "contacts", "conversations"] },
+      },
+    ],
+  },
+  {
+    id: "M-FLD.3",
+    section: "m-fld",
+    sessionKey: "deepdive",
+    module: "M-FLD",
+    question: "After an event or visit — what happens to the contacts collected, in the first week?",
+    why: "Follow-up discipline is where field spend usually evaporates.",
+    type: "single-choice",
+    required: true,
+    supportsText: true,
+    supportsSpeech: true,
+    asksConfidence: false,
+    star: true,
+    order: 42,
+    options: [
+      { id: "systematic", label: "Loaded into the CRM and worked to a follow-up plan" },
+      { id: "personal", label: "The attendee emails the ones they personally clicked with" },
+      { id: "later", label: "They get to it eventually, once the diary clears" },
+      { id: "nothing", label: "The cards sit in a drawer" },
+    ],
+  },
+
+  // ── CAP — Capacity check ──────────────────────────────────────────────
+  {
+    id: "CAP.1",
+    section: "cap",
+    sessionKey: "deepdive",
+    question:
+      "Outside the sales team, who spends real time on pursuits — delivery leads writing sections, executives in pitches — and roughly how much of their week?",
+    type: "single-choice",
+    required: true,
+    supportsText: true,
+    supportsSpeech: true,
+    asksConfidence: false,
+    order: 43,
+    options: [
+      { id: "executives", label: "Executives are in most pitches, a meaningful slice of their week" },
+      { id: "delivery-leads", label: "Delivery leads write sections when a bid is live" },
+      { id: "specialists", label: "A few named specialists get pulled in occasionally" },
+      { id: "nobody", label: "Nobody outside sales spends real time on pursuits" },
+    ],
+    followUps: [
+      {
+        id: "CAP.1.f1",
+        prompt: "Best use of their hours, or just how it's always been?",
+        when: { kind: "optionIds", ids: ["executives"] },
+        options: [
+          { id: "best-use", label: "Best use of their hours" },
+          { id: "always-been", label: "Just how it's always been" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "CAP.2",
+    section: "cap",
+    sessionKey: "deepdive",
+    question:
+      "If sales suddenly worked: how much more delivery could you absorb without hiring? And who's the right person to verify that with?",
+    why: "The ceiling that caps every opportunity; the named verifier goes to the people map.",
+    type: "single-choice",
+    required: true,
+    supportsText: true,
+    supportsSpeech: true,
+    asksConfidence: true,
+    order: 44,
+    options: [
+      { id: "none", label: "Almost none — we'd have to hire immediately" },
+      { id: "up-to-10", label: "Up to about 10% more" },
+      { id: "10-25", label: "Around 10–25% more" },
+      { id: "over-25", label: "More than 25% more" },
+    ],
+  },
+];

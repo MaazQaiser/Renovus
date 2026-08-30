@@ -1,0 +1,42 @@
+import type { SalesReportData } from "@/lib/assessment/sales-report";
+import type { OffshoringSession } from "./offshoring";
+import type { Sector } from "./company";
+
+export type AssessmentRecordAgent = "sales" | "offshoring";
+
+export interface RecordMetric {
+  label: string;
+  value: string;
+}
+
+/**
+ * What the records screen needs to render a row or card without opening the
+ * record. Everything needed to re-render the report lives in `payload`.
+ */
+export interface AssessmentRecordSummary {
+  id: string;
+  agent: AssessmentRecordAgent;
+  title: string;
+  companyId?: string;
+  companyName: string;
+  completedAt: string;
+  summary: string;
+  metrics: RecordMetric[];
+}
+
+export type AssessmentRecordPayload =
+  | {
+      kind: "offshoring";
+      /** Messages are stripped before archiving — the report never reads them. */
+      session: OffshoringSession;
+      sector: Sector;
+    }
+  | {
+      kind: "sales";
+      /** The derived report, not the transcript — see buildSalesRecord. */
+      report: SalesReportData;
+    };
+
+export interface AssessmentRecord extends AssessmentRecordSummary {
+  payload: AssessmentRecordPayload;
+}
