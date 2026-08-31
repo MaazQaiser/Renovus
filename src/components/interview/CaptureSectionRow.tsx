@@ -33,8 +33,8 @@ export function CaptureSectionRow({ section }: CaptureSectionRowProps) {
   return (
     <div
       className={cn(
-        "border-l-2 py-1",
-        section.status === "active" ? "border-accent-border" : "border-transparent",
+        // A hairline under each row, rather than a panel fill or a left bar.
+        "border-b border-slate-300 py-1 last:border-b-0",
       )}
     >
       <button
@@ -43,7 +43,7 @@ export function CaptureSectionRow({ section }: CaptureSectionRowProps) {
         aria-expanded={open}
         aria-controls={panelId}
         onClick={() => setOverride(!open)}
-        className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left transition-colors hover:bg-surface-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+        className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left transition-colors hover:bg-glass focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
       >
         {section.status === "done" ? (
           <Check size={14} strokeWidth={2.25} className="shrink-0 text-success" aria-hidden />

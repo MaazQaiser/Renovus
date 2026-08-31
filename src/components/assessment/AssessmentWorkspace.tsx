@@ -29,7 +29,7 @@ export function AssessmentWorkspace() {
 
       <aside
         aria-label="What I'm capturing"
-        className="hidden h-full w-[320px] shrink-0 flex-col border-l border-border bg-surface md:flex xl:w-[360px]"
+        className="hidden h-full w-[320px] shrink-0 flex-col border-l border-slate-300 md:flex xl:w-[360px]"
       >
         <CaptureRail key={session.id} progress={progress} />
       </aside>

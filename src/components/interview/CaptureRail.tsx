@@ -54,6 +54,9 @@ export function CaptureRail({
           <Text size="body" weight="semibold" className="mt-1.5 tabular-nums">
             {progress.totalCaptured} of {progress.totalItems} captured
           </Text>
+          <div className="mt-3">
+            <CaptureProgressBar percent={progress.percent} />
+          </div>
         </div>
       ) : null}
 
@@ -68,10 +71,6 @@ export function CaptureRail({
             <CaptureSectionRow key={section.id} section={section} />
           ))}
         </div>
-      </div>
-
-      <div className="shrink-0 border-t border-border px-4 py-3">
-        <CaptureProgressBar percent={progress.percent} />
       </div>
 
       <div aria-live="polite" aria-atomic="true" className="sr-only">

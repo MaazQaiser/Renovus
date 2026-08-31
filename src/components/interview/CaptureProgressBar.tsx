@@ -11,7 +11,7 @@ export function CaptureProgressBar({ percent, className }: CaptureProgressBarPro
   return (
     <div className={cn("flex items-center gap-3", className)}>
       <div
-        className="h-1.5 w-full overflow-hidden rounded-full bg-surface-tertiary"
+        className="h-1.5 w-full overflow-hidden rounded-full bg-slate-200"
         role="progressbar"
         aria-valuemin={0}
         aria-valuemax={100}
@@ -19,7 +19,7 @@ export function CaptureProgressBar({ percent, className }: CaptureProgressBarPro
         aria-label="Assessment capture progress"
       >
         <div
-          className="h-full bg-accent transition-[width] duration-300 ease-out"
+          className="h-full rounded-full bg-gold transition-[width] duration-300 ease-out"
           style={{ width: `${clamped}%` }}
         />
       </div>
