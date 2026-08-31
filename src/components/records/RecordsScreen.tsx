@@ -14,7 +14,7 @@ import {
   listRecords,
   subscribeToRecords,
 } from "@/lib/records";
-import { clearDemoRecords, isDemoRecord, seedDemoRecords } from "@/lib/demo/seed";
+import { seedDemoRecords } from "@/lib/demo/seed";
 import {
   getServerUiPrefs,
   getUiPrefs,
@@ -73,27 +73,13 @@ export function RecordsScreen() {
   const resultLabel =
     visible.length === 1 ? "1 assessment" : `${visible.length} assessments`;
 
-  const demoLoaded = useMemo(() => records.some(isDemoRecord), [records]);
-
   return (
     <div className="flex flex-col gap-6">
-      <header className="flex flex-wrap items-start justify-between gap-4">
-        <div>
+      <header>
         <Heading level={1}>Records</Heading>
         <Text tone="secondary" className="mt-2 max-w-[65ch]">
           Completed assessments are saved here. Open one to read its report again.
         </Text>
-        </div>
-        <div className="flex shrink-0 items-center gap-2">
-          {demoLoaded ? (
-            <Button variant="secondary" size="sm" onClick={() => clearDemoRecords()}>
-              Clear demo data
-            </Button>
-          ) : null}
-          <Button variant="secondary" size="sm" onClick={() => seedDemoRecords()}>
-            {demoLoaded ? "Reload demo data" : "Load demo data"}
-          </Button>
-        </div>
       </header>
 
       {records.length === 0 ? (
@@ -147,7 +133,7 @@ export function RecordsScreen() {
               ))}
             </ul>
           ) : (
-            <ul className="overflow-hidden rounded-lg border border-border bg-surface">
+            <ul className="overflow-hidden rounded-xl border border-glass-border bg-glass shadow-[var(--shadow-glass)] backdrop-blur-2xl">
               {visible.map((record) => (
                 <RecordRow key={record.id} record={record} onDelete={setPendingDelete} />
               ))}
