@@ -24,7 +24,7 @@ export function UserMenu({ placement = "topbar", collapsed = false }: UserMenuPr
     <ConfirmationDialog
       open={confirmOpen}
       onOpenChange={setConfirmOpen}
-      title="Log out of Renovers?"
+      title="Log out of Renovus?"
       description="You will need to sign in again to access agents. In-progress drafts stay on this device."
       confirmLabel="Log out"
       cancelLabel="Stay signed in"

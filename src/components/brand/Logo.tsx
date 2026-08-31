@@ -1,16 +1,35 @@
+import Image from "next/image";
 import { cn } from "@/lib/cn";
 
-const sizes = {
-  sm: { mark: 20, word: "text-[13px]", line: "text-[9px]", bar: "h-5 w-1" },
-  md: { mark: 28, word: "text-base", line: "text-[10px]", bar: "h-7 w-1" },
-  lg: { mark: 36, word: "text-xl", line: "text-[11px]", bar: "h-9 w-1" },
+/**
+ * The Renovus Capital lockup, rendered from the supplied brand PNG rather than
+ * a hand-drawn SVG so the mark matches the corporate artwork exactly.
+ *
+ * Two cuts of the artwork are shipped: the full lockup and the `R`-over-gold
+ * mark on its own, each with an inverse cut whose navy letterforms are lifted
+ * to white. The gold block never changes — only the letterforms invert — so the
+ * mark still reads on the dark sidebar and auth panel.
+ */
+
+const assets = {
+  lockup: { src: "/brand/renovus-lockup.png", ratio: 340 / 76 },
+  mark: { src: "/brand/renovus-mark.png", ratio: 87 / 76 },
+} as const;
+
+/** Rendered height, in px, of each cut at each size. */
+const heights = {
+  lockup: { sm: 24, md: 32, lg: 42 },
+  mark: { sm: 22, md: 28, lg: 36 },
 } as const;
 
 export interface LogoProps {
+  /** `mark` is the R over the gold block; `wordmark` and `lockup` are the full artwork. */
   variant?: "mark" | "wordmark" | "lockup";
   tone?: "default" | "inverse";
-  size?: keyof typeof sizes;
+  size?: keyof (typeof heights)["lockup"];
   className?: string;
+  /** Set on the above-the-fold lockup so the mark is not lazy-loaded. */
+  priority?: boolean;
 }
 
 export function Logo({
@@ -18,57 +37,27 @@ export function Logo({
   tone = "default",
   size = "md",
   className,
+  priority,
 }: LogoProps) {
-  const scale = sizes[size];
-  const ink = tone === "inverse" ? "text-inverse" : "text-foreground";
-
-  const mark = (
-    <span className="relative inline-flex items-center" aria-hidden>
-      <span className={cn("mr-2 bg-highlight", scale.bar)} />
-      <svg
-        width={scale.mark}
-        height={scale.mark}
-        viewBox="0 0 32 32"
-        fill="currentColor"
-        className={ink}
-      >
-        <path d="M7 4h10.4c4.4 0 7.6 2.7 7.6 6.8 0 3.2-1.8 5.5-4.6 6.4L27 28h-6.2l-6.2-9.6H12.2V28H7V4zm5.2 5.2v5.6h4.4c2.1 0 3.4-1.2 3.4-2.8s-1.3-2.8-3.4-2.8H12.2z" />
-      </svg>
-    </span>
-  );
-
-  if (variant === "mark") {
-    return (
-      <span className={cn("inline-flex items-center", className)} aria-label="Renovus">
-        {mark}
-      </span>
-    );
-  }
+  const cut = variant === "mark" ? "mark" : "lockup";
+  const { src, ratio } = assets[cut];
+  const height = heights[cut][size];
+  const width = Math.round(height * ratio);
 
   return (
-    <span className={cn("inline-flex items-center gap-3", ink, className)}>
-      {mark}
-      <span className="flex flex-col leading-none">
-        <span
-          className={cn(
-            "font-display font-semibold uppercase tracking-[0.08em]",
-            scale.word,
-          )}
-        >
-          Renovus
-        </span>
-        {variant === "lockup" ? (
-          <span
-            className={cn(
-              "mt-1 font-sans font-semibold uppercase tracking-[0.16em] text-accent-muted",
-              tone === "inverse" && "text-accent-border",
-              scale.line,
-            )}
-          >
-            AI Agents
-          </span>
-        ) : null}
-      </span>
-    </span>
+    <Image
+      src={tone === "inverse" ? src.replace(".png", "-inverse.png") : src}
+      alt="Renovus Capital"
+      width={width}
+      height={height}
+      priority={priority}
+      className={cn("shrink-0 select-none", className)}
+      /*
+       * Both axes are pinned. Leaving either as `auto` lets a column flex
+       * parent's default `align-items: stretch` blow the mark out to the
+       * container width and distort it.
+       */
+      style={{ width, height }}
+    />
   );
 }
