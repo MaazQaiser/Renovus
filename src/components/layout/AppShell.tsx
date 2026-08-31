@@ -39,7 +39,7 @@ export function AppShell({ children, breadcrumb }: AppShellProps) {
 
   return (
     <TopbarMetaProvider>
-      <div className="flex h-dvh overflow-hidden bg-background">
+      <div className="flex h-dvh overflow-hidden">
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:bg-surface focus:px-3 focus:py-2"

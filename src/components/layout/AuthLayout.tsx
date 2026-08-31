@@ -8,7 +8,7 @@ export interface AuthLayoutProps {
 
 export function AuthLayout({ children }: AuthLayoutProps) {
   return (
-    <div className="flex min-h-dvh bg-background">
+    <div className="flex min-h-dvh">
       <aside className="relative hidden w-[44%] max-w-[560px] shrink-0 flex-col justify-between bg-surface-inverse px-10 py-10 lg:flex xl:px-16">
         <Logo variant="lockup" tone="inverse" size="md" priority />
         <div>

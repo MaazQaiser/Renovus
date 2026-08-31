@@ -44,7 +44,7 @@ export function Input({
         aria-invalid={isInvalid || undefined}
         aria-describedby={field?.describedBy}
         className={cn(
-          "w-full rounded-md border bg-surface text-foreground placeholder:text-tertiary",
+          "w-full rounded-full border bg-glass backdrop-blur-xl text-foreground placeholder:text-tertiary",
           "transition-colors duration-[120ms] ease-[var(--ease-standard)]",
           "hover:border-border-strong focus-visible:border-accent",
           "disabled:cursor-not-allowed disabled:bg-surface-tertiary disabled:text-disabled",

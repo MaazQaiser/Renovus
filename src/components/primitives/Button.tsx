@@ -8,21 +8,30 @@ import type { AppHref } from "@/lib/routes";
 import { Spinner } from "./Spinner";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 font-semibold whitespace-nowrap rounded-md transition-colors duration-[120ms] ease-[var(--ease-standard)] disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center gap-2 font-semibold whitespace-nowrap rounded-full transition-[color,background-color,border-color,box-shadow] duration-[140ms] ease-[var(--ease-standard)] disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
-        primary: "bg-primary text-inverse hover:bg-primary-hover active:bg-primary-active",
+        primary:
+          "bg-primary text-inverse shadow-[var(--shadow-glass)] hover:bg-primary-hover hover:shadow-[var(--shadow-raised)] active:bg-primary-active active:shadow-[var(--shadow-glass)]",
+        // Brand gold. The label is ink, not white: gold is far too light to
+        // carry white text at any readable contrast.
+        gold: "bg-gold text-primary shadow-[var(--shadow-glass)] hover:bg-gold-hover hover:shadow-[var(--shadow-raised)] active:bg-gold-active active:shadow-[var(--shadow-glass)]",
+        // Frosted: translucent white over the page gradient, so the wash shows
+        // through. backdrop-blur is what makes it read as glass rather than tint.
         secondary:
-          "bg-surface text-foreground border border-border hover:bg-surface-tertiary hover:border-border-strong",
-        ghost: "bg-transparent text-secondary hover:bg-surface-secondary hover:text-foreground",
-        danger: "bg-error text-inverse hover:bg-error/90",
+          "bg-glass-strong text-foreground border border-glass-border shadow-[var(--shadow-glass)] hover:bg-surface hover:border-border-strong hover:shadow-[var(--shadow-raised)]",
+        glass:
+          "bg-glass-quiet text-foreground border border-glass-border shadow-[var(--shadow-glass)] backdrop-blur-xl hover:bg-glass hover:shadow-[var(--shadow-raised)]",
+        ghost:
+          "bg-transparent text-secondary hover:bg-glass hover:text-foreground hover:backdrop-blur-xl",
+        danger: "bg-error text-inverse shadow-[var(--shadow-glass)] hover:bg-error/90",
         link: "bg-transparent text-accent font-semibold hover:text-accent-hover hover:underline px-0 h-auto",
       },
       size: {
-        sm: "h-8 px-3 text-[13px] leading-5",
-        md: "h-10 px-4 text-[13px] leading-5",
-        lg: "h-12 px-5 text-[15px] leading-6",
+        sm: "h-8 px-3.5 text-[13px] leading-5",
+        md: "h-9 px-4 text-[13px] leading-5",
+        lg: "h-11 px-5 text-[14px] leading-6",
       },
       fullWidth: {
         true: "w-full",

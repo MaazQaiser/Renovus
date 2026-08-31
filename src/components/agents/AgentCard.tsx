@@ -33,7 +33,7 @@ export function AgentCard({ name, description, status, artSrc, href }: AgentCard
       interactive={launchable}
       padding="none"
       className={cn(
-        "group flex h-full flex-col overflow-hidden rounded-xl border-border bg-surface",
+        "group flex h-full flex-col overflow-hidden rounded-xl border-glass-border bg-glass shadow-[var(--shadow-glass)] backdrop-blur-2xl",
         launchable && "hover:border-border-strong",
         !launchable && "cursor-default",
       )}
@@ -51,6 +51,10 @@ export function AgentCard({ name, description, status, artSrc, href }: AgentCard
               !launchable && "opacity-70",
             )}
             priority
+            // The optimizer flattens this art's alpha onto white, which puts a
+            // solid square behind it on the glass card. Serve the PNG as-is;
+            // it is line art, so optimization buys little anyway.
+            unoptimized
           />
         ) : null}
       </div>

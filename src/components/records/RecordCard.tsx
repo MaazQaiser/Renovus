@@ -16,7 +16,7 @@ export interface RecordCardProps {
 
 export function RecordCard({ record, onDelete }: RecordCardProps) {
   return (
-    <li className="group relative flex flex-col rounded-lg border border-border bg-surface p-5 transition-shadow duration-[120ms] hover:border-border-strong hover:shadow-md">
+    <li className="group relative flex flex-col rounded-xl border border-glass-border bg-glass p-5 shadow-[var(--shadow-glass)] backdrop-blur-3xl transition-[box-shadow,background-color] duration-[140ms] hover:bg-glass-strong hover:shadow-[var(--shadow-raised)]">
       <div className="flex items-start justify-between gap-2">
         <Badge tone="accent">{AGENT_LABEL[record.agent]}</Badge>
         <IconButton
