@@ -50,7 +50,7 @@ export const PHASE1_QUESTIONS: SalesQuestion[] = [
     followUps: [
       {
         id: "B1b.f1",
-        prompt: "Is that concentration by design, or just where the network reached?",
+        prompt: "By design, or just where the network reached?",
         when: { kind: "optionIds", ids: ["government", "enterprise", "mid-market", "smb"] },
         options: [
           { id: "by-design", label: "By design — we chose that segment" },
@@ -444,7 +444,7 @@ export const PHASE1_QUESTIONS: SalesQuestion[] = [
     section: "channels",
     sessionKey: "phase1",
     question:
-      "Quick pass through a list — for each, just say: using, not using, or want to use. Field sales · inside sales / cold outreach · RFP portals and tenders · referrals and partnerships · events and conferences · LinkedIn · content and SEO · paid advertising · marketplaces or platforms · structured expansion of existing clients.",
+      "Quick pass through a list — for each, just say: using, not using, or want to use.",
     why: "The channel map — the single most load-bearing answer in Phase 1.",
     type: "channel-matrix",
     required: true,
@@ -525,7 +525,7 @@ export const PHASE1_QUESTIONS: SalesQuestion[] = [
     followUps: [
       {
         id: "CH3.f1",
-        prompt: "{{segment}} — what's kept you out: fit, credibility, capacity, or nobody's tried?",
+        prompt: "{{segment}} — what's kept you out — fit, credibility, capacity, or nobody's tried?",
         when: { kind: "always" },
         options: [
           { id: "fit", label: "Fit — the offering isn't right yet" },

@@ -13,7 +13,7 @@ export const COMMON_QUESTIONS: SalesQuestion[] = [
     section: "marketing",
     sessionKey: "marketing",
     question:
-      "What actually runs every month — content, SEO, paid, events, email, PR? A list with rough effort against each.",
+      "What actually runs every month — content, SEO, paid, events, email, PR?",
     type: "single-choice",
     required: true,
     supportsText: true,
@@ -161,7 +161,8 @@ export const COMMON_QUESTIONS: SalesQuestion[] = [
     id: "MK6",
     section: "marketing",
     sessionKey: "marketing",
-    question: "Rough monthly marketing spend, and the biggest single line in it?",
+    question:
+      "Rough monthly marketing spend, and the biggest single line?",
     type: "single-choice",
     required: true,
     supportsText: true,
@@ -305,7 +306,7 @@ export const COMMON_QUESTIONS: SalesQuestion[] = [
     section: "ceo-close",
     sessionKey: "ceo-close",
     question:
-      "What would need to be true for you to be comfortable with AI drafting messages that go to your customers — with a human approving them?",
+      "What would need to be true for you to be comfortable with AI drafting messages to your customers — with a human approving them?",
     type: "single-choice",
     required: true,
     supportsText: true,
@@ -322,7 +323,7 @@ export const COMMON_QUESTIONS: SalesQuestion[] = [
     followUps: [
       {
         id: "X2.f1",
-        prompt: "And for internal work — research, first drafts, summaries no customer sees?",
+        prompt: "And for internal work — research, drafts, summaries no customer sees?",
         when: { kind: "optionIds", ids: ["flat-no"] },
       },
     ],

@@ -392,7 +392,7 @@ export const MODULE_QUESTIONS: SalesQuestion[] = [
     sessionKey: "deepdive",
     module: "M-OUT",
     question:
-      "Describe the outbound motion in three lines: who reaches out, on which channels, how many attempts in a typical week?",
+      "Describe the outbound motion in three lines: who reaches out, on which channels, how many attempts a week?",
     type: "single-choice",
     required: true,
     supportsText: true,
@@ -438,7 +438,7 @@ export const MODULE_QUESTIONS: SalesQuestion[] = [
     followUps: [
       {
         id: "M-OUT.2.f1",
-        prompt: "Last month — how many first conversations came from outbound versus everything else?",
+        prompt: "Last month — how many first conversations came from outbound, versus everything else?",
         when: { kind: "optionIds", ids: ["unknown"] },
       },
     ],
@@ -465,7 +465,7 @@ export const MODULE_QUESTIONS: SalesQuestion[] = [
     followUps: [
       {
         id: "M-OUT.3.f1",
-        prompt: "Did anyone actually go back to a 'not now' from last year? One example?",
+        prompt: "Did anyone go back to a 'not now' from last year? One example?",
         when: { kind: "optionIds", ids: ["rep-note", "crm-task", "nothing"] },
       },
     ],
@@ -505,7 +505,7 @@ export const MODULE_QUESTIONS: SalesQuestion[] = [
     sessionKey: "deepdive",
     module: "M-OUT",
     question:
-      "Between first meeting and proposal, what does a prospect receive from you — case studies, references, a pilot, or mostly silence until the proposal?",
+      "Between first meeting and proposal, what does a prospect receive from you — case studies, a pilot, or mostly silence until the proposal?",
     type: "single-choice",
     required: true,
     supportsText: true,
@@ -538,7 +538,7 @@ export const MODULE_QUESTIONS: SalesQuestion[] = [
     sessionKey: "deepdive",
     module: "M-REL",
     question:
-      "The new clients of the last three years — deal by deal if you can: how did each actually arrive, and which individuals originated them? Roles or names; I'm looking for concentration, not credit.",
+      "The new clients of the last three years — deal by deal if you can: how did each actually arrive, and who originated it? Roles or names; I'm looking for concentration, not credit.",
     type: "single-choice",
     required: true,
     supportsText: true,
@@ -725,7 +725,7 @@ export const MODULE_QUESTIONS: SalesQuestion[] = [
     sessionKey: "deepdive",
     module: "M-FLD",
     question:
-      "What does the field/event motion look like over a year — how many events or visit cycles, covering which territories, at what rough cost each?",
+      "Over a year — how many events or visit cycles, covering which territories, at what rough cost each?",
     type: "single-choice",
     required: true,
     supportsText: true,
@@ -746,7 +746,7 @@ export const MODULE_QUESTIONS: SalesQuestion[] = [
     sessionKey: "deepdive",
     module: "M-FLD",
     question:
-      "What does a season actually produce — contacts, real conversations, deals you can trace back to it?",
+      "What does a season actually produce — contacts, real conversations, traceable deals?",
     type: "single-choice",
     required: true,
     supportsText: true,
@@ -763,7 +763,7 @@ export const MODULE_QUESTIONS: SalesQuestion[] = [
     followUps: [
       {
         id: "M-FLD.2.f1",
-        prompt: "The best client you got this way — which event or visit, and how long ago?",
+        prompt: "The best client you got this way — which event, how long ago?",
         when: { kind: "optionIds", ids: ["untracked", "contacts", "conversations"] },
       },
     ],
@@ -796,7 +796,7 @@ export const MODULE_QUESTIONS: SalesQuestion[] = [
     section: "cap",
     sessionKey: "deepdive",
     question:
-      "Outside the sales team, who spends real time on pursuits — delivery leads writing sections, executives in pitches — and roughly how much of their week?",
+      "Outside the sales team, who spends real time on pursuits — delivery leads writing sections, executives in pitches — and how much of their week?",
     type: "single-choice",
     required: true,
     supportsText: true,
@@ -826,7 +826,7 @@ export const MODULE_QUESTIONS: SalesQuestion[] = [
     section: "cap",
     sessionKey: "deepdive",
     question:
-      "If sales suddenly worked: how much more delivery could you absorb without hiring? And who's the right person to verify that with?",
+      "If sales suddenly worked: how much more delivery could you absorb without hiring? And who should verify that?",
     why: "The ceiling that caps every opportunity; the named verifier goes to the people map.",
     type: "single-choice",
     required: true,
