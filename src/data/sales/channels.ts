@@ -2,7 +2,7 @@ import type { BlockerCategory, ChannelId, SalesModule } from "@/types/sales-asse
 
 /**
  * Channel inventory for Phase 1 Part 3 (CH1) and the CH2 blocker probe of
- * `1_Sales_Agent_Questionnaire_v3.md`. Order matches the CH1 checklist exactly.
+ * the question bank (v4). Order matches the CH1 checklist exactly.
  * The module mapping decides which Phase 2 deep-dive modules run.
  */
 

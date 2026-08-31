@@ -97,7 +97,7 @@ export function createInitialSession(): SalesAssessmentSession {
     status: "in-progress",
     startedAt,
     updatedAt: startedAt,
-    qbankVersion: "v3",
+    qbankVersion: "v4",
   };
 }
 

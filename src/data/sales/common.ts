@@ -1,7 +1,7 @@
 import type { SalesQuestion } from "@/types/sales-assessment";
 
 /**
- * COMMON SESSIONS & CLOSERS of `1_Sales_Agent_Questionnaire_v3.md`:
+ * COMMON SESSIONS & CLOSERS of the question bank (v4):
  * the marketing session (MK1–MK6), the Systems & AI tail of every Phase 2
  * session (S1–S4), and the CEO strategic close (X1–X4).
  */
@@ -19,7 +19,7 @@ export const COMMON_QUESTIONS: SalesQuestion[] = [
     supportsText: true,
     supportsSpeech: true,
     asksConfidence: false,
-    order: 45,
+    order: 63,
     options: [
       { id: "full-programme", label: "A full programme — content, SEO, paid and email every month" },
       { id: "content-events", label: "Content and events, little else" },
@@ -45,7 +45,7 @@ export const COMMON_QUESTIONS: SalesQuestion[] = [
     supportsText: true,
     supportsSpeech: true,
     asksConfidence: false,
-    order: 46,
+    order: 64,
     options: [
       { id: "traced", label: "Yes — at least one deal traces to a specific activity" },
       { id: "loosely", label: "Loosely — we assume some inbound comes from it" },
@@ -61,16 +61,17 @@ export const COMMON_QUESTIONS: SalesQuestion[] = [
     ],
   },
   {
-    id: "MK3",
+    id: "MK3a",
     section: "marketing",
     sessionKey: "marketing",
-    question: "Inbound leads per month, roughly — and what happens to one in its first 24 hours?",
+    question: "Inbound leads per month, roughly?",
+    why: "Inbound volume, checked against what sales says arrives.",
     type: "single-choice",
     required: true,
     supportsText: true,
     supportsSpeech: true,
     asksConfidence: true,
-    order: 47,
+    order: 65,
     options: [
       { id: "under-5", label: "Fewer than 5 a month" },
       { id: "5-20", label: "5–20 a month" },
@@ -78,9 +79,28 @@ export const COMMON_QUESTIONS: SalesQuestion[] = [
       { id: "over-50", label: "More than 50 a month" },
       { id: "unknown", label: "Nobody counts them" },
     ],
+  },
+  {
+    id: "MK3b",
+    section: "marketing",
+    sessionKey: "marketing",
+    question: "What happens to one in its first 24 hours?",
+    why: "Response time on inbound, cross-checked against M-OUT.4.",
+    type: "single-choice",
+    required: true,
+    supportsText: true,
+    supportsSpeech: true,
+    asksConfidence: false,
+    order: 66,
+    options: [
+      { id: "routed", label: "It's routed to a named owner who responds same day" },
+      { id: "eventually", label: "Someone picks it up within a day or two" },
+      { id: "inbox", label: "It lands in a shared inbox and waits" },
+      { id: "unknown", label: "Honestly, nobody knows" },
+    ],
     followUps: [
       {
-        id: "MK3.f1",
+        id: "MK3b.f1",
         prompt: "Who exactly gets the notification, and what's their day job?",
         when: { kind: "always" },
       },
@@ -96,7 +116,7 @@ export const COMMON_QUESTIONS: SalesQuestion[] = [
     supportsText: true,
     supportsSpeech: true,
     asksConfidence: false,
-    order: 48,
+    order: 67,
     options: [
       { id: "pipeline", label: "Pipeline or revenue contribution" },
       { id: "leads", label: "Lead volume" },
@@ -106,23 +126,36 @@ export const COMMON_QUESTIONS: SalesQuestion[] = [
     ],
   },
   {
-    id: "MK5",
+    id: "MK5a",
     section: "marketing",
     sessionKey: "marketing",
-    question:
-      "Does sales actually use what marketing produces? What do they keep asking for that doesn't exist?",
+    question: "Does sales actually use what marketing produces?",
+    why: "Cross-checked against M-OUT.5 — disagreement between the two is itself a finding.",
     type: "single-choice",
     required: true,
     supportsText: true,
     supportsSpeech: true,
     asksConfidence: false,
-    order: 49,
+    order: 68,
     options: [
       { id: "yes", label: "Yes — sales uses the material and asks for more of it" },
       { id: "some", label: "Some of it; the rest goes unused" },
       { id: "rebuild", label: "Sales rebuilds its own material instead" },
       { id: "no", label: "Barely — the two sides run separately" },
     ],
+  },
+  {
+    id: "MK5b",
+    section: "marketing",
+    sessionKey: "marketing",
+    question: "What do they keep asking for that doesn't exist?",
+    why: "The stated content gap, in sales' own words.",
+    type: "text",
+    required: true,
+    supportsText: true,
+    supportsSpeech: true,
+    asksConfidence: false,
+    order: 69,
   },
   {
     id: "MK6",
@@ -134,7 +167,7 @@ export const COMMON_QUESTIONS: SalesQuestion[] = [
     supportsText: true,
     supportsSpeech: true,
     asksConfidence: true,
-    order: 50,
+    order: 70,
     options: [
       { id: "under-5k", label: "Under $5k a month" },
       { id: "5k-20k", label: "$5k–$20k a month" },
@@ -155,7 +188,7 @@ export const COMMON_QUESTIONS: SalesQuestion[] = [
     supportsText: true,
     supportsSpeech: true,
     asksConfidence: false,
-    order: 51,
+    order: 71,
     options: [
       { id: "all-used", label: "Everything we pay for gets opened daily" },
       { id: "crm-used", label: "The CRM and email are used; the rest is shelfware" },
@@ -186,7 +219,7 @@ export const COMMON_QUESTIONS: SalesQuestion[] = [
     supportsText: true,
     supportsSpeech: true,
     asksConfidence: false,
-    order: 52,
+    order: 72,
     options: [
       { id: "spreadsheets", label: "Spreadsheets on individual machines or drives" },
       { id: "inboxes", label: "Individual inboxes" },
@@ -200,13 +233,14 @@ export const COMMON_QUESTIONS: SalesQuestion[] = [
     section: "systems",
     sessionKey: "deepdive",
     question:
-      "Is anyone here already using AI for sales or marketing tasks, officially or quietly? What for, and does it help?",
+      "Is anyone already using AI for sales or marketing tasks — officially or quietly?",
+    why: "Existing AI use, cross-checked against T3b from Phase 1.",
     type: "single-choice",
     required: true,
     supportsText: true,
     supportsSpeech: true,
     asksConfidence: false,
-    order: 53,
+    order: 73,
     options: [
       { id: "official", label: "Yes — officially, with agreed tools" },
       { id: "quiet", label: "Yes — quietly, on personal accounts" },
@@ -217,7 +251,7 @@ export const COMMON_QUESTIONS: SalesQuestion[] = [
       {
         id: "S3.f1",
         prompt: "Would leadership be comfortable knowing exactly how it's used today?",
-        when: { kind: "always" },
+        when: { kind: "optionIds", ids: ["official", "quiet", "one-person"] },
         options: [
           { id: "comfortable", label: "Comfortable" },
           { id: "uneasy", label: "Somewhat uneasy" },
@@ -237,7 +271,7 @@ export const COMMON_QUESTIONS: SalesQuestion[] = [
     supportsText: true,
     supportsSpeech: true,
     asksConfidence: false,
-    order: 54,
+    order: 74,
     options: [
       { id: "finding", label: "Finding opportunities — watching portals and lists" },
       { id: "drafting", label: "Drafting proposals and first responses" },
@@ -258,7 +292,7 @@ export const COMMON_QUESTIONS: SalesQuestion[] = [
     supportsText: true,
     supportsSpeech: true,
     asksConfidence: false,
-    order: 55,
+    order: 75,
     options: [
       { id: "delivery", label: "Delivery capacity" },
       { id: "cash", label: "Cash and working capital" },
@@ -277,7 +311,7 @@ export const COMMON_QUESTIONS: SalesQuestion[] = [
     supportsText: true,
     supportsSpeech: true,
     asksConfidence: false,
-    order: 56,
+    order: 76,
     options: [
       { id: "already", label: "Already comfortable with a human approving" },
       { id: "accuracy", label: "It has to be demonstrably accurate on our material first" },
@@ -303,7 +337,7 @@ export const COMMON_QUESTIONS: SalesQuestion[] = [
     supportsText: true,
     supportsSpeech: true,
     asksConfidence: false,
-    order: 57,
+    order: 77,
     options: [
       { id: "ceo", label: "I champion it; the senior sellers resist" },
       { id: "sales-lead", label: "The sales lead champions it; delivery resists" },
@@ -322,7 +356,7 @@ export const COMMON_QUESTIONS: SalesQuestion[] = [
     supportsText: true,
     supportsSpeech: true,
     asksConfidence: false,
-    order: 58,
+    order: 78,
     options: [
       { id: "volume", label: "More opportunities reaching us" },
       { id: "conversion", label: "A higher win rate on what we already chase" },

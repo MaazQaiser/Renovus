@@ -5,9 +5,11 @@ import { MODULE_QUESTIONS } from "./modules";
 import { COMMON_QUESTIONS } from "./common";
 
 /**
- * The full sales question bank of `1_Sales_Agent_Questionnaire_v3.md`,
- * concatenated in spec order: Phase 1, the Phase 2 modules plus CAP,
- * then the common sessions and closers.
+ * The full sales question bank (v4), concatenated in bank order: Phase 1,
+ * the Phase 2 modules plus CAP, then the common sessions and closers.
+ *
+ * v4 splits every compound ask into lettered sub-questions (B1a, B1b…), so
+ * ids are not interchangeable with v3 — `qbankVersion` gates stale drafts.
  */
 
 export { CHANNELS, BLOCKER_OPTIONS, getChannel } from "./channels";
@@ -119,12 +121,12 @@ export const CEO_CLOSE_IDS: string[] = salesQuestions
   .filter((question) => question.section === "ceo-close")
   .map((question) => question.id);
 
-/** The spec's 12 ★ questions — kept for used-but-not-dominant channels. */
+/** The bank's 13 ★ questions — kept for used-but-not-dominant channels. */
 export const STAR_IDS: string[] = salesQuestions
   .filter((question) => question.star === true)
   .map((question) => question.id);
 
-/** The spec's 17 (A/E/G/N/X) questions. */
+/** The bank's 26 (A/E/G/N/X) questions. */
 export const CONFIDENCE_QIDS: string[] = salesQuestions
   .filter((question) => question.asksConfidence)
   .map((question) => question.id);

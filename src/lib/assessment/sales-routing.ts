@@ -66,8 +66,8 @@ export function classify(
   let relationshipPoints = 0;
   let pipelinePoints = 0;
 
-  // E4 — founder-led origination is a relationship signal.
-  const e4 = answers["E4"]?.label.toLowerCase() ?? "";
+  // E4a — founder-led origination is a relationship signal.
+  const e4 = answers["E4a"]?.label.toLowerCase() ?? "";
   if (e4.includes("founder") || e4.includes("owner") || e4.includes("partner")) {
     relationshipPoints += 1;
   }
@@ -142,7 +142,7 @@ export function buildCeoCloseQueue(): string[] {
  * having found someone who owns marketing.
  */
 export function hasMarketingOwner(answers: Record<string, SalesAnswer>): boolean {
-  const t3 = answers["T3"]?.label.toLowerCase() ?? "";
+  const t3 = answers["T3a"]?.label.toLowerCase() ?? "";
   const t4 = answers["T4"]?.label.toLowerCase() ?? "";
   const combined = `${t3} ${t4}`;
   if (/(no one|nobody|none|no marketing)/.test(combined)) return false;

@@ -4,7 +4,7 @@ import { createInitialSession } from "./sales-engine";
 
 const SESSION_KEY = "renovers:sales-assessment";
 const SESSION_EVENT = "renovers:sales-assessment";
-const CURRENT_QBANK = "v3";
+const CURRENT_QBANK = "v4";
 
 let snapshotCache: { raw: string | null; value: SalesAssessmentSession | null } = {
   raw: null,
@@ -36,7 +36,7 @@ export function subscribeToSalesSession(onStoreChange: () => void): () => void {
 }
 
 /**
- * Legacy conversational drafts (pre-gate / pre-v3) lack required fields.
+ * Legacy conversational drafts (pre-gate / pre-v4) lack required fields.
  * Drop them rather than crash the rail.
  */
 function isCurrentSalesSession(
