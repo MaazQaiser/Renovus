@@ -43,9 +43,9 @@ export function Sidebar({
         )}
       >
         {collapsed ? (
-          <Logo variant="mark" tone="inverse" size="sm" />
+          <Logo variant="mark" tone="inverse" size="sm" priority />
         ) : (
-          <Logo variant="lockup" tone="inverse" size="sm" />
+          <Logo variant="lockup" tone="inverse" size="sm" priority />
         )}
         {onCollapsedChange ? (
           <IconButton

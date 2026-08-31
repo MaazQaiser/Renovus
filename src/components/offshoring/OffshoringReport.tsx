@@ -17,6 +17,7 @@ import { CostChart, CostLegend } from "./report/CostChart";
 import {
   Caption,
   ColHead,
+  DetailSection,
   DocTable,
   DocTitle,
   FootLine,
@@ -519,25 +520,5 @@ export function OffshoringReport({ archived }: OffshoringReportProps = {}) {
         ) : null}
       </div>
     </div>
-  );
-}
-
-function DetailSection({
-  num,
-  title,
-  children,
-}: {
-  num: string;
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <section className="border-b border-doc-hair py-8 last:border-b-0">
-      <p className="mb-2 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-doc-amber">
-        {num}
-      </p>
-      <h3 className="mb-3.5 font-serif text-[23px] font-semibold text-doc-ink">{title}</h3>
-      {children}
-    </section>
   );
 }
