@@ -23,44 +23,16 @@ export interface ReportStat {
   value: string;
 }
 
-export interface ReportCostRow {
-  function: string;
-  loadedCostM: number;
-  /** Share of the function's cost judged addressable. */
-  addressableM: number;
-  fte: number;
-}
 
-/** 0–100 potential per level; null means "no roles at this level". */
-export interface ReportHeatRow {
-  function: string;
-  model: SourcingModel;
-  junior: number | null;
-  mid: number | null;
-  senior: number | null;
-  lead: number | null;
-}
 
-export interface ReportMover {
-  id: string;
-  function: string;
-  level: string;
-  band: ReportBand;
-  savingPerYear: string;
-}
 
-/** One bar of the year-1 waterfall. */
-export interface ReportBridgeBar {
-  label: string;
-  value: string;
-  /** Millions, for bar height. */
-  amount: number;
-  tone: "ink" | "gold" | "pale";
-}
 
 export interface ReportScenario {
   name: string;
   headline?: boolean;
+  /** What the scenario assumes, so a reader can judge it without the appendix. */
+  basis: string;
+  pctOfLabour: string;
   fte: string;
   runRate: string;
   net3: string;
@@ -105,12 +77,53 @@ export interface ReportModelRow {
   rationale: string;
 }
 
+/** One row of "What can move": a composite score, not a level-by-level grid. */
+export interface ReportMoveRow {
+  function: string;
+  /** 0–100 composite. High >= 70, Medium 45–69, Low < 45. */
+  score: number;
+  band: ReportBand;
+  engagementModel: SourcingModel;
+  addressable: string;
+  primaryConstraint: string;
+}
+
+/** One row of the cost table, with its share of the total for the inline bar. */
+export interface ReportShareRow {
+  function: string;
+  fte: number;
+  loadedCost: string;
+  /** 0–100, drives the bar width. */
+  sharePct: number;
+}
+
+export interface ReportSavingRow {
+  function: string;
+  saving: string;
+}
+
+/** Year-by-year cash, so year-1 transition drag is visible rather than implied. */
+export interface ReportCashRow {
+  period: string;
+  grossSaving: string;
+  oneOffs: string;
+  net: string;
+}
+
+export interface ReportGate {
+  gate: string;
+  test: string;
+  owner: ReportOwner;
+}
+
 export interface OffshoringReportData {
   reportDate: string;
   preparedFor: string;
   preparedBy: string;
   confidentiality: string;
 
+  /** Sub-title under the headline: basis, headcount, total cost. */
+  subline: string;
   answerHeadlineValue: string;
   answerHeadlineRest: string;
   summaryExec: string;
@@ -119,32 +132,41 @@ export interface OffshoringReportData {
 
   costCaption: string;
   costStats: ReportStat[];
-  costRows: ReportCostRow[];
+  costRows: ReportShareRow[];
 
   moveCaption: string;
-  heatRows: ReportHeatRow[];
-  heatRollup: string;
-  movers: ReportMover[];
-  moversRollup: string;
+  moveRows: ReportMoveRow[];
+  moveRollup: string;
 
   saveCaption: string;
-  bridge: ReportBridgeBar[];
   scenarios: ReportScenario[];
+  savingByFunction: ReportSavingRow[];
+  cashProfile: ReportCashRow[];
   scenariosRollup: string;
 
   wavesCaption: string;
   waves: ReportWave[];
   wavesSequence: string;
+  gates: ReportGate[];
+  retainedOnshore: string;
 
   risksCaption: string;
   risks: ReportRisk[];
   nextSteps: ReportNextStep[];
+  /** Closing callout on the risks tab. */
+  flag: string;
 
   detailApproach: string[];
   scoringDimensions: { name: string; detail: string }[];
   modelRows: ReportModelRow[];
   assumptions: ReportAssumption[];
   methodology: string[];
+  dataTier: string;
+  constraintCeilings: string[];
+  functionRollup: string;
+  dataQuality: string[];
+  notModelled: string[];
+  reconciliation: string;
 }
 
 const FUNCTION_SETS: Record<
@@ -179,10 +201,6 @@ function m(value: number): string {
   return `${rounded < 0 ? "-" : ""}$${Math.abs(rounded).toFixed(1)}M`;
 }
 
-function k(value: number): string {
-  return `$${Math.round(value / 1000)}K`;
-}
-
 const WORD_MONTHS = [
   "zero", "one", "two", "three", "four", "five", "six", "seven", "eight",
   "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen",
@@ -193,14 +211,7 @@ function monthsWord(n: number): string {
   return WORD_MONTHS[n] ?? `${n}`;
 }
 
-/** Descending share of run-rate saving carried by each of the top ten movers. */
-const MOVER_SHARES = [
-  0.028, 0.0233, 0.0221, 0.0217, 0.0217, 0.0204, 0.02, 0.0196, 0.0196, 0.0192,
-];
 
-const MOVER_LEVELS = [
-  "Mid", "Mid", "Mid", "Junior", "Mid", "Junior", "Mid", "Mid", "Senior", "Mid",
-];
 
 export function getMockOffshoringReport(
   companyName: string,
@@ -238,7 +249,6 @@ export function getMockOffshoringReport(
   const offshoreCostM = movedCostM * rate;
   const annualSaveM = movedCostM - offshoreCostM;
   const net3M = annualSaveM * 3 - profile.transitionM - profile.rampM;
-  const year1NetM = annualSaveM - profile.rampM - profile.transitionM;
   // Payback carries the ramp as well as the one-off: nothing is repaid until
   // both are recovered, which is why this lands near a year, not a quarter.
   const upfrontM = profile.transitionM + profile.rampM;
@@ -260,21 +270,29 @@ export function getMockOffshoringReport(
     Math.round((upfrontM / aggrRunRateM) * 12),
   );
 
-  // Cost table, richest function first.
-  const costRows: ReportCostRow[] = slotOrder
+  // Cost table, richest function first, each row carrying its share of total.
+  const costRows: ReportShareRow[] = slotOrder
     .map((key) => ({
       function: label[key],
-      loadedCostM: slots[key].costM,
-      addressableM: slots[key].addressableM,
       fte: slots[key].fte,
+      loadedCost: m(slots[key].costM),
+      sharePct: Math.round((slots[key].costM / payrollM) * 100),
+      sortKey: slots[key].costM,
     }))
-    .sort((a, b) => b.loadedCostM - a.loadedCostM);
+    .sort((a, b) => b.sortKey - a.sortKey)
+    .map((row): ReportShareRow => ({
+      function: row.function,
+      fte: row.fte,
+      loadedCost: row.loadedCost,
+      sharePct: row.sharePct,
+    }));
 
+  const byCost = [...slotOrder].sort((a, b) => slots[b].costM - slots[a].costM);
   const topTwoShare = Math.round(
-    ((costRows[0].loadedCostM + costRows[1].loadedCostM) / payrollM) * 100,
+    ((slots[byCost[0]].costM + slots[byCost[1]].costM) / payrollM) * 100,
   );
   const topFourShare = Math.round(
-    (costRows.slice(0, 4).reduce((sum, row) => sum + row.loadedCostM, 0) / payrollM) * 100,
+    (byCost.slice(0, 4).reduce((sum, key) => sum + slots[key].costM, 0) / payrollM) * 100,
   );
 
   const modelFor = (key: SlotKey): SourcingModel => {
@@ -284,35 +302,62 @@ export function getMockOffshoringReport(
     return "Role-by-role";
   };
 
-  const heatRows: ReportHeatRow[] = [...slotOrder]
-    .sort((a, b) => (slots[b].heat[1] ?? 0) - (slots[a].heat[1] ?? 0))
-    .map((key) => ({
+  /*
+   * One composite score per function, replacing the level-by-level grid. The
+   * junior and mid bands are weighted hardest: that is where the movable volume
+   * actually sits, so a flat mean would understate a function with a deep
+   * junior layer and overstate one that is mostly leads.
+   */
+  const LEVEL_WEIGHTS = [0.35, 0.3, 0.22, 0.13];
+  const scoreFor = (key: SlotKey): number => {
+    const heat = slots[key].heat;
+    let total = 0;
+    let weight = 0;
+    heat.forEach((value, index) => {
+      if (value === null) return;
+      total += value * LEVEL_WEIGHTS[index];
+      weight += LEVEL_WEIGHTS[index];
+    });
+    return weight === 0 ? 0 : Math.round(total / weight);
+  };
+
+  const bandFor = (score: number): ReportBand =>
+    score >= 70 ? "High" : score >= 45 ? "Medium" : "Low";
+
+  const moveRows: ReportMoveRow[] = [...slotOrder]
+    .map((key) => ({ key, score: scoreFor(key) }))
+    .sort((a, b) => b.score - a.score)
+    .map(({ key, score }) => ({
       function: label[key],
-      model: modelFor(key),
-      junior: slots[key].heat[0],
-      mid: slots[key].heat[1],
-      senior: slots[key].heat[2],
-      lead: slots[key].heat[3],
+      score,
+      band: bandFor(score),
+      engagementModel: modelFor(key),
+      addressable: slots[key].addressableM === 0 ? "—" : m(slots[key].addressableM),
+      primaryConstraint: slots[key].primaryConstraint,
     }));
 
-  // Movers: the three densest addressable functions, savings scaled off run-rate.
-  const moverSlots: SlotKey[] = ["highB", "highA", "midA"];
-  const movers: ReportMover[] = MOVER_SHARES.map((share, index) => {
-    const key = moverSlots[index % moverSlots.length];
-    const seed = (index * 37 + slots[key].fte * 7) % 90;
-    return {
-      id: `${slots[key].code}-${String(seed + 9).padStart(3, "0")}`,
-      function: label[key],
-      level: MOVER_LEVELS[index],
-      band: MOVER_LEVELS[index] === "Senior" ? ("Medium" as const) : ("High" as const),
-      savingPerYear: k(annualSaveM * 1_000_000 * share),
-    };
-  }).sort((a, b) => Number(b.savingPerYear.slice(1, -1)) - Number(a.savingPerYear.slice(1, -1)));
+  const savingByFunction: ReportSavingRow[] = [...slotOrder]
+    .filter((key) => slots[key].addressableM > 0)
+    .map((key) => ({
+      key,
+      saving: slots[key].addressableM * profile.movedShareOfAddressable * (1 - rate),
+    }))
+    .sort((a, b) => b.saving - a.saving)
+    .map(({ key, saving }) => ({ function: label[key], saving: m(saving) }));
 
-  const topTenSaveM =
-    (annualSaveM * MOVER_SHARES.reduce((sum, share) => sum + share, 0));
-  const restFte = Math.max(0, addressableFte - movers.length);
-  const restSaveM = Math.max(0, annualSaveM - topTenSaveM);
+  // Year 1 carries the ramp and the one-offs, so it reads negative on purpose.
+  const year1Gross = annualSaveM * 0.45;
+  const cashProfile: ReportCashRow[] = [
+    {
+      period: "Year 1 (6-mo ramp)",
+      grossSaving: m(year1Gross),
+      oneOffs: `(${m(profile.transitionM + profile.rampM)})`,
+      net: m(year1Gross - profile.transitionM - profile.rampM),
+    },
+    { period: "Year 2", grossSaving: m(annualSaveM), oneOffs: "—", net: m(annualSaveM) },
+    { period: "Year 3", grossSaving: m(annualSaveM), oneOffs: "—", net: m(annualSaveM) },
+  ];
+
 
   // Waves: quick wins, core, then the hybrid remainder.
   const waveSplit = [0.29, 0.375, 0.335];
@@ -334,6 +379,7 @@ export function getMockOffshoringReport(
     preparedBy: "Renovus Capital · Portfolio Operations",
     confidentiality: "Confidential — Renovus Capital internal (IC / operating review)",
 
+    subline: `Base case · ${profile.totalFte} employees · ${m(payrollM)} fully-burdened annual labour cost`,
     answerHeadlineValue: m(annualSaveM),
     answerHeadlineRest: `a year is addressable across 6 functions at ${companyName}`,
     summaryExec: `We assessed all ${profile.totalFte} roles and ${m(payrollM)} of loaded payroll at ${companyName} against a five-part sourcing rubric. ${addressableFte} roles — ${addressablePct}% of the workforce, ${m(addressableM)} of cost — are addressable, led by ${highA} and the ${highB}. At offshore rates of ${profile.offshoreRatePct}% of onshore cost, the base case saves ${m(annualSaveM)} a year and ${m(net3M)} net over three years, repaying transition costs in about ${monthsWord(paybackMo)} months. We would lift out ${highB} first, then move the ${highA} delivery layer. The caveat: ${retainA} is ${profile.constraintNote}, so it stays onshore entirely.`,
@@ -359,7 +405,7 @@ export function getMockOffshoringReport(
       },
     ],
 
-    costCaption: `${costRows[0].function} (${m(costRows[0].loadedCostM)}) and ${costRows[1].function} (${m(costRows[1].loadedCostM)}) carry ${topTwoShare}% of the cost base; the top four functions carry ${topFourShare}%.`,
+    costCaption: `${label[byCost[0]]} (${m(slots[byCost[0]].costM)}) and ${label[byCost[1]]} (${m(slots[byCost[1]].costM)}) carry ${topTwoShare}% of the cost base; the top four functions carry ${topFourShare}%.`,
     costStats: [
       { label: "In-scope FTEs", value: String(profile.totalFte) },
       { label: "Loaded cost in scope", value: m(payrollM) },
@@ -368,34 +414,18 @@ export function getMockOffshoringReport(
     ],
     costRows,
 
-    moveCaption: `Density is highest in the ${highB} and the ${highA} delivery layer; ${retainA} scores Low at every level.`,
-    heatRows,
-    heatRollup: "Leadership is always retained; cells shown neutral.",
-    movers,
-    moversRollup: `+ ${restFte} further roles worth ${m(restSaveM)}/yr — full list in Detail.`,
+    moveCaption: `Composite outsourceability score 0–100 · High ≥ 70 · Medium 45–69 · Low < 45. Density is highest in the ${highB} and the ${highA} delivery layer; ${retainA} scores Low at every level.`,
+    moveRows,
+    moveRollup: `${moveRows.filter((row) => row.band === "High").length} functions score High, carrying ${m(addressableM)} of addressable cost. Leadership is retained in every case.`,
 
     saveCaption: `Base case ${m(annualSaveM)} run-rate on ${addressableFte} FTE-equivalents; conservative floor ${m(floorRunRateM)} shown beside it — plan on base, underwrite the floor.`,
-    bridge: [
-      { label: "Cost of moved roles", value: m(movedCostM), amount: movedCostM, tone: "ink" },
-      { label: "Offshore cost", value: m(offshoreCostM), amount: offshoreCostM, tone: "pale" },
-      { label: "Run-rate saving", value: m(annualSaveM), amount: annualSaveM, tone: "gold" },
-      { label: "Year-1 ramp", value: m(profile.rampM), amount: profile.rampM, tone: "pale" },
-      {
-        label: "Transition one-off",
-        value: m(profile.transitionM),
-        amount: profile.transitionM,
-        tone: "pale",
-      },
-      {
-        label: "Year-1 net",
-        value: m(year1NetM),
-        amount: Math.abs(year1NetM),
-        tone: "gold",
-      },
-    ],
+    savingByFunction,
+    cashProfile,
     scenarios: [
       {
         name: "Conservative",
+        basis: "High-band roles only, no medium-band credit",
+        pctOfLabour: `${Math.round((floorRunRateM / payrollM) * 100)}%`,
         fte: String(floorFte),
         runRate: m(floorRunRateM),
         net3: m(floorNet3M),
@@ -404,6 +434,8 @@ export function getMockOffshoringReport(
       {
         name: "Base",
         headline: true,
+        basis: `High and medium bands at ${profile.offshoreRatePct}% offshore cost`,
+        pctOfLabour: `${Math.round((annualSaveM / payrollM) * 100)}%`,
         fte: String(addressableFte),
         runRate: m(annualSaveM),
         net3: m(net3M),
@@ -411,6 +443,8 @@ export function getMockOffshoringReport(
       },
       {
         name: "Aggressive",
+        basis: "Adds low-band transactional roles and deeper leadership spans",
+        pctOfLabour: `${Math.round((aggrRunRateM / payrollM) * 100)}%`,
         fte: String(aggrFte),
         runRate: m(aggrRunRateM),
         net3: m(aggrNet3M),
@@ -465,6 +499,30 @@ export function getMockOffshoringReport(
       },
     ],
     wavesSequence: `Wave 1 lifts out the ${highB}: ${waveFte[0]} roles and ${m(waveRunM[0])} run-rate, chosen because it is self-contained and already remote, and it establishes the vendor framework. Wave 2 is the core: ${waveFte[1]} roles across ${highA} and ${midA}. Wave 3 carries the remaining ${waveFte[2]} hybrid roles, gated on the service-quality evidence from the first two waves.`,
+
+    gates: [
+      {
+        gate: "Pre-wave",
+        test: `Process documented, SLAs signed, ${profile.constraintNote} controls audited`,
+        owner: "Joint",
+      },
+      {
+        gate: "Overlap exit",
+        test: "Partner hits 90% of the onshore quality baseline for four consecutive weeks",
+        owner: "Vendor",
+      },
+      {
+        gate: "Wave close",
+        test: "Run-rate saving verified against payroll; no SLA breach outstanding",
+        owner: "Renovus",
+      },
+      {
+        gate: "Wave 3 entry",
+        test: `Waves 1–2 at full run-rate; attrition within ${profile.attritionPct}% of plan`,
+        owner: "Renovus",
+      },
+    ],
+    retainedOnshore: `${retainA} and ${retainB} stay onshore in full — ${slots.retainA.fte + slots.retainB.fte} roles and ${m(slots.retainA.costM + slots.retainB.costM)} of cost. ${retainA} is ${profile.constraintNote}, and ${retainB} carries on-call and physical-access dependencies. All leadership is retained regardless of function score.`,
 
     risksCaption:
       "The binding risks are contractual and relational, not technical: named account contacts, undocumented exception handling, and the finance close calendar.",
@@ -524,6 +582,27 @@ export function getMockOffshoringReport(
       },
       { step: "Wave 1 transition begins", owner: "Vendor", timing: "Month 3" },
     ],
+
+    flag: `Nothing here is a headcount decision. The figures describe which work is structurally movable at ${profile.offshoreRatePct}% of onshore cost — sequencing, consultation and any people process sit with the portco.`,
+
+    dataTier: `Tier A: a full payroll extract covering all ${profile.totalFte} in-scope roles, with base pay, employer taxes and benefits loaded per role. Function roll-up is ours; the department codes are the portco's.`,
+    constraintCeilings: [
+      `${retainA} — ${profile.constraintNote}. Scored but capped at Low; no roles move.`,
+      `${retainB} — production access and on-call dependencies. Only ${m(slots.retainB.addressableM)} is judged movable.`,
+      "Leadership at every level is retained, regardless of the function's score.",
+    ],
+    functionRollup: `The portco's department codes roll up to the six functions shown. Where a code spans two functions we assigned it to the one carrying the larger share of its cost, and flagged it below rather than splitting the roles.`,
+    dataQuality: [
+      "Bonus and commission are annualised from the trailing twelve months, so a light year understates a few roles.",
+      "Contractor spend is out of scope: it is not in the payroll extract and we do not estimate it.",
+      `Attrition is modelled at ${profile.attritionPct}% offshore, a sector benchmark rather than a partner commitment.`,
+    ],
+    notModelled: [
+      "EBITDA and enterprise-value impact — the deal team supplied no current EBITDA, and we do not invent one.",
+      "Severance, retention or redeployment cost, which depends on decisions the portco has not made.",
+      "Currency movement and any partner rate escalators beyond year three.",
+    ],
+    reconciliation: `The six function costs sum to ${m(payrollM)}, matching the payroll extract. Addressable cost of ${m(addressableM)} is ${Math.round((addressableM / payrollM) * 100)}% of that; the ${m(movedCostM)} that actually moves in the base case is ${Math.round(profile.movedShareOfAddressable * 100)}% of the addressable pool, with the remainder held back by retained leadership and the constraints above.`,
 
     detailApproach: [
       `We scored every in-scope role at ${companyName} against a five-part rubric, then rolled the role scores up to function and level. Nothing in this report is a headcount decision; it is a view of which work is structurally movable.`,

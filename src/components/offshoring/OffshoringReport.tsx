@@ -12,23 +12,29 @@ import {
 import { useSetTopbarMeta } from "@/providers/TopbarMetaProvider";
 import { cn } from "@/lib/cn";
 import type { Sector } from "@/types/company";
-import { BridgeChart } from "./report/BridgeChart";
-import { CostChart, CostLegend } from "./report/CostChart";
 import {
   Caption,
   ColHead,
   DetailSection,
   DocTable,
   DocTitle,
+  Flag,
   FootLine,
   Kicker,
   ModelTag,
+  RiskCard,
   Rollup,
+  ShareBar,
+  StatBlock,
+  StatRow,
   Tag,
   Td,
   Th,
+  Tile,
+  TileRow,
+  TwoCol,
+  WaveCard,
 } from "@/components/report/DocPrimitives";
-import { HeatLegend, HeatTable } from "./report/HeatTable";
 
 const TABS = [
   { id: "answer", label: "The answer" },
@@ -148,39 +154,25 @@ export function OffshoringReport({ archived }: OffshoringReportProps = {}) {
             <DocTitle highlight={report.answerHeadlineValue}>
               {report.answerHeadlineRest}
             </DocTitle>
+            <Caption>{report.subline}</Caption>
 
-            <p className="mt-6 max-w-[70ch] font-serif text-[19px] leading-[1.66] text-doc-body md:text-[21px]">
+            <p className="mt-6 max-w-[100ch] font-serif text-[17px] leading-[1.62] text-doc-body md:text-[18px]">
               {report.summaryExec}
             </p>
 
-            <ul className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <TileRow>
               {report.kpis.map((kpi) => (
-                <li
+                <Tile
                   key={kpi.label}
-                  className={cn(
-                    "flex min-h-[138px] flex-col rounded-[10px] border p-5",
-                    kpi.lead
-                      ? "border-doc-lead-border bg-doc-gold-5"
-                      : "border-doc-sep bg-surface",
-                  )}
-                >
-                  <p className="text-[38px] font-semibold leading-[1.1] tracking-[-0.01em] tabular-nums text-doc-ink">
-                    {kpi.value}
-                    {kpi.suffix ? (
-                      <span className="ml-1 text-[17px] font-medium text-doc-faint">
-                        {kpi.suffix}
-                      </span>
-                    ) : null}
-                  </p>
-                  <p className="mt-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-doc-faint">
-                    {kpi.label}
-                  </p>
-                  <p className="mt-1.5 text-[12px] text-doc-muted">{kpi.hint}</p>
-                </li>
+                  value={kpi.value}
+                  suffix={kpi.suffix}
+                  label={kpi.label}
+                  note={kpi.hint}
+                />
               ))}
-            </ul>
+            </TileRow>
 
-            <p className="mt-5 max-w-[80ch] text-[15px] text-doc-muted">
+            <p className="mt-5 max-w-[96ch] text-[12.5px] leading-[1.55] text-doc-muted">
               {report.conservativeFloor}
             </p>
 
@@ -197,22 +189,34 @@ export function OffshoringReport({ archived }: OffshoringReportProps = {}) {
             <DocTitle>Where the cost sits</DocTitle>
             <Caption>{report.costCaption}</Caption>
 
-            <div className="mt-7 flex flex-wrap gap-x-14 gap-y-5">
+            <StatRow>
               {report.costStats.map((stat) => (
-                <div key={stat.label}>
-                  <p className="text-[30px] font-semibold tracking-[-0.01em] tabular-nums text-doc-ink">
-                    {stat.value}
-                  </p>
-                  <p className="mt-0.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-doc-faint">
-                    {stat.label}
-                  </p>
-                </div>
+                <StatBlock key={stat.label} value={stat.value} label={stat.label} />
               ))}
-            </div>
+            </StatRow>
 
             <div className="mt-8">
-              <CostChart rows={report.costRows} />
-              <CostLegend />
+              <DocTable
+                head={
+                  <tr>
+                    <Th>Function</Th>
+                    <Th right>HC</Th>
+                    <Th right>Burdened cost</Th>
+                    <Th width="44%">Share of {report.costStats[1]?.value}</Th>
+                  </tr>
+                }
+              >
+                {report.costRows.map((row) => (
+                  <tr key={row.function}>
+                    <Td className="text-doc-ink">{row.function}</Td>
+                    <Td right>{row.fte}</Td>
+                    <Td right>{row.loadedCost}</Td>
+                    <Td>
+                      <ShareBar percent={row.sharePct} />
+                    </Td>
+                  </tr>
+                ))}
+              </DocTable>
             </div>
           </section>
         ) : null}
@@ -223,43 +227,35 @@ export function OffshoringReport({ archived }: OffshoringReportProps = {}) {
             <DocTitle>What can move</DocTitle>
             <Caption>{report.moveCaption}</Caption>
 
-            <div className="mt-8 grid gap-10 lg:grid-cols-[58fr_42fr]">
-              <div className="min-w-0">
-                <ColHead>Potential by function × level (0–100)</ColHead>
-                <HeatTable rows={report.heatRows} />
-                <Rollup>{report.heatRollup}</Rollup>
-                <HeatLegend />
-              </div>
-
-              <div className="min-w-0">
-                <ColHead>Largest movers — base case</ColHead>
-                <DocTable
-                  head={
-                    <tr>
-                      <Th>Role</Th>
-                      <Th>Band</Th>
-                      <Th right>Saving / yr</Th>
-                    </tr>
-                  }
-                >
-                  {report.movers.map((mover) => (
-                    <tr key={mover.id}>
-                      <Td>
-                        <span className="font-mono text-[11.5px] text-doc-ink">{mover.id}</span>
-                        <span className="text-doc-faint">
-                          {" "}
-                          · {mover.function} · {mover.level}
-                        </span>
-                      </Td>
-                      <Td>
-                        <Tag band={mover.band}>{mover.band}</Tag>
-                      </Td>
-                      <Td right>{mover.savingPerYear}</Td>
-                    </tr>
-                  ))}
-                </DocTable>
-                <Rollup>{report.moversRollup}</Rollup>
-              </div>
+            <div className="mt-8">
+              <DocTable
+                head={
+                  <tr>
+                    <Th>Function</Th>
+                    <Th right>Score</Th>
+                    <Th>Band</Th>
+                    <Th>Engagement model</Th>
+                    <Th right>Addressable</Th>
+                    <Th>Primary constraint</Th>
+                  </tr>
+                }
+              >
+                {report.moveRows.map((row) => (
+                  <tr key={row.function}>
+                    <Td className="text-doc-ink">{row.function}</Td>
+                    <Td right>{row.score}</Td>
+                    <Td>
+                      <Tag band={row.band}>{row.band}</Tag>
+                    </Td>
+                    <Td>
+                      <ModelTag model={row.engagementModel} />
+                    </Td>
+                    <Td right>{row.addressable}</Td>
+                    <Td muted>{row.primaryConstraint}</Td>
+                  </tr>
+                ))}
+              </DocTable>
+              <Rollup>{report.moveRollup}</Rollup>
             </div>
           </section>
         ) : null}
@@ -270,43 +266,80 @@ export function OffshoringReport({ archived }: OffshoringReportProps = {}) {
             <DocTitle>What it saves</DocTitle>
             <Caption>{report.saveCaption}</Caption>
 
-            <div className="mt-8 grid gap-10 lg:grid-cols-[58fr_42fr]">
-              <div className="min-w-0">
-                <ColHead>Year 1 bridge — base case</ColHead>
-                <BridgeChart bars={report.bridge} />
-              </div>
+            <div className="mt-7">
+              <DocTable
+                head={
+                  <tr>
+                    <Th>Scenario</Th>
+                    <Th>Basis</Th>
+                    <Th right>Addressable FTE</Th>
+                    <Th right>Annual run-rate</Th>
+                    <Th right>% of labour cost</Th>
+                    <Th right>3-yr net</Th>
+                    <Th right>Payback</Th>
+                  </tr>
+                }
+              >
+                {report.scenarios.map((scenario) => (
+                  <tr key={scenario.name} className={cn(scenario.headline && "bg-doc-gold-5")}>
+                    <Td className={cn(scenario.headline && "font-semibold text-doc-ink")}>
+                      {scenario.name}
+                    </Td>
+                    <Td muted>{scenario.basis}</Td>
+                    <Td right>{scenario.fte}</Td>
+                    <Td right>{scenario.runRate}</Td>
+                    <Td right>{scenario.pctOfLabour}</Td>
+                    <Td right>{scenario.net3}</Td>
+                    <Td right>{scenario.payback}</Td>
+                  </tr>
+                ))}
+              </DocTable>
+            </div>
 
+            <TwoCol>
               <div className="min-w-0">
-                <ColHead>Scenarios</ColHead>
+                <ColHead>Base-case saving by function</ColHead>
                 <DocTable
                   head={
                     <tr>
-                      <Th>Scenario</Th>
-                      <Th right>FTE</Th>
-                      <Th right>Run-rate</Th>
-                      <Th right>3-yr net</Th>
-                      <Th right>Payback</Th>
+                      <Th>Function</Th>
+                      <Th right>Run-rate saving</Th>
                     </tr>
                   }
                 >
-                  {report.scenarios.map((scenario) => (
-                    <tr
-                      key={scenario.name}
-                      className={cn(scenario.headline && "bg-doc-gold-5 font-semibold")}
-                    >
-                      <Td className={cn(scenario.headline && "font-semibold text-doc-ink")}>
-                        {scenario.name}
-                      </Td>
-                      <Td right>{scenario.fte}</Td>
-                      <Td right>{scenario.runRate}</Td>
-                      <Td right>{scenario.net3}</Td>
-                      <Td right>{scenario.payback}</Td>
+                  {report.savingByFunction.map((row) => (
+                    <tr key={row.function}>
+                      <Td className="text-doc-ink">{row.function}</Td>
+                      <Td right>{row.saving}</Td>
+                    </tr>
+                  ))}
+                </DocTable>
+              </div>
+
+              <div className="min-w-0">
+                <ColHead>Cash profile, base case</ColHead>
+                <DocTable
+                  head={
+                    <tr>
+                      <Th>Period</Th>
+                      <Th right>Gross saving</Th>
+                      <Th right>One-offs</Th>
+                      <Th right>Net</Th>
+                    </tr>
+                  }
+                >
+                  {report.cashProfile.map((row) => (
+                    <tr key={row.period}>
+                      <Td className="text-doc-ink">{row.period}</Td>
+                      <Td right>{row.grossSaving}</Td>
+                      <Td right>{row.oneOffs}</Td>
+                      <Td right>{row.net}</Td>
                     </tr>
                   ))}
                 </DocTable>
                 <Rollup>{report.scenariosRollup}</Rollup>
               </div>
-            </div>
+            </TwoCol>
           </section>
         ) : null}
 
@@ -316,59 +349,52 @@ export function OffshoringReport({ archived }: OffshoringReportProps = {}) {
             <DocTitle>How it happens</DocTitle>
             <Caption>{report.wavesCaption}</Caption>
 
-            <ul className="mt-8 grid gap-6 lg:grid-cols-3">
-              {report.waves.map((wave) => (
-                <li
-                  key={wave.n}
-                  className="flex flex-col rounded-[12px] border border-doc-sep bg-surface p-6"
+            <TwoCol>
+              <div className="min-w-0">
+                <ColHead>Waves</ColHead>
+                {report.waves.map((wave) => (
+                  <WaveCard
+                    key={wave.n}
+                    title={`${wave.n} · ${wave.title}`}
+                    when={`${wave.from} · ${wave.rolesMoving} roles · ${wave.loadedCost}`}
+                    figure={wave.runRate}
+                  >
+                    {wave.functions.join(", ")}
+                  </WaveCard>
+                ))}
+                <Rollup>{report.wavesSequence}</Rollup>
+              </div>
+
+              <div className="min-w-0">
+                <ColHead>Governance and gates</ColHead>
+                <DocTable
+                  head={
+                    <tr>
+                      <Th>Gate</Th>
+                      <Th>Test to pass</Th>
+                      <Th>Owner</Th>
+                    </tr>
+                  }
                 >
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.13em] text-doc-amber">
-                    {wave.n} · {wave.from}
-                  </p>
-                  <h3 className="mb-3 mt-1 font-serif text-[23px] font-semibold text-doc-ink">
-                    {wave.title}
-                  </h3>
-
-                  {[
-                    ["Roles moving", wave.rolesMoving],
-                    ["Loaded cost", wave.loadedCost],
-                    ["Run-rate saving", wave.runRate],
-                  ].map(([label, value]) => (
-                    <div
-                      key={label}
-                      className="flex justify-between border-t border-doc-hair py-1.5 text-[13.5px] text-doc-muted"
-                    >
-                      <span>{label}</span>
-                      <b className="font-semibold tabular-nums text-doc-ink">{value}</b>
-                    </div>
+                  {report.gates.map((gate) => (
+                    <tr key={gate.gate}>
+                      <Td className="text-doc-ink">{gate.gate}</Td>
+                      <Td muted>{gate.test}</Td>
+                      <Td>
+                        <Tag variant="owner">{gate.owner}</Tag>
+                      </Td>
+                    </tr>
                   ))}
+                </DocTable>
 
-                  <p className="mt-3 text-[12px] leading-[1.55] text-doc-muted">
-                    {wave.functions.join(" · ")}
+                <div className="mt-6">
+                  <ColHead>Retained onshore by design</ColHead>
+                  <p className="text-[11.5px] leading-[1.55] text-doc-muted">
+                    {report.retainedOnshore}
                   </p>
-
-                  <div className="mt-3.5 border-t border-doc-hair pt-3">
-                    <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.13em] text-doc-faint">
-                      Gates to start
-                    </p>
-                    <ul className="list-disc pl-4">
-                      {wave.gates.map((gate) => (
-                        <li
-                          key={gate}
-                          className="mb-1.5 text-[12px] leading-[1.5] text-doc-muted"
-                        >
-                          {gate}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </li>
-              ))}
-            </ul>
-
-            <p className="mt-6 max-w-[90ch] text-[13px] leading-[1.6] text-doc-muted">
-              {report.wavesSequence}
-            </p>
+                </div>
+              </div>
+            </TwoCol>
           </section>
         ) : null}
 
@@ -378,57 +404,43 @@ export function OffshoringReport({ archived }: OffshoringReportProps = {}) {
             <DocTitle>Risks &amp; next steps</DocTitle>
             <Caption>{report.risksCaption}</Caption>
 
-            <div className="mt-8 grid gap-10 lg:grid-cols-[54fr_46fr]">
+            <TwoCol>
               <div className="min-w-0">
                 <ColHead>Principal risks</ColHead>
-                <DocTable
-                  head={
-                    <tr>
-                      <Th width="38%">Risk</Th>
-                      <Th>Mitigation</Th>
-                      <Th>Owner</Th>
-                    </tr>
-                  }
-                >
-                  {report.risks.map((risk) => (
-                    <tr key={risk.risk}>
-                      <Td className="text-doc-ink">{risk.risk}</Td>
-                      <Td muted>{risk.mitigation}</Td>
-                      <Td>
-                        <Tag variant="owner">{risk.owner}</Tag>
-                      </Td>
-                    </tr>
-                  ))}
-                </DocTable>
+                {report.risks.map((risk) => (
+                  <RiskCard key={risk.risk} title={risk.risk}>
+                    <span className="font-semibold text-doc-body">{risk.impact} · </span>
+                    {risk.mitigation}
+                    <span className="text-doc-faint"> — {risk.owner}</span>
+                  </RiskCard>
+                ))}
               </div>
 
               <div className="min-w-0">
-                <ColHead>Next steps</ColHead>
+                <ColHead>First 30 days</ColHead>
                 <DocTable
                   head={
                     <tr>
-                      <Th width="26px">#</Th>
-                      <Th>Step</Th>
-                      <Th right width="150px">
-                        Owner · timing
-                      </Th>
+                      <Th>Action</Th>
+                      <Th>Owner</Th>
+                      <Th>Timing</Th>
                     </tr>
                   }
                 >
-                  {report.nextSteps.map((next, index) => (
-                    <tr key={next.step}>
-                      <Td className="pr-3 font-semibold tabular-nums text-doc-amber">
-                        {index + 1}
+                  {report.nextSteps.map((step) => (
+                    <tr key={step.step}>
+                      <Td className="text-doc-ink">{step.step}</Td>
+                      <Td>
+                        <Tag variant="owner">{step.owner}</Tag>
                       </Td>
-                      <Td className="text-doc-ink">{next.step}</Td>
-                      <Td right className="whitespace-nowrap text-[11.5px] text-doc-muted">
-                        {next.owner} · {next.timing}
-                      </Td>
+                      <Td muted>{step.timing}</Td>
                     </tr>
                   ))}
                 </DocTable>
               </div>
-            </div>
+            </TwoCol>
+
+            <Flag>{report.flag}</Flag>
           </section>
         ) : null}
 
@@ -481,6 +493,49 @@ export function OffshoringReport({ archived }: OffshoringReportProps = {}) {
                   </tr>
                 ))}
               </DocTable>
+            </DetailSection>
+
+            <DetailSection num="D3 · Data" title="Data tier and source">
+              <p className="text-[12px] leading-[1.6] text-doc-muted">{report.dataTier}</p>
+              <p className="mt-3 text-[12px] leading-[1.6] text-doc-muted">
+                {report.functionRollup}
+              </p>
+            </DetailSection>
+
+            <DetailSection num="D4 · Ceilings" title="Constraints applied as hard ceilings">
+              <ul className="flex flex-col gap-2">
+                {report.constraintCeilings.map((item) => (
+                  <li key={item} className="text-[12px] leading-[1.6] text-doc-muted">
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </DetailSection>
+
+            <DetailSection num="D5 · Data quality" title="Data quality items">
+              <ul className="flex flex-col gap-2">
+                {report.dataQuality.map((item) => (
+                  <li key={item} className="text-[12px] leading-[1.6] text-doc-muted">
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </DetailSection>
+
+            <DetailSection num="D6 · Exclusions" title="What is not modelled">
+              <ul className="flex flex-col gap-2">
+                {report.notModelled.map((item) => (
+                  <li key={item} className="text-[12px] leading-[1.6] text-doc-muted">
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </DetailSection>
+
+            <DetailSection num="D7 · Reconciliation" title="Reconciliation">
+              <p className="text-[12px] leading-[1.6] text-doc-muted">
+                {report.reconciliation}
+              </p>
             </DetailSection>
 
             <DetailSection num="Appendix A · Assumptions" title="Assumptions register">
