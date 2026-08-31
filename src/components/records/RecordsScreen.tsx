@@ -14,6 +14,7 @@ import {
   listRecords,
   subscribeToRecords,
 } from "@/lib/records";
+import { clearDemoRecords, isDemoRecord, seedDemoRecords } from "@/lib/demo/seed";
 import {
   getServerUiPrefs,
   getUiPrefs,
@@ -72,13 +73,27 @@ export function RecordsScreen() {
   const resultLabel =
     visible.length === 1 ? "1 assessment" : `${visible.length} assessments`;
 
+  const demoLoaded = useMemo(() => records.some(isDemoRecord), [records]);
+
   return (
     <div className="flex flex-col gap-6">
-      <header>
+      <header className="flex flex-wrap items-start justify-between gap-4">
+        <div>
         <Heading level={1}>Records</Heading>
         <Text tone="secondary" className="mt-2 max-w-[65ch]">
           Completed assessments are saved here. Open one to read its report again.
         </Text>
+        </div>
+        <div className="flex shrink-0 items-center gap-2">
+          {demoLoaded ? (
+            <Button variant="secondary" size="sm" onClick={() => clearDemoRecords()}>
+              Clear demo data
+            </Button>
+          ) : null}
+          <Button variant="secondary" size="sm" onClick={() => seedDemoRecords()}>
+            {demoLoaded ? "Reload demo data" : "Load demo data"}
+          </Button>
+        </div>
       </header>
 
       {records.length === 0 ? (
@@ -87,6 +102,11 @@ export function RecordsScreen() {
           title="No saved assessments yet"
           description="Run an assessment to the end and it will be saved here, so you can come back to the report later."
           action={<Button href="/agents">Browse agents</Button>}
+          secondaryAction={
+            <Button variant="secondary" onClick={() => seedDemoRecords()}>
+              Load demo data
+            </Button>
+          }
         />
       ) : (
         <>

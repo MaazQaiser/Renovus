@@ -27,8 +27,8 @@ const sourceSerif = Source_Serif_4({
 
 export const metadata: Metadata = {
   title: {
-    default: "Renovers",
-    template: "%s · Renovers",
+    default: "Renovus",
+    template: "%s · Renovus",
   },
   description: "Renovus AI Agent Platform for portfolio companies.",
 };

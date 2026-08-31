@@ -5,11 +5,16 @@ import { Button } from "@/components/primitives/Button";
 import {
   Caption,
   ColHead,
+  DetailSection,
   DocTable,
   DocTitle,
   FootLine,
   Kicker,
+  KpiCard,
+  KpiGrid,
   Rollup,
+  StatBlock,
+  StatRow,
   Tag,
   Td,
   Th,
@@ -56,6 +61,11 @@ export function SalesReport({ report: archived }: SalesReportProps = {}) {
       buildSalesReport(session, { assessedCompanyCount: assessedCompanyCount() }),
     [archived, session],
   );
+
+  const channelsInUse = report.partA.channels.filter(
+    (row) => row.status === "Using",
+  ).length;
+  const respondentCount = report.meta.respondents.length;
 
   const [tab, setTab] = useState<TabId>("snapshot");
 
@@ -130,14 +140,50 @@ export function SalesReport({ report: archived }: SalesReportProps = {}) {
             </button>
           );
         })}
+        <span className="ml-auto hidden shrink-0 items-center whitespace-nowrap text-[11px] text-doc-faint lg:flex">
+          ← → to navigate
+        </span>
       </div>
 
       <div className="px-6 py-10 md:px-10">
         {tab === "snapshot" ? (
           <section>
-            <Kicker>Part A · Interim snapshot</Kicker>
-            <DocTitle>What we captured</DocTitle>
-            <div className="mt-8 grid gap-10 lg:grid-cols-[54fr_46fr]">
+            <Kicker>Sales &amp; Marketing Baseline · Portfolio Operations</Kicker>
+            <DocTitle highlight={`${report.partC.measuredPct}%`}>
+              of what we captured is measured, not remembered
+            </DocTitle>
+            <Caption>
+              {report.meta.companyName} · {report.meta.date} · {respondentCount}{" "}
+              {respondentCount === 1 ? "respondent" : "respondents"} · question bank{" "}
+              {report.meta.qbankVersion}
+            </Caption>
+
+            <KpiGrid>
+              <KpiCard
+                lead
+                value={report.partC.measuredPct}
+                suffix="%"
+                label="Measured"
+                hint="Answers backed by a system or record."
+              />
+              <KpiCard
+                value={channelsInUse}
+                label="Channels in use"
+                hint={`Of ${report.partA.channels.length} mapped routes to market.`}
+              />
+              <KpiCard
+                value={report.partB.keyNumbers.length}
+                label="Key numbers"
+                hint="Figures captured against the question bank."
+              />
+              <KpiCard
+                value={report.partD.length}
+                label="Open questions"
+                hint="Outstanding before discovery can close."
+              />
+            </KpiGrid>
+
+            <div className="mt-10 grid gap-10 lg:grid-cols-[54fr_46fr]">
               <dl className="flex min-w-0 flex-col gap-3">
                 {report.partA.lines.map((line) => (
                   <div key={line.label} className="flex flex-wrap gap-x-4 border-b border-doc-hair pb-2.5">
@@ -170,11 +216,11 @@ export function SalesReport({ report: archived }: SalesReportProps = {}) {
 
         {tab === "baseline" ? (
           <section>
-            <Kicker>Part B · Baseline report</Kicker>
+            <Kicker>Baseline</Kicker>
             <DocTitle>How this company wins business today</DocTitle>
             <div className="mt-6 flex max-w-[70ch] flex-col gap-4">
               {report.partB.execSummary.map((paragraph) => (
-                <p key={paragraph} className="font-serif text-[19px] leading-[1.66] text-doc-body">
+                <p key={paragraph} className="font-serif text-[19px] leading-[1.66] text-doc-body md:text-[21px]">
                   {paragraph}
                 </p>
               ))}
@@ -196,8 +242,12 @@ export function SalesReport({ report: archived }: SalesReportProps = {}) {
 
         {tab === "gaps" ? (
           <section>
-            <Kicker>Part B3 – B4</Kicker>
+            <Kicker>Diagnosis</Kicker>
             <DocTitle>Gaps and key numbers</DocTitle>
+            <Caption>
+              Each gap is anchored to something the respondents said; nothing here is
+              inferred from outside the interview.
+            </Caption>
             <div className="mt-8">
               <ColHead>Gaps by used channel</ColHead>
               <DocTable
@@ -243,13 +293,17 @@ export function SalesReport({ report: archived }: SalesReportProps = {}) {
                   </tr>
                 ))}
               </DocTable>
+              <Rollup>
+                {report.partB.keyNumbers.length} figures captured · {report.partC.measuredPct}%
+                measured.
+              </Rollup>
             </div>
           </section>
         ) : null}
 
         {tab === "maps" ? (
           <section>
-            <Kicker>Part B5 – B6</Kicker>
+            <Kicker>Coverage</Kicker>
             <DocTitle>Channels and people</DocTitle>
             {report.partB.bet ? (
               <Caption>Their bet, in their words: &ldquo;{report.partB.bet}&rdquo;</Caption>
@@ -285,11 +339,18 @@ export function SalesReport({ report: archived }: SalesReportProps = {}) {
 
         {tab === "instrumentation" ? (
           <section>
-            <Kicker>Part C · Instrumentation read</Kicker>
+            <Kicker>Instrumentation</Kicker>
             <DocTitle highlight={`${report.partC.measuredPct}%`}>
               of the quantitative answers are measured
             </DocTitle>
             <Caption>{report.partC.verdict}</Caption>
+
+            <StatRow>
+              <StatBlock value={report.partC.taggedCount} label="Tagged answers" />
+              <StatBlock value={`${report.partC.measuredPct}%`} label="Measured" />
+              <StatBlock value={report.partD.length} label="Open questions" />
+            </StatRow>
+
             <div className="mt-8 max-w-[720px]">
               <DocTable head={<tr><Th>Confidence</Th><Th right>Count</Th><Th right>Share</Th><Th>What it means</Th></tr>}>
                 {report.partC.rows.map((row) => (
@@ -310,7 +371,7 @@ export function SalesReport({ report: archived }: SalesReportProps = {}) {
 
         {tab === "open" ? (
           <section>
-            <Kicker>Part D</Kicker>
+            <Kicker>Outstanding</Kicker>
             <DocTitle>Open questions</DocTitle>
             {report.partD.length === 0 ? (
               <Caption>Nothing outstanding — every answer was measured and attributed.</Caption>
@@ -328,7 +389,7 @@ export function SalesReport({ report: archived }: SalesReportProps = {}) {
 
         {tab === "opportunities" ? (
           <section>
-            <Kicker>Part E</Kicker>
+            <Kicker>Where the value sits</Kicker>
             <DocTitle>Preliminary opportunities &amp; AI candidates</DocTitle>
             <Caption>{report.partE.readinessNote}</Caption>
 
@@ -367,13 +428,18 @@ export function SalesReport({ report: archived }: SalesReportProps = {}) {
                   </tr>
                 ))}
               </DocTable>
+              <Rollup>
+                {report.partE.candidates.filter((row) => row.selected).length} of{" "}
+                {report.partE.candidates.length} candidates carry evidence from this
+                assessment.
+              </Rollup>
             </div>
           </section>
         ) : null}
 
         {tab === "portfolio" ? (
           <section>
-            <Kicker>Part F</Kicker>
+            <Kicker>Portfolio</Kicker>
             <DocTitle>Portfolio context</DocTitle>
             <Caption>{report.partF.note}</Caption>
             <div className="mt-8 max-w-[820px]">
@@ -393,8 +459,9 @@ export function SalesReport({ report: archived }: SalesReportProps = {}) {
         {tab === "appendix" ? (
           <section>
             <Kicker>Appendix</Kicker>
-            <DocTitle>Answer log</DocTitle>
-            <div className="mt-8">
+            <DocTitle>Everything behind the numbers</DocTitle>
+
+            <DetailSection num="Appendix A · Answer log" title="Answer log">
               <DocTable
                 minWidth={760}
                 head={<tr><Th>QID</Th><Th>Question</Th><Th>Respondent</Th><Th>Answer</Th><Th>Conf.</Th><Th>→WHO</Th></tr>}
@@ -410,12 +477,11 @@ export function SalesReport({ report: archived }: SalesReportProps = {}) {
                   </tr>
                 ))}
               </DocTable>
-            </div>
+            </DetailSection>
 
             {report.appendixB.length > 0 ? (
-              <div className="mt-10">
-                <ColHead>Handoff notes</ColHead>
-                <DocTable head={<tr><Th>Topic</Th><Th>Quote</Th><Th>Suggested agent</Th></tr>}>
+              <DetailSection num="Appendix B · Handoffs" title="Handoff notes">
+                <DocTable minWidth={520} head={<tr><Th>Topic</Th><Th>Quote</Th><Th>Suggested agent</Th></tr>}>
                   {report.appendixB.map((row) => (
                     <tr key={row.topic}>
                       <Td className="text-doc-ink">{row.topic}</Td>
@@ -424,7 +490,7 @@ export function SalesReport({ report: archived }: SalesReportProps = {}) {
                     </tr>
                   ))}
                 </DocTable>
-              </div>
+              </DetailSection>
             ) : null}
 
             <Rollup>Question bank {report.meta.qbankVersion}</Rollup>

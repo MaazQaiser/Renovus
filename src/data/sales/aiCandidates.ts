@@ -51,8 +51,9 @@ export const AI_CANDIDATES: AiCandidate[] = [
     label: "RFP / tender discovery agent",
     triggerText: "Portal watching is manual, or opportunities are learned about late",
     triggers: [
-      whenAnswerMatches("E3", /late|manual|client|miss|watch/i),
-      whenUnmeasured("M-RFP.1"),
+      whenAnswerMatches("E3a", /late|manual|client|ad hoc|watch/i),
+      whenUnmeasured("M-RFP.1a"),
+      whenUnmeasured("M-RFP.1b"),
       whenChannel("rfp", "using"),
     ],
   },
@@ -60,19 +61,25 @@ export const AI_CANDIDATES: AiCandidate[] = [
     id: "bid-no-bid",
     label: "Bid / no-bid scoring",
     triggerText: "Low win rate, or no consistent qualification rule",
-    triggers: [whenUnmeasured("M-RFP.6"), whenAnswerMatches("M-RFP.5", /gut|everything|no rule/i)],
+    triggers: [
+      whenUnmeasured("M-RFP.6b"),
+      whenAnswerMatches("M-RFP.3", /gut|carry on|already invested/i),
+    ],
   },
   {
     id: "proposal-drafting",
     label: "Proposal drafting assistant",
     triggerText: "Significant hours per proposal, or reuse is copy-paste",
-    triggers: [whenAnswerMatches("M-RFP.4", /\d/), whenAnswerMatches("T2", /proposal/i)],
+    triggers: [whenAnswerMatches("M-RFP.4a", /\d/), whenAnswerMatches("T2", /proposal/i)],
   },
   {
     id: "proposal-library",
     label: "Reusable answer library",
     triggerText: "Content is rewritten each time",
-    triggers: [whenAnswerMatches("M-RFP.3", /rewrite|scratch|copy/i)],
+    triggers: [
+      whenAnswerMatches("M-RFP.5a", /fresh/i),
+      whenAnswerMatches("M-RFP.5b", /nowhere|rebuilt|scattered|ask one/i),
+    ],
   },
   {
     id: "lead-research",
@@ -99,7 +106,7 @@ export const AI_CANDIDATES: AiCandidate[] = [
     id: "pipeline-hygiene",
     label: "Pipeline hygiene agent",
     triggerText: "Pipeline data is stale or incomplete",
-    triggers: [whenUnmeasured("M-OUT.4"), whenUnmeasured("M-REL.4")],
+    triggers: [whenUnmeasured("M-OUT.4"), whenUnmeasured("M-REL.4a")],
   },
   {
     id: "referral-prompting",
@@ -114,7 +121,11 @@ export const AI_CANDIDATES: AiCandidate[] = [
     id: "account-expansion",
     label: "Account expansion signals",
     triggerText: "Existing-client growth is unstructured",
-    triggers: [whenChannel("expansion", "want"), whenAnswerMatches("M-REL.3", /ad hoc|no plan/i)],
+    triggers: [
+      whenChannel("expansion", "want"),
+      whenAnswerMatches("M-REL.3a", /informal|no reviews|loose/i),
+      whenAnswerMatches("M-REL.3b", /rarely|client asks/i),
+    ],
   },
   {
     id: "key-person-transfer",
@@ -126,13 +137,16 @@ export const AI_CANDIDATES: AiCandidate[] = [
     id: "content-generation",
     label: "Content generation",
     triggerText: "Content or SEO is wanted but not resourced",
-    triggers: [whenChannel("content", "want"), whenUnmeasured("MK3")],
+    triggers: [whenChannel("content", "want"), whenUnmeasured("MK3a")],
   },
   {
     id: "marketing-attribution",
     label: "Attribution and reporting",
     triggerText: "Marketing spend cannot be tied to pipeline",
-    triggers: [whenUnmeasured("MK6"), whenAnswerMatches("MK5", /don't know|can't tell|no idea/i)],
+    triggers: [
+      whenUnmeasured("MK6"),
+      whenAnswerMatches("MK2", /nothing|can't trace|no idea|none/i),
+    ],
   },
   {
     id: "capacity-modelling",

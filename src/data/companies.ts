@@ -77,6 +77,18 @@ export const companies: Company[] = [
     revenueRange: "$25M – $50M",
     investmentYear: 2023,
   },
+  {
+    id: "gtm",
+    name: "GTM",
+    shortName: "GTM",
+    initials: "GT",
+    sector: "Professional Services",
+    description: "Go-to-market strategy and revenue operations services.",
+    headquarters: "Wayne, PA",
+    employeeCount: 140,
+    revenueRange: "$25M – $50M",
+    investmentYear: 2024,
+  },
 ];
 
 export function getCompanyById(id: string): Company | undefined {

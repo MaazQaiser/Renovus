@@ -168,12 +168,14 @@ export function buildInterimSnapshot(session: SalesAssessmentSession): InterimSn
   };
 
   if (session.companyName) lines.push({ label: "Company", value: session.companyName });
-  add("What they sell", "B1");
-  add("Average deal size", "B2");
+  add("What they sell", "B1a");
+  add("Who buys it", "B1b");
+  add("Average deal size", "B2a");
   add("Closing time", "B3");
-  add("Revenue", "B4");
+  add("Revenue", "B4a");
+  add("Target", "B4c");
   add("How clients are found", "E1");
-  add("Who originates", "E4");
+  add("Who originates", "E4a");
   add("CRM", "E5");
   add("Key-person risk", "E6");
   add("Who sells", "T1");
@@ -315,12 +317,12 @@ function buildExecSummary(session: SalesAssessmentSession, pct: number): string[
   const classification = session.classificationOverride ?? session.classification;
   const out: string[] = [];
 
-  const b1 = answerText(session, "B1");
-  const b4 = answerText(session, "B4");
+  const b1 = answerText(session, "B1a");
+  const b4 = answerText(session, "B4a");
   if (b1) out.push(`${company} sells ${lower(b1)}${b4 ? `, on revenue of ${lower(b4)}` : ""}.`);
 
   if (classification) {
-    const e4 = answerText(session, "E4");
+    const e4 = answerText(session, "E4a");
     out.push(
       `On the evidence this is a ${classificationLabel(classification).toLowerCase()} business${e4 ? `, with new business originated by ${lower(e4)}` : ""}.`,
     );
@@ -353,7 +355,7 @@ function buildEngineNarrative(session: SalesAssessmentSession): string[] {
   const out: string[] = [];
   for (const [label, qid] of [
     ["Lead generation", "E2"],
-    ["RFP discovery", "E3"],
+    ["RFP discovery", "E3a"],
     ["CRM", "E5"],
     ["Who sells", "T1"],
     ["Where time goes", "T2"],
@@ -533,7 +535,7 @@ function buildPortfolio(
   assessedCompanyCount: number,
 ): SalesReportData["partF"] {
   const values: Record<(typeof PORTFOLIO_DIMENSIONS)[number], string | undefined> = {
-    "Deal size": answerText(session, "B2"),
+    "Deal size": answerText(session, "B2a"),
     "Cycle length": answerText(session, "B3"),
     "Channel breadth": session.channelMap
       ? `${session.channelMap.entries.filter((e) => e.status === "using").length} of 10 channels in use`
