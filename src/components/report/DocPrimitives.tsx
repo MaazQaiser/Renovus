@@ -118,7 +118,7 @@ export function Th({
       style={width ? { width } : undefined}
       className={cn(
         "border-b border-doc-ink pb-2 text-[10.5px] font-semibold uppercase tracking-[0.1em] text-doc-faint",
-        right ? "pl-3 pr-0 text-right" : "pr-2.5 text-left",
+        right ? "pl-3 pr-3 text-right last:pr-0" : "pr-2.5 text-left",
       )}
     >
       {children}
@@ -141,7 +141,7 @@ export function Td({
     <td
       className={cn(
         "border-b border-doc-hair py-2.5 align-top text-doc-body",
-        right ? "pl-3 pr-0 text-right tabular-nums" : "pr-3",
+        right ? "pl-3 pr-3 text-right tabular-nums last:pr-0" : "pr-3",
         muted && "text-[12px] text-doc-muted",
         className,
       )}
@@ -164,5 +164,106 @@ export function FootLine({
       <span>{confidentiality}</span>
       <span>Prepared by {preparedBy}</span>
     </div>
+  );
+}
+
+/** KPI card row — the headline figures carried at the top of a lead panel. */
+export function KpiGrid({ children }: { children: React.ReactNode }) {
+  return <ul className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{children}</ul>;
+}
+
+export function KpiCard({
+  value,
+  suffix,
+  label,
+  hint,
+  lead,
+}: {
+  value: string | number;
+  suffix?: string;
+  label: string;
+  hint: string;
+  lead?: boolean;
+}) {
+  return (
+    <li
+      className={cn(
+        "flex min-h-[138px] flex-col rounded-[10px] border p-5",
+        lead ? "border-doc-lead-border bg-doc-gold-5" : "border-doc-sep bg-surface",
+      )}
+    >
+      <p className="text-[38px] font-semibold leading-[1.1] tracking-[-0.01em] tabular-nums text-doc-ink">
+        {value}
+        {suffix ? (
+          <span className="ml-1 text-[17px] font-medium text-doc-faint">{suffix}</span>
+        ) : null}
+      </p>
+      <p className="mt-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-doc-faint">
+        {label}
+      </p>
+      <p className="mt-1.5 text-[12px] text-doc-muted">{hint}</p>
+    </li>
+  );
+}
+
+/** Inline run of large figures, as on the cost panel. */
+export function StatRow({ children }: { children: React.ReactNode }) {
+  return <div className="mt-7 flex flex-wrap gap-x-14 gap-y-5">{children}</div>;
+}
+
+export function StatBlock({ value, label }: { value: string | number; label: string }) {
+  return (
+    <div>
+      <p className="text-[30px] font-semibold tracking-[-0.01em] tabular-nums text-doc-ink">
+        {value}
+      </p>
+      <p className="mt-0.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-doc-faint">
+        {label}
+      </p>
+    </div>
+  );
+}
+
+/** Numbered appendix/detail block with the amber rubric above the heading. */
+export function DetailSection({
+  num,
+  title,
+  children,
+}: {
+  num: string;
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="border-b border-doc-hair py-8 last:border-b-0">
+      <p className="mb-2 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-doc-amber">
+        {num}
+      </p>
+      <h3 className="mb-3.5 font-serif text-[23px] font-semibold text-doc-ink">{title}</h3>
+      {children}
+    </section>
+  );
+}
+
+/** Editorial card used for roadmap/wave-style panels. */
+export function DocCard({
+  eyebrow,
+  title,
+  children,
+}: {
+  eyebrow?: string;
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <li className="flex flex-col rounded-[12px] border border-doc-sep bg-surface p-6">
+      {eyebrow ? (
+        <p className="text-[11px] font-semibold uppercase tracking-[0.13em] text-doc-amber">
+          {eyebrow}
+        </p>
+      ) : null}
+      <h3 className="mb-3 mt-1 font-serif text-[23px] font-semibold text-doc-ink">{title}</h3>
+      {children}
+    </li>
   );
 }
