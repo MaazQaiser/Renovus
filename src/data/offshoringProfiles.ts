@@ -24,8 +24,10 @@ export interface OffshoringFunctionSlot {
   addressableFte: number;
   /** Junior / Mid / Senior / Lead density scores. `null` renders as no cell. */
   heat: [number | null, number | null, number | null, number | null];
-  /** Role-id prefix for the mover table, e.g. "SUP" → SUP-073. */
+  /** Role-id prefix, e.g. "SUP" → SUP-073. */
   code: string;
+  /** The binding limit on moving this function — last column of "What can move". */
+  primaryConstraint: string;
 }
 
 export type SlotKey = "retainA" | "highA" | "retainB" | "highB" | "midA" | "midB";
@@ -76,12 +78,12 @@ const collegies: OffshoringProfile = {
   namedContacts: { count: 3, slot: "highA", accounts: "top five institutional accounts" },
   managerSpan: "1:14",
   slots: {
-    retainA: { costM: 5.9, fte: 46, addressableM: 0, addressableFte: 0, heat: [28, null, 24, 9], code: "INS" },
-    highA: { costM: 4.8, fte: 42, addressableM: 3.4, addressableFte: 18, heat: [78, 74, 62, 47], code: "ENR" },
-    retainB: { costM: 3.4, fte: 28, addressableM: 0.4, addressableFte: 3, heat: [43, 48, 41, 34], code: "INF" },
-    highB: { costM: 3.1, fte: 31, addressableM: 2.6, addressableFte: 16, heat: [80, 73, 69, 59], code: "SUP" },
-    midA: { costM: 2.6, fte: 24, addressableM: 1.1, addressableFte: 8, heat: [74, 66, 54, 38], code: "FIN" },
-    midB: { costM: 2.2, fte: 19, addressableM: 0.4, addressableFte: 3, heat: [null, 64, 55, 40], code: "ITA" },
+    retainA: { costM: 5.9, fte: 46, addressableM: 0, addressableFte: 0, heat: [28, null, 24, 9], code: "INS", primaryConstraint: "Accreditation-capped faculty" },
+    highA: { costM: 4.8, fte: 42, addressableM: 3.4, addressableFte: 18, heat: [78, 74, 62, 47], code: "ENR", primaryConstraint: "FERPA on student records" },
+    retainB: { costM: 3.4, fte: 28, addressableM: 0.4, addressableFte: 3, heat: [43, 48, 41, 34], code: "INF", primaryConstraint: "On-call and physical access" },
+    highB: { costM: 3.1, fte: 31, addressableM: 2.6, addressableFte: 16, heat: [80, 73, 69, 59], code: "SUP", primaryConstraint: "Student PII in ticket bodies" },
+    midA: { costM: 2.6, fte: 24, addressableM: 1.1, addressableFte: 8, heat: [74, 66, 54, 38], code: "FIN", primaryConstraint: "Close calendar and controls" },
+    midB: { costM: 2.2, fte: 19, addressableM: 0.4, addressableFte: 3, heat: [null, 64, 55, 40], code: "ITA", primaryConstraint: "SIS vendor consent" },
   },
 };
 
@@ -102,12 +104,12 @@ const xfact: OffshoringProfile = {
   namedContacts: { count: 5, slot: "highB", accounts: "three largest agency contracts" },
   managerSpan: "1:11",
   slots: {
-    retainA: { costM: 12.4, fte: 78, addressableM: 0, addressableFte: 0, heat: [31, 26, 19, 8], code: "ENG" },
-    highA: { costM: 8.1, fte: 61, addressableM: 6.2, addressableFte: 30, heat: [86, 81, 70, 52], code: "QAT" },
-    retainB: { costM: 5.2, fte: 34, addressableM: 0.6, addressableFte: 3, heat: [40, 44, 36, 27], code: "DVO" },
-    highB: { costM: 6.6, fte: 58, addressableM: 5.4, addressableFte: 32, heat: [83, 78, 71, 61], code: "HLP" },
-    midA: { costM: 4.9, fte: 38, addressableM: 2.4, addressableFte: 14, heat: [76, 69, 58, 41], code: "DAT" },
-    midB: { costM: 3.4, fte: 27, addressableM: 0.9, addressableFte: 5, heat: [null, 62, 51, 36], code: "FIN" },
+    retainA: { costM: 12.4, fte: 78, addressableM: 0, addressableFte: 0, heat: [31, 26, 19, 8], code: "ENG", primaryConstraint: "Cleared personnel only" },
+    highA: { costM: 8.1, fte: 61, addressableM: 6.2, addressableFte: 30, heat: [86, 81, 70, 52], code: "QAT", primaryConstraint: "None material" },
+    retainB: { costM: 5.2, fte: 34, addressableM: 0.6, addressableFte: 3, heat: [40, 44, 36, 27], code: "DVO", primaryConstraint: "Production access controls" },
+    highB: { costM: 6.6, fte: 58, addressableM: 5.4, addressableFte: 32, heat: [83, 78, 71, 61], code: "HLP", primaryConstraint: "Agency-named contacts" },
+    midA: { costM: 4.9, fte: 38, addressableM: 2.4, addressableFte: 14, heat: [76, 69, 58, 41], code: "DAT", primaryConstraint: "Data residency" },
+    midB: { costM: 3.4, fte: 27, addressableM: 0.9, addressableFte: 5, heat: [null, 62, 51, 36], code: "FIN", primaryConstraint: "Close calendar and controls" },
   },
 };
 
@@ -128,12 +130,12 @@ const dataserve: OffshoringProfile = {
   namedContacts: { count: 2, slot: "highA", accounts: "two anchor managed-services clients" },
   managerSpan: "1:16",
   slots: {
-    retainA: { costM: 4.1, fte: 28, addressableM: 0, addressableFte: 0, heat: [34, 29, 22, 11], code: "ENG" },
-    highA: { costM: 6.3, fte: 49, addressableM: 5.1, addressableFte: 24, heat: [88, 84, 74, 58], code: "NOC" },
-    retainB: { costM: 2.4, fte: 16, addressableM: 0.3, addressableFte: 1, heat: [42, 46, 38, 29], code: "CLD" },
-    highB: { costM: 5.1, fte: 44, addressableM: 4.3, addressableFte: 24, heat: [85, 80, 72, 63], code: "SUP" },
-    midA: { costM: 3.2, fte: 26, addressableM: 1.7, addressableFte: 10, heat: [79, 71, 59, 44], code: "FIN" },
-    midB: { costM: 2.6, fte: 21, addressableM: 0.8, addressableFte: 3, heat: [null, 66, 57, 42], code: "DAT" },
+    retainA: { costM: 4.1, fte: 28, addressableM: 0, addressableFte: 0, heat: [34, 29, 22, 11], code: "ENG", primaryConstraint: "Client architecture ownership" },
+    highA: { costM: 6.3, fte: 49, addressableM: 5.1, addressableFte: 24, heat: [88, 84, 74, 58], code: "NOC", primaryConstraint: "Data residency on two accounts" },
+    retainB: { costM: 2.4, fte: 16, addressableM: 0.3, addressableFte: 1, heat: [42, 46, 38, 29], code: "CLD", primaryConstraint: "Production access controls" },
+    highB: { costM: 5.1, fte: 44, addressableM: 4.3, addressableFte: 24, heat: [85, 80, 72, 63], code: "SUP", primaryConstraint: "None material" },
+    midA: { costM: 3.2, fte: 26, addressableM: 1.7, addressableFte: 10, heat: [79, 71, 59, 44], code: "FIN", primaryConstraint: "Close calendar and controls" },
+    midB: { costM: 2.6, fte: 21, addressableM: 0.8, addressableFte: 3, heat: [null, 66, 57, 42], code: "DAT", primaryConstraint: "Client data agreements" },
   },
 };
 
@@ -154,12 +156,12 @@ const behaviourFramework: OffshoringProfile = {
   namedContacts: { count: 4, slot: "highA", accounts: "four largest payer relationships" },
   managerSpan: "1:9",
   slots: {
-    retainA: { costM: 21.6, fte: 174, addressableM: 0, addressableFte: 0, heat: [18, 14, 11, 6], code: "CLN" },
-    highA: { costM: 9.4, fte: 71, addressableM: 7.1, addressableFte: 30, heat: [84, 79, 66, 48], code: "RCM" },
-    retainB: { costM: 6.1, fte: 39, addressableM: 0.5, addressableFte: 2, heat: [38, 41, 33, 24], code: "ITA" },
-    highB: { costM: 7.2, fte: 62, addressableM: 5.8, addressableFte: 32, heat: [81, 76, 68, 57], code: "PTS" },
-    midA: { costM: 4.3, fte: 27, addressableM: 2.1, addressableFte: 11, heat: [72, 64, 52, 37], code: "CRD" },
-    midB: { costM: 2.4, fte: 15, addressableM: 0.6, addressableFte: 3, heat: [null, 61, 49, 34], code: "FIN" },
+    retainA: { costM: 21.6, fte: 174, addressableM: 0, addressableFte: 0, heat: [18, 14, 11, 6], code: "CLN", primaryConstraint: "Clinical licensure" },
+    highA: { costM: 9.4, fte: 71, addressableM: 7.1, addressableFte: 30, heat: [84, 79, 66, 48], code: "RCM", primaryConstraint: "Payer credentialing" },
+    retainB: { costM: 6.1, fte: 39, addressableM: 0.5, addressableFte: 2, heat: [38, 41, 33, 24], code: "ITA", primaryConstraint: "PHI system access" },
+    highB: { costM: 7.2, fte: 62, addressableM: 5.8, addressableFte: 32, heat: [81, 76, 68, 57], code: "PTS", primaryConstraint: "PHI in call handling" },
+    midA: { costM: 4.3, fte: 27, addressableM: 2.1, addressableFte: 11, heat: [72, 64, 52, 37], code: "CRD", primaryConstraint: "State-by-state rules" },
+    midB: { costM: 2.4, fte: 15, addressableM: 0.6, addressableFte: 3, heat: [null, 61, 49, 34], code: "FIN", primaryConstraint: "Close calendar and controls" },
   },
 };
 
@@ -180,12 +182,12 @@ const eosis: OffshoringProfile = {
   namedContacts: { count: 2, slot: "highA", accounts: "two retained advisory accounts" },
   managerSpan: "1:7",
   slots: {
-    retainA: { costM: 6.8, fte: 41, addressableM: 0, addressableFte: 0, heat: [24, 19, 14, 7], code: "ADV" },
-    highA: { costM: 3.1, fte: 26, addressableM: 2.2, addressableFte: 11, heat: [77, 71, 58, 42], code: "CLS" },
-    retainB: { costM: 2.9, fte: 18, addressableM: 0.2, addressableFte: 1, heat: [37, 40, 32, 23], code: "SAM" },
-    highB: { costM: 2.4, fte: 21, addressableM: 1.8, addressableFte: 12, heat: [80, 74, 64, 51], code: "FIN" },
-    midA: { costM: 1.7, fte: 14, addressableM: 0.7, addressableFte: 4, heat: [71, 63, 51, 36], code: "HRO" },
-    midB: { costM: 1.3, fte: 12, addressableM: 0.3, addressableFte: 1, heat: [null, 59, 47, 33], code: "DEL" },
+    retainA: { costM: 6.8, fte: 41, addressableM: 0, addressableFte: 0, heat: [24, 19, 14, 7], code: "ADV", primaryConstraint: "Partner-owned relationships" },
+    highA: { costM: 3.1, fte: 26, addressableM: 2.2, addressableFte: 11, heat: [77, 71, 58, 42], code: "CLS", primaryConstraint: "Named account contacts" },
+    retainB: { costM: 2.9, fte: 18, addressableM: 0.2, addressableFte: 1, heat: [37, 40, 32, 23], code: "SAM", primaryConstraint: "Client-facing by design" },
+    highB: { costM: 2.4, fte: 21, addressableM: 1.8, addressableFte: 12, heat: [80, 74, 64, 51], code: "FIN", primaryConstraint: "None material" },
+    midA: { costM: 1.7, fte: 14, addressableM: 0.7, addressableFte: 4, heat: [71, 63, 51, 36], code: "HRO", primaryConstraint: "Employee data residency" },
+    midB: { costM: 1.3, fte: 12, addressableM: 0.3, addressableFte: 1, heat: [null, 59, 47, 33], code: "DEL", primaryConstraint: "Client consent per SOW" },
   },
 };
 

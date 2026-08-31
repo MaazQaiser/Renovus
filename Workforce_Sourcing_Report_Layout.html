@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Workforce Sourcing Assessment — Renovus Capital</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',Helvetica,Arial,sans-serif;color:#1D252D;background:#ffffff;-webkit-font-smoothing:antialiased}
+header{height:64px;border-bottom:1px solid #E4E7EA;padding:0 32px}
+.hwrap{height:64px;position:relative}
+.wordmark{font-size:19px;font-weight:700;letter-spacing:-0.4px;padding-top:20px;display:inline-block}
+.wordmark span{color:#8A6400}
+.hmeta{position:absolute;right:0;top:24px;font-size:11px;color:#8A94A0;letter-spacing:.06em;text-transform:uppercase;font-weight:600}
+nav{height:48px;border-bottom:1px solid #E4E7EA;padding:0 32px;background:#FAFBFC}
+nav button{background:none;border:none;font-family:inherit;font-size:12.5px;font-weight:600;color:#8A94A0;height:47px;padding:0 16px;cursor:pointer;letter-spacing:-0.1px;border-bottom:3px solid transparent}
+nav button.on{color:#1D252D;border-bottom-color:#FCB900}
+main{height:calc(100vh - 112px);overflow:hidden;padding:26px 32px 20px 32px}
+.tab{display:none;height:100%}
+.tab.on{display:block}
+h1{font-size:23px;font-weight:700;letter-spacing:-0.5px;margin-bottom:4px}
+.sub{font-size:12.5px;color:#8A94A0;margin-bottom:18px;font-weight:500}
+.lede{font-size:14.5px;line-height:1.62;max-width:1010px;margin-bottom:20px;color:#2C3540}
+.tiles{width:100%;border-spacing:0}
+.tiles td{width:25%;padding-right:14px;vertical-align:top}
+.tile{background:#FAFBFC;border:1px solid #E4E7EA;border-top:3px solid #FCB900;padding:15px 16px 16px 16px}
+.tval{font-size:30px;font-weight:700;letter-spacing:-1.1px;line-height:1.05}
+.tlab{font-size:10.5px;color:#8A94A0;text-transform:uppercase;letter-spacing:.07em;font-weight:600;margin-top:7px}
+.tnote{font-size:11px;color:#5A6570;margin-top:5px;line-height:1.35}
+table.d{width:100%;border-spacing:0;font-size:12px}
+table.d th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:#8A94A0;font-weight:600;padding:0 10px 7px 0;border-bottom:1px solid #E4E7EA}
+table.d td{padding:8px 10px 8px 0;border-bottom:1px solid #F0F2F4}
+table.d td.n{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+table.d th.n{text-align:right}
+tr.hl td{background:#FFF8E4;font-weight:700}
+.pill{display:inline-block;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:3px 7px;border-radius:2px}
+.pH{background:#FCB900;color:#1D252D}
+.pM{background:#FFE9AE;color:#8A6400}
+.pL{background:#EEF0F2;color:#8A94A0}
+.bar{height:22px;background:#FCB900;display:inline-block;vertical-align:middle}
+.barB{height:22px;background:#E4E7EA;display:inline-block;vertical-align:middle}
+.cap{font-size:12.5px;color:#5A6570;margin-top:16px;line-height:1.55;max-width:960px}
+.two{width:100%;border-spacing:0}
+.two td{vertical-align:top;width:50%}
+.two td:first-child{padding-right:26px}
+h3{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#8A94A0;font-weight:600;margin-bottom:10px}
+.wave{border:1px solid #E4E7EA;border-left:4px solid #FCB900;padding:13px 15px;margin-bottom:11px}
+.wave b{font-size:13.5px}
+.wave p{font-size:11.5px;color:#5A6570;margin-top:5px;line-height:1.5}
+.wnum{float:right;font-size:17px;font-weight:700;letter-spacing:-0.5px}
+.risk{border:1px solid #E4E7EA;padding:12px 14px;margin-bottom:9px}
+.risk b{font-size:12.5px}
+.risk p{font-size:11.5px;color:#5A6570;margin-top:4px;line-height:1.5}
+#t7{overflow-y:auto}
+#t7 h2{font-size:14px;margin:22px 0 10px 0;letter-spacing:-0.2px}
+#t7 h2:first-child{margin-top:0}
+#t7 p{font-size:12px;color:#5A6570;line-height:1.6;margin-bottom:10px;max-width:1000px}
+.flag{background:#FFF8E4;border-left:3px solid #FCB900;padding:11px 14px;font-size:11.5px;line-height:1.55;color:#3A4450;margin-bottom:14px}
+@media print{main{height:auto;overflow:visible}.tab{display:block!important;page-break-after:always;height:auto;margin-bottom:40px}nav{display:none}}
+</style>
+</head>
+<body>
+<header><div class="hwrap"><div class="wordmark">RENOVUS<span>.</span></div><div class="hmeta">Workforce Sourcing Assessment · Portco Confidential</div></div></header>
+<nav>
+<button onclick="go(1)" id="b1">The answer</button>
+<button onclick="go(2)" id="b2">Where the cost sits</button>
+<button onclick="go(3)" id="b3">What can move</button>
+<button onclick="go(4)" id="b4">What it saves</button>
+<button onclick="go(5)" id="b5">How it happens</button>
+<button onclick="go(6)" id="b6">Risks &amp; next steps</button>
+<button onclick="go(7)" id="b7">Detail</button>
+</nav>
+<main>
+
+<div class="tab" id="t1">
+<h1>The answer</h1>
+<div class="sub">Base case · 408 employees · $42.9M fully-burdened annual labour cost</div>
+<div class="lede">We assessed all 408 roles across the portco's 25 departments against five outsourceability dimensions. About 160 roles, carrying $15.5M of burdened cost, can credibly move to a sourcing partner — concentrated in IT applications, infrastructure operations, learning content production and marketing production. At the deal team's 50–60% offshore cost assumption that is a run-rate saving of $6.76M a year, or 15.8% of total labour cost, with roughly $4.5M of one-off transition cost and payback inside 14 months. We would start with the learning-content and development layers, where the work is codified and no student data is touched. The binding constraint is FERPA: it holds the 113-person enrollment organisation onshore and caps the support centre, so the largest headcount pool is not the largest opportunity.</div>
+<table class="tiles"><tr>
+<td><div class="tile"><div class="tval">$6.76M</div><div class="tlab">Annual run-rate saving</div><div class="tnote">Base case · 15.8% of labour cost</div></div></td>
+<td><div class="tile"><div class="tval">160</div><div class="tlab">Addressable FTE</div><div class="tnote">39% of headcount · $15.5M cost</div></div></td>
+<td><div class="tile"><div class="tval">$12.0M</div><div class="tlab">3-year cumulative, net</div><div class="tnote">After $4.5M transition one-offs</div></div></td>
+<td><div class="tile"><div class="tval">14 mo</div><div class="tlab">Payback</div><div class="tnote">6-month ramp per wave</div></div></td>
+</tr></table>
+<div class="cap"><b>Conservative case: $4.19M a year.</b> High-band roles only, no credit for the medium band. Shown alongside the base case throughout — a single number invites distrust. EBITDA and enterprise-value impact are not modelled: the deal team did not supply current EBITDA or an exit multiple, and we do not invent them.</div>
+</div>
+
+<div class="tab" id="t2">
+<h1>Where the cost sits</h1>
+<div class="sub">Fully-burdened annual cost by function — base pay, bonus potential and benefits at 18%</div>
+<table class="d">
+<tr><th>Function</th><th class="n">HC</th><th class="n">Burdened cost</th><th style="width:44%">Share of $42.9M</th></tr>
+<tr><td>Client-Facing &amp; Corporate</td><td class="n">64</td><td class="n">$9.88M</td><td><span class="bar" style="width:100%"></span></td></tr>
+<tr><td>IT Applications &amp; Development</td><td class="n">68</td><td class="n">$8.99M</td><td><span class="bar" style="width:91%"></span></td></tr>
+<tr><td>IT Infrastructure &amp; Ops</td><td class="n">75</td><td class="n">$7.49M</td><td><span class="bar" style="width:76%"></span></td></tr>
+<tr><td>Enrollment &amp; Admissions</td><td class="n">113</td><td class="n">$7.29M</td><td><span class="bar" style="width:74%"></span></td></tr>
+<tr><td>Marketing &amp; Creative</td><td class="n">40</td><td class="n">$4.87M</td><td><span class="bar" style="width:49%"></span></td></tr>
+<tr><td>Learning &amp; Content</td><td class="n">26</td><td class="n">$3.03M</td><td><span class="bar" style="width:31%"></span></td></tr>
+<tr><td>Support Center</td><td class="n">22</td><td class="n">$1.38M</td><td><span class="bar" style="width:14%"></span></td></tr>
+</table>
+<div class="cap"><b>Cost and headcount are not aligned.</b> Enrollment &amp; Admissions is 28% of people but 17% of cost at an average $65k burdened, while IT Applications is 17% of people and 21% of cost at $132k. The arbitrage opportunity follows unit cost, not headcount — which is why the two IT functions carry 57% of the savings on 35% of the people.</div>
+</div>
+
+<div class="tab" id="t3">
+<h1>What can move</h1>
+<div class="sub">Composite outsourceability score 0–100 · High ≥70 · Medium 50–69 · Low &lt;50 (retain)</div>
+<table class="d">
+<tr><th>Function</th><th class="n">Score</th><th>Band</th><th>Engagement model</th><th class="n">Addressable</th><th>Primary constraint</th></tr>
+<tr><td><b>IT Applications &amp; Development</b></td><td class="n">74</td><td><span class="pill pH">High</span></td><td>Lift-out; hybrid for SIS</td><td class="n">$5.15M</td><td>Client-named admin contacts</td></tr>
+<tr><td><b>Learning &amp; Content</b></td><td class="n">72</td><td><span class="pill pH">High</span></td><td>Lift-out</td><td class="n">$1.89M</td><td>None material</td></tr>
+<tr><td><b>Marketing &amp; Creative</b></td><td class="n">66</td><td><span class="pill pM">Medium</span></td><td>Role-by-role, production layer</td><td class="n">$2.12M</td><td>Brand voice, client reviews</td></tr>
+<tr><td><b>IT Infrastructure &amp; Ops</b></td><td class="n">62</td><td><span class="pill pM">Medium</span></td><td>Hybrid; deskside stays onsite</td><td class="n">$4.04M</td><td>Physical campus presence</td></tr>
+<tr><td><b>Support Center</b></td><td class="n">58</td><td><span class="pill pM">Medium</span></td><td>Hybrid, FERPA-gated tiers</td><td class="n">$0.65M</td><td>FERPA / student PII</td></tr>
+<tr><td>Enrollment &amp; Admissions</td><td class="n">45</td><td><span class="pill pL">Low</span></td><td>Retain; back-office only</td><td class="n">$0.62M</td><td>FERPA + US-staffing clauses</td></tr>
+<tr><td>Client-Facing &amp; Corporate</td><td class="n">32</td><td><span class="pill pL">Low</span></td><td>Retain; transactional finance only</td><td class="n">$0.99M</td><td>Revenue ownership, leadership</td></tr>
+<tr class="hl"><td>Total addressable</td><td class="n">—</td><td>—</td><td>~160 FTE</td><td class="n">$15.5M</td><td>—</td></tr>
+</table>
+<div class="cap"><b>Two judgement calls drive the shape of this.</b> Deskside IT support scores Low on physical presence, so 75% of that $2.27M stays onshore; and the 113-person enrollment organisation is retained on FERPA and US-staffing grounds despite highly codified work. Leadership, licensed and intern roles are excluded from every band by rule. Both calls were flagged for deal-team challenge and were not contested in review.</div>
+</div>
+
+<div class="tab" id="t4">
+<h1>What it saves</h1>
+<div class="sub">Three scenarios · offshore cost assumed at 50–60% of onshore burdened cost by function</div>
+<table class="d" style="margin-bottom:20px">
+<tr><th>Scenario</th><th>Basis</th><th class="n">Addressable FTE</th><th class="n">Annual run-rate</th><th class="n">% of labour cost</th><th class="n">3-yr net</th></tr>
+<tr><td>Conservative</td><td>High band only, no medium credit</td><td class="n">~99</td><td class="n">$4.19M</td><td class="n">9.8%</td><td class="n">$7.0M</td></tr>
+<tr class="hl"><td>Base case</td><td>High + medium, standard penetration</td><td class="n">~160</td><td class="n">$6.76M</td><td class="n">15.8%</td><td class="n">$12.0M</td></tr>
+<tr><td>Aggressive</td><td>Deeper pods, medium band fully worked</td><td class="n">~197</td><td class="n">$8.45M</td><td class="n">19.7%</td><td class="n">$15.5M</td></tr>
+</table>
+<table class="two"><tr><td>
+<h3>Base-case saving by function</h3>
+<table class="d">
+<tr><td>IT Applications &amp; Development</td><td class="n">$2.06M</td><td style="width:40%"><span class="bar" style="width:100%"></span></td></tr>
+<tr><td>IT Infrastructure &amp; Ops</td><td class="n">$1.82M</td><td><span class="bar" style="width:88%"></span></td></tr>
+<tr><td>Marketing &amp; Creative</td><td class="n">$0.95M</td><td><span class="bar" style="width:46%"></span></td></tr>
+<tr><td>Learning &amp; Content</td><td class="n">$0.85M</td><td><span class="bar" style="width:41%"></span></td></tr>
+<tr><td>Client-Facing &amp; Corporate</td><td class="n">$0.44M</td><td><span class="bar" style="width:21%"></span></td></tr>
+<tr><td>Support Center</td><td class="n">$0.33M</td><td><span class="bar" style="width:16%"></span></td></tr>
+<tr><td>Enrollment &amp; Admissions</td><td class="n">$0.31M</td><td><span class="bar" style="width:15%"></span></td></tr>
+</table>
+</td><td>
+<h3>Cash profile, base case</h3>
+<table class="d">
+<tr><th>Period</th><th class="n">Gross saving</th><th class="n">One-offs</th><th class="n">Net</th></tr>
+<tr><td>Year 1 (6-mo ramp)</td><td class="n">$3.04M</td><td class="n">($4.54M)</td><td class="n">($1.50M)</td></tr>
+<tr><td>Year 2</td><td class="n">$6.76M</td><td class="n">—</td><td class="n">$6.76M</td></tr>
+<tr><td>Year 3</td><td class="n">$6.76M</td><td class="n">—</td><td class="n">$6.76M</td></tr>
+<tr class="hl"><td>Cumulative</td><td class="n">$16.56M</td><td class="n">($4.54M)</td><td class="n">$12.02M</td></tr>
+</table>
+<div class="cap" style="font-size:11.5px"><b>One-offs:</b> 2-month knowledge-transfer overlap ($2.58M), 4 weeks severance ($1.19M), partner standup and recruitment ($0.77M).</div>
+</td></tr></table>
+</div>
+
+<div class="tab" id="t5">
+<h1>How it happens</h1>
+<div class="sub">Three waves over 18 months · hybrid pods, function by function · portco-facing joint plan</div>
+<table class="two"><tr><td>
+<div class="wave"><span class="wnum">$2.05M</span><b>Wave 1 · Months 1–6 · ~58 FTE</b><p>Learning &amp; content production lift-out plus the development, QA and SQL layer of IT Applications. Chosen first because the work is fully codified, none of it touches student records, and success here builds the governance model the later waves inherit. Owner: Joint.</p></div>
+<div class="wave"><span class="wnum">$2.68M</span><b>Wave 2 · Months 5–12 · ~62 FTE</b><p>Infrastructure operations — server, network and application administration — and the remaining IT Applications roles outside client-named SIS positions. Deskside support at campuses is explicitly out of scope. Owner: Portco, with Renovus oversight.</p></div>
+<div class="wave"><span class="wnum">$2.03M</span><b>Wave 3 · Months 11–18 · ~40 FTE</b><p>Marketing production, FERPA-gated support tiers, enrollment back-office coordination and transactional finance. Smallest and most sensitive wave; sequenced last so the partner relationship is proven before brand and student-adjacent work moves. Owner: Portco.</p></div>
+</td><td>
+<h3>Governance and gates</h3>
+<table class="d">
+<tr><th>Gate</th><th>Test to pass</th><th>Owner</th></tr>
+<tr><td>Pre-wave</td><td>Process documented, SLAs signed, FERPA controls audited</td><td>Joint</td></tr>
+<tr><td>Overlap exit</td><td>Partner hits 90% of onshore quality baseline for 4 weeks</td><td>Vendor</td></tr>
+<tr><td>Wave close</td><td>Run-rate saving verified against payroll; no SLA breach</td><td>Renovus</td></tr>
+<tr><td>Wave 3 entry</td><td>Waves 1–2 at full run-rate; attrition within 15% plan</td><td>Renovus</td></tr>
+</table>
+<h3 style="margin-top:20px">Retained onshore by design</h3>
+<div class="cap" style="margin-top:0;font-size:11.5px">All leadership and director-plus roles · 113 enrollment and student-facing staff · campus deskside support · client-named SIS and Salesforce administrators · revenue-owning partner solutions and business development · executive and corporate governance. Roughly 248 roles and $27.4M of cost are never in scope, and the report does not pretend otherwise.</div>
+</td></tr></table>
+</div>
+
+<div class="tab" id="t6">
+<h1>Risks &amp; next steps</h1>
+<div class="sub">What breaks this, and the first 30 days</div>
+<table class="two"><tr><td>
+<h3>Principal risks</h3>
+<div class="risk"><b>FERPA exposure · High</b><p>Any offshore access to student records is a contract and accreditation event. Mitigation: data-residency controls and FERPA-gated ticket tiers audited before Wave 3, not during it.</p></div>
+<div class="risk"><b>Client US-staffing clauses · High</b><p>Contracts naming onshore individuals or requiring US-based staff could void part of the IT Applications case. Mitigation: contract review in the first 30 days, before any partner commitment.</p></div>
+<div class="risk"><b>Knowledge concentration · Medium</b><p>Several application-architect and SIS roles are single points of failure. Mitigation: 2-month overlap is the floor, not the target, for those specific roles; retention bonuses where needed.</p></div>
+<div class="risk"><b>Utilisation data gaps · Medium</b><p>40% of rows have no time-tracking, so billable-hour dilution from a move is unquantified. Mitigation: 90 days of tracked data before Wave 2 scope is fixed.</p></div>
+</td><td>
+<h3>First 30 days</h3>
+<table class="d">
+<tr><th>Action</th><th>Owner</th></tr>
+<tr><td>Legal review of client contracts for US-staffing and named-individual clauses</td><td>Portco + Renovus</td></tr>
+<tr><td>Confirm or replace the 50–60% offshore cost assumption with vendor quotes</td><td>Renovus</td></tr>
+<tr><td>Validate the two contested scores: deskside support and enrollment back-office</td><td>Joint</td></tr>
+<tr><td>Supply current EBITDA and exit multiple to complete the value-creation case</td><td>Renovus</td></tr>
+<tr><td>Stand up time tracking across the 40% of roles with no utilisation data</td><td>Portco</td></tr>
+<tr><td>Shortlist sourcing partners for Wave 1 scope; no commitment before gate 1</td><td>Joint</td></tr>
+</table>
+<div class="flag" style="margin-top:18px"><b>Four inputs remain open.</b> Headline scenario, engagement model, audience and the value-creation figures were not confirmed in review. This build uses base case, hybrid pods, portco-facing, and no EBITDA or EV modelling. Changing any of them changes the framing, not the underlying arithmetic.</div>
+</td></tr></table>
+</div>
+
+<div class="tab" id="t7">
+<h1>Detail</h1>
+<div class="sub">Assumptions register, method and data quality — everything needed to check the numbers</div>
+<div class="flag"><b>Cost assumptions are Renovus deal-team assumptions, not vendor pricing.</b> No quote is in hand. Offshore cost is modelled at 50–60% of onshore fully-burdened cost, varied by function: IT Applications &amp; Development 60%, IT Infrastructure &amp; Ops 55%, Marketing &amp; Creative 55%, Learning &amp; Content 55%, Client-Facing &amp; Corporate 55%, Support Center 50%, Enrollment &amp; Admissions 50%.</div>
+
+<h2>Data tier and source</h2>
+<p>Tier A — row-per-person payroll export with 2023 base pay, bonus potential, benefits and fully-burdened cost, plus department, job title, core skill set, supervisor and a client-billable / Collegis-effective / non-billable time split. 409 rows received; one row dropped for having no title, skill set or pay, giving 408 roles and $42.9M of fully-burdened cost. Tier A supports full depth: per-role scoring, loaded-cost deltas, transition one-offs, ramp and three-year cumulative.</p>
+
+<h2>Scoring method</h2>
+<p>Five dimensions, each 1–5, higher meaning more outsourceable: codifiability of the work (30% weight), inverse of customer and stakeholder exposure (20%), inverse of IP, data and regulatory sensitivity (20%), inverse of seniority and institutional knowledge (15%), and offshore or nearshore talent availability (15%). The weighted result is expressed 0–100. High is 70 or above, Medium 50–69, Low below 50 and retained. Function scores shown on tab 3 are cost-weighted averages of the underlying role scores, not simple means.</p>
+<p>Rule-based exclusions applied before scoring: every director-plus and VP role, every intern, and every role whose work requires physical presence at a client campus. These roles cannot appear in a wave regardless of their arithmetic score. Where a leader's team moves but the leader does not, that is recorded as a hybrid-model note rather than a score change.</p>
+
+<h2>Constraints applied as hard ceilings</h2>
+<p><b>FERPA and student PII.</b> Confirmed by the deal team. Caps Enrollment &amp; Admissions at Low and holds Support Center at Medium with tier-gating; also restricts the SIS administration roles inside IT Applications. Roughly $6.7M of otherwise-addressable cost is held onshore by this constraint alone.</p>
+<p><b>Client contracts requiring US-based staff.</b> Confirmed by the deal team. Applied as a 15% onshore retention overlay on IT Applications &amp; Development and a 20% overlay on Marketing &amp; Creative, pending the contract review named in the 30-day actions. If the review finds broader clauses, the IT Applications saving of $2.06M is the figure most at risk.</p>
+
+<h2>Transition assumptions — light profile</h2>
+<p>Two-month knowledge-transfer overlap, costed as 2/12 of the annual burdened cost of every moved role ($2.58M). Four weeks severance, costed at 4/52 of burdened cost ($1.19M). Partner standup and offshore recruitment at 5% of addressable cost ($0.77M). Six-month ramp to full run-rate within each wave, which is why Year 1 realises 45% of the run-rate and lands at a net outflow of $1.50M before turning positive in Year 2.</p>
+
+<h2>Function roll-up from the 25 department codes</h2>
+<p><b>Marketing &amp; Creative</b> — 115 Marketing Analytics, 120 Digital Marketing, 130 Creative Marketing, 710 Marketing Strategy. <b>IT Applications &amp; Development</b> — 110 Analytics Services, 310 IT Applications, 410 Client Relations (SIS), 420 IT Partner Management. <b>IT Infrastructure &amp; Ops</b> — 300 IT Infrastructure, 340 ITSS, 350 IT Server &amp; Applications, 360 IT Network &amp; Voice. <b>Learning &amp; Content</b> — 210 Digital Content Solutions, 320 Learning Technology. <b>Support Center</b> — 330 Support Center. <b>Enrollment &amp; Admissions</b> — 440 Admissions, 445 ASU Enrollment. <b>Client-Facing &amp; Corporate</b> — 220 Governance, 400 Partner Solutions, 430 Project Management, 700 Business Development, 800 Executive, 810 Legal and Finance, 820 Human Capital, 900 Administration.</p>
+
+<h2>Data quality items</h2>
+<p>One record dropped entirely for missing title, skill set and all pay fields (330 Support Center). The Client Billable column is empty for every row in the file and was ignored. Core Skill Set is blank across all of 330 Support Center and most corporate departments, so scoring there leaned on job title alone and carries more uncertainty than elsewhere. Utilisation is recorded as "n/a" for roughly 40% of rows — leadership, interns, all of 445 ASU Enrollment, 330 Support Center and the corporate functions — and was treated as not tracked rather than as 100% non-billable, per the deal team's instruction. Two departments contain a single skill-set value of "0" or "NO MERIT" which were read as missing. Bonus potential is stated as potential, not paid, and is included in burdened cost at face value; if actual payout runs below potential the cost base and therefore the saving are both slightly overstated.</p>
+
+<h2>What is not modelled</h2>
+<p>No EBITDA uplift and no implied enterprise value at exit. The deal team did not supply current EBITDA, revenue or the deal model's exit multiple, and this assessment does not invent them. If those figures are provided, the base-case $6.76M run-rate saving flows to EBITDA at close to full value less any retained management overhead, and capitalising it at the deal model's multiple would give an illustrative EV effect — illustrative only, never a valuation. Also outside scope: severance tax and benefit-continuation detail, real-estate savings from reduced onshore footprint, revenue risk from any billable-hour dilution, and FX exposure on the offshore contract.</p>
+
+<h2>Reconciliation</h2>
+<p>Total burdened cost $42.93M across 408 roles. Addressable cost $15.46M across approximately 160 FTE. Base-case saving by function sums to $6.76M: IT Applications $2.06M, IT Infrastructure $1.82M, Marketing &amp; Creative $0.95M, Learning &amp; Content $0.85M, Client-Facing &amp; Corporate $0.44M, Support Center $0.33M, Enrollment &amp; Admissions $0.31M. Waves sum to the same total: Wave 1 $2.05M, Wave 2 $2.68M, Wave 3 $2.03M. Every High and Medium role in a non-retained function appears in exactly one wave; no Low-band, leadership or intern role appears in any wave. Individual-level data is held anonymised in the working file and does not appear in this document.</p>
+<div style="height:30px"></div>
+</div>
+
+</main>
+<script>
+function go(n){for(var i=1;i<=7;i++){var t=document.getElementById('t'+i),b=document.getElementById('b'+i);if(t)t.className=(i==n?'tab on':'tab');if(b)b.className=(i==n?'on':'');}}
+(function(){var n=1;try{var m=location.search.match(/tab=(\d)/);if(m)n=+m[1];else{var h=location.hash.match(/(\d)/);if(h)n=+h[1];}}catch(e){}go(n>=1&&n<=7?n:1);
+document.addEventListener('keydown',function(e){var c=1;for(var i=1;i<=7;i++){if(document.getElementById('b'+i).className=='on')c=i;}if(e.key=='ArrowRight'&&c<7)go(c+1);if(e.key=='ArrowLeft'&&c>1)go(c-1);});})();
+</script>
+</body>
+</html>

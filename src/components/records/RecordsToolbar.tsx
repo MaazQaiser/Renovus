@@ -88,7 +88,7 @@ export function RecordsToolbar({
               id="records-company"
               value={company}
               onChange={(event) => onCompanyChange(event.target.value)}
-              className="h-9 appearance-none rounded-md border border-border bg-surface py-0 pl-3 pr-9 text-[13px] font-medium text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+              className="h-9 appearance-none rounded-full border border-glass-border bg-glass-strong py-0 pl-4 pr-9 text-[13px] font-medium text-foreground shadow-[var(--shadow-glass)] focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
             >
               <option value={ALL_COMPANIES}>All companies</option>
               {companies.map((name) => (

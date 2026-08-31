@@ -12,6 +12,21 @@ import { StageComposer } from "./StageComposer";
 
 const DEFAULT_CONFIDENCE: ConfidenceLevel = "E";
 
+/** Says plainly what to do with the control below — a step is never a dead end. */
+function actionHint(question: PromptQuestion, showChoices: boolean): string {
+  if (!showChoices) {
+    return question.type === "textarea"
+      ? "Answer in your own words below."
+      : "Type your answer below.";
+  }
+  if (question.type === "multiple-choice") {
+    return "Pick every option that applies, then continue.";
+  }
+  return question.asksConfidence
+    ? "Pick the closest option, then tell me how sure you are."
+    : "Pick the closest option to continue.";
+}
+
 export interface StageQuestionPromptProps {
   question: PromptQuestion;
   mockTranscript?: string;
@@ -106,6 +121,10 @@ export function StageQuestionPrompt({
 
   return (
     <div className="flex flex-col gap-5">
+      <Text size="caption" tone="tertiary">
+        {actionHint(question, showChoices)}
+      </Text>
+
       {showChoices ? (
         <QuickPickGroup
           label={question.question}

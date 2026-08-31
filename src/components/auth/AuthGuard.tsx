@@ -34,7 +34,7 @@ export function AuthGuard({
 
   if (status === "loading") {
     return (
-      <div className="flex min-h-full items-center justify-center bg-background">
+      <div className="flex min-h-full items-center justify-center">
         <Spinner size="lg" label="Loading session" tone="accent" />
       </div>
     );
@@ -42,7 +42,7 @@ export function AuthGuard({
 
   if (require === "authenticated" && status !== "authenticated") {
     return (
-      <div className="flex min-h-full items-center justify-center bg-background">
+      <div className="flex min-h-full items-center justify-center">
         <Spinner size="lg" label="Redirecting to sign in" tone="accent" />
       </div>
     );
@@ -50,7 +50,7 @@ export function AuthGuard({
 
   if (require === "anonymous" && status !== "anonymous") {
     return (
-      <div className="flex min-h-full items-center justify-center bg-background">
+      <div className="flex min-h-full items-center justify-center">
         <Spinner size="lg" label="Redirecting" tone="accent" />
       </div>
     );

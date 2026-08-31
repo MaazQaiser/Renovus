@@ -9,8 +9,12 @@ const paddings = {
 } as const;
 
 const tones = {
-  default: "bg-surface border-border",
-  subtle: "bg-surface-tertiary border-border-subtle",
+  // Frosted over the page gradient. `opaque` stays solid for anything that has
+  // to read as paper rather than chrome.
+  default:
+    "bg-glass border-glass-border shadow-[var(--shadow-glass)] backdrop-blur-3xl",
+  subtle: "bg-glass-quiet border-glass-border backdrop-blur-xl",
+  opaque: "bg-surface border-border",
   inverse: "bg-surface-inverse border-border-inverse text-inverse",
 } as const;
 
@@ -37,14 +41,14 @@ export function Card({
   ...props
 }: CardProps) {
   const classes = cn(
-    "rounded-lg border",
+    "rounded-xl border",
     paddings[padding],
     tones[tone],
     selected &&
       "border-accent bg-accent-subtle shadow-[inset_0_0_0_1px_var(--color-accent)]",
     interactive &&
-      "transition-shadow duration-[120ms] ease-[var(--ease-standard)] hover:shadow-md",
-    interactive && !selected && "hover:border-border-strong",
+      "transition-[box-shadow,background-color,border-color] duration-[140ms] ease-[var(--ease-standard)] hover:shadow-[var(--shadow-raised)]",
+    interactive && !selected && "hover:bg-glass-strong",
     interactive && selected && "hover:border-accent",
     interactive && "cursor-pointer",
     className,

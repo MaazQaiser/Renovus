@@ -60,9 +60,9 @@ export function CompanySelectionPrompt({ onSelect }: CompanySelectionPromptProps
             key={company.id}
             type="button"
             onClick={() => onSelect(company.id, company.name)}
-            className="group flex flex-col items-start gap-2 rounded-lg border border-border bg-surface p-4 text-left transition-colors hover:border-accent hover:bg-accent-subtle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            className="group flex flex-col items-start gap-2 rounded-xl border border-glass-border bg-glass p-4 text-left shadow-[var(--shadow-glass)] backdrop-blur-3xl transition-[box-shadow,background-color,border-color] hover:border-accent hover:bg-glass-strong hover:shadow-[var(--shadow-raised)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
           >
-            <span className="flex size-9 items-center justify-center rounded-md bg-surface-tertiary text-[13px] font-semibold text-secondary transition-colors group-hover:bg-accent group-hover:text-inverse">
+            <span className="flex size-9 items-center justify-center rounded-lg border border-glass-border bg-glass-quiet text-[13px] font-semibold text-secondary transition-colors group-hover:bg-accent group-hover:text-inverse">
               {company.initials}
             </span>
             <span className="text-[15px] font-semibold leading-5 text-foreground">
@@ -76,9 +76,9 @@ export function CompanySelectionPrompt({ onSelect }: CompanySelectionPromptProps
           <button
             type="button"
             onClick={() => setAdding(true)}
-            className="flex flex-col items-start gap-2 rounded-lg border border-dashed border-border p-4 text-left text-secondary transition-colors hover:border-border-strong hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            className="flex flex-col items-start gap-2 rounded-xl border border-dashed border-slate-300 bg-glass-quiet p-4 text-left text-secondary backdrop-blur-3xl transition-[box-shadow,background-color,border-color] hover:border-slate-400 hover:bg-glass hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
           >
-            <span className="flex size-9 items-center justify-center rounded-md border border-border bg-surface-tertiary">
+            <span className="flex size-9 items-center justify-center rounded-lg border border-dashed border-slate-300 bg-glass-quiet">
               <Plus size={16} strokeWidth={1.75} aria-hidden />
             </span>
             <span className="text-[15px] font-semibold leading-5">Add new company</span>

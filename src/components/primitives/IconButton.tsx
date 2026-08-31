@@ -6,14 +6,15 @@ import { cn } from "@/lib/cn";
 import { Spinner } from "./Spinner";
 
 const iconButtonVariants = cva(
-  "inline-flex items-center justify-center rounded-md transition-colors duration-[120ms] ease-[var(--ease-standard)] disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center rounded-full transition-[color,background-color,border-color,box-shadow] duration-[140ms] ease-[var(--ease-standard)] disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
         primary: "bg-primary text-inverse hover:bg-primary-hover",
+        gold: "bg-gold text-primary hover:bg-gold-hover active:bg-gold-active",
         secondary:
-          "bg-surface text-foreground border border-border hover:bg-surface-tertiary hover:border-border-strong",
-        ghost: "bg-transparent text-secondary hover:bg-surface-secondary hover:text-foreground",
+          "bg-glass text-foreground border border-glass-border shadow-[var(--shadow-glass)] backdrop-blur-xl hover:bg-glass-strong",
+        ghost: "bg-transparent text-secondary hover:bg-glass hover:text-foreground hover:backdrop-blur-xl",
         danger: "bg-error text-inverse hover:bg-error/90",
       },
       size: {

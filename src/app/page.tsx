@@ -15,7 +15,7 @@ export default function RootPage() {
   }, [status, router]);
 
   return (
-    <div className="flex min-h-full items-center justify-center bg-background">
+    <div className="flex min-h-full items-center justify-center">
       <Spinner size="lg" label="Loading" tone="accent" />
     </div>
   );

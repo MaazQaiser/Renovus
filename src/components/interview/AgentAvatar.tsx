@@ -12,10 +12,10 @@ export interface AgentAvatarProps {
  * The agent's mark on the interview stage: a halo pulsing outward, with the
  * mark breathing and slowly drifting.
  *
- * The source art is line work on an opaque white square. Blend modes can't drop
- * that white here — the animated ancestors create their own stacking contexts,
- * which isolates the blend — so the art is masked into a disc instead, and
- * scaled past the edges so its whitespace margin is cropped away.
+ * The art carries its own alpha, so the disc no longer needs a white fill or
+ * ring to hide a backing square. The circular crop stays: the source has a wide
+ * empty margin, so the art is still scaled past the edges to fill the disc.
+ * `unoptimized` is required — the image optimizer flattens the alpha onto white.
  */
 export function AgentAvatar({ className }: AgentAvatarProps) {
   return (
@@ -25,10 +25,7 @@ export function AgentAvatar({ className }: AgentAvatarProps) {
         aria-hidden
       />
 
-      <span
-        className="absolute inset-0 overflow-hidden rounded-full bg-surface ring-1 ring-border"
-        aria-hidden
-      >
+      <span className="absolute inset-0 overflow-hidden rounded-full" aria-hidden>
         <span className="animate-agent-drift flex size-full items-center justify-center">
           <Image
             src={AGENT_MARK}
@@ -36,6 +33,7 @@ export function AgentAvatar({ className }: AgentAvatarProps) {
             width={144}
             height={144}
             priority
+            unoptimized
             className="animate-agent-breathe size-[104px] max-w-none"
           />
         </span>

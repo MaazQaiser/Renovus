@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight, Keyboard, Mic, Paperclip, Square } from "lucide-react";
 import { Text } from "@/components/primitives/Text";
+import { useSpeechToText } from "@/hooks/useSpeechToText";
 import { cn } from "@/lib/cn";
 
 type SpeechState = "idle" | "recording" | "transcribing";
@@ -15,6 +16,10 @@ export interface StageComposerProps {
   sendDisabled?: boolean;
   multiline?: boolean;
   supportsSpeech?: boolean;
+  /**
+   * Canned answer used only where the browser has no Web Speech API, so the
+   * walkthrough still demonstrates the dictation step.
+   */
   mockTranscript?: string;
   /** Rendered as a third mode button; used by steps that accept a file. */
   onAttach?: () => void;
@@ -42,7 +47,7 @@ function ModeButton({
         "flex size-11 items-center justify-center rounded-full border transition-colors",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
         active
-          ? "border-accent-border bg-accent-subtle text-accent"
+          ? "border-gold-border bg-gold-subtle text-gold-ink"
           : "border-border bg-surface text-secondary hover:border-border-strong hover:text-foreground",
       )}
     >
@@ -64,8 +69,22 @@ export function StageComposer({
   className,
 }: StageComposerProps) {
   const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
-  const [speech, setSpeech] = useState<SpeechState>("idle");
+  const [mockSpeech, setMockSpeech] = useState<SpeechState>("idle");
   const timers = useRef<number[]>([]);
+
+  /*
+   * Whatever was already typed when dictation started. Each result rewrites the
+   * field from this baseline, so revised words replace rather than pile up, and
+   * anything typed beforehand survives.
+   */
+  const baseValueRef = useRef("");
+
+  const speech = useSpeechToText({
+    onTranscript: (text) => {
+      const base = baseValueRef.current;
+      onChange(base && text ? `${base.trimEnd()} ${text}` : base + text);
+    },
+  });
 
   useEffect(() => {
     const pending = timers.current;
@@ -79,32 +98,58 @@ export function StageComposer({
     onSend();
   };
 
-  const startSpeech = () => {
-    if (speech !== "idle") return;
-    setSpeech("recording");
+  const startMockSpeech = () => {
+    if (mockSpeech !== "idle") return;
+    setMockSpeech("recording");
     timers.current.push(
       window.setTimeout(() => {
-        setSpeech("transcribing");
+        setMockSpeech("transcribing");
         timers.current.push(
           window.setTimeout(() => {
             onChange(mockTranscript);
-            setSpeech("idle");
+            setMockSpeech("idle");
           }, 700),
         );
       }, 1200),
     );
   };
 
-  const stopSpeech = () => {
-    if (speech !== "recording") return;
-    setSpeech("transcribing");
+  const stopMockSpeech = () => {
+    if (mockSpeech !== "recording") return;
+    setMockSpeech("transcribing");
     timers.current.push(
       window.setTimeout(() => {
         onChange(mockTranscript);
-        setSpeech("idle");
+        setMockSpeech("idle");
       }, 500),
     );
   };
+
+  const startSpeech = () => {
+    if (!speech.supported) {
+      startMockSpeech();
+      return;
+    }
+    baseValueRef.current = value;
+    speech.start();
+  };
+
+  const stopSpeech = () => {
+    if (!speech.supported) {
+      stopMockSpeech();
+      return;
+    }
+    speech.stop();
+    inputRef.current?.focus();
+  };
+
+  const state: SpeechState = speech.supported
+    ? speech.status === "listening"
+      ? "recording"
+      : speech.status === "stopping"
+        ? "transcribing"
+        : "idle"
+    : mockSpeech;
 
   const inputClassName =
     "min-w-0 flex-1 resize-none bg-transparent text-[17px] leading-7 text-foreground placeholder:text-tertiary focus:outline-none";
@@ -153,7 +198,7 @@ export function StageComposer({
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
             sendDisabled
               ? "cursor-not-allowed bg-surface-tertiary text-tertiary"
-              : "bg-primary text-inverse hover:bg-accent",
+              : "bg-gold text-primary hover:bg-gold-hover",
           )}
         >
           <ArrowRight size={18} strokeWidth={2} aria-hidden />
@@ -164,11 +209,11 @@ export function StageComposer({
         <ModeButton
           icon={Keyboard}
           label="Type your answer"
-          active={speech === "idle"}
+          active={state === "idle"}
           onClick={() => inputRef.current?.focus()}
         />
         {supportsSpeech ? (
-          speech === "recording" ? (
+          state === "recording" ? (
             <ModeButton
               icon={Square}
               label="Stop recording"
@@ -179,7 +224,7 @@ export function StageComposer({
             <ModeButton
               icon={Mic}
               label="Speak your answer"
-              active={speech === "transcribing"}
+              active={state === "transcribing"}
               onClick={startSpeech}
             />
           )
@@ -189,14 +234,18 @@ export function StageComposer({
         ) : null}
       </div>
 
-      {speech !== "idle" ? (
+      {speech.error && state === "idle" ? (
+        <Text size="caption" tone="error" className="text-center" role="status">
+          {speech.error}
+        </Text>
+      ) : state !== "idle" ? (
         <Text
           size="caption"
-          tone={speech === "recording" ? "error" : "secondary"}
-          className={cn("text-center", speech === "recording" && "animate-pulse")}
+          tone={state === "recording" ? "error" : "secondary"}
+          className={cn("text-center", state === "recording" && "animate-pulse")}
           role="status"
         >
-          {speech === "recording" ? "Listening…" : "Transcribing…"}
+          {state === "recording" ? "Listening…" : "Transcribing…"}
         </Text>
       ) : null}
     </div>
