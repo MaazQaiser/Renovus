@@ -10,11 +10,8 @@ import {
 import { getCompanyById } from "@/data/companies";
 import { getMockOffshoringReport } from "@/data/offshoringReport";
 import { createId } from "@/lib/id";
-import {
-  defaultSector,
-  formatFunctionList,
-  seedFunctionsForSector,
-} from "@/lib/offshoring/functions";
+import { defaultSector, seedFunctionsForSector } from "@/lib/offshoring/functions";
+import { buildPreviewSnapshot, previewToText } from "@/lib/offshoring/preview";
 import type { AnswerValue } from "@/types/question";
 import type { UploadedFile } from "@/types/file";
 import type { Sector } from "@/types/company";
@@ -170,10 +167,10 @@ export function resolveQuestionForSession(
   if (!question) return undefined;
 
   if (questionId === "d1-q1-scope" && session.detectedFunctions.length > 0) {
-    const list = formatFunctionList(session.detectedFunctions);
+    const count = session.detectedFunctions.length;
     return {
       ...question,
-      question: `I found ${session.detectedFunctions.length} functions: ${list}. Assess all of these, or narrow scope?`,
+      question: `I mapped ${count} functions. Assess all of them, or narrow the scope?`,
     };
   }
 
@@ -203,39 +200,7 @@ function resolveSector(companyId?: string, companySector?: Sector): Sector {
 }
 
 function buildPreviewMessage(functions: DetectedFunction[]): string {
-  const totalFte = functions.reduce((sum, fn) => sum + fn.fte, 0);
-  const addressable = Math.round(totalFte * 0.56);
-  const loaded = Math.round(totalFte * 0.087 * 10) / 10;
-  const annual = Math.round(loaded * 0.25 * 10) / 10;
-  const threeYear = Math.round(annual * 2 * 10) / 10;
-  const payback = 8;
-
-  const rows = functions
-    .map((fn, index) => {
-      const high = Math.max(1, Math.round(fn.fte * (0.25 + (index % 3) * 0.08)));
-      const med = Math.max(1, Math.round(fn.fte * 0.35));
-      const low = Math.max(0, fn.fte - high - med);
-      const model =
-        high / fn.fte >= 0.7
-          ? "Lift-out"
-          : high / fn.fte >= 0.3
-            ? "Hybrid"
-            : "Role-by-role";
-      return `${fn.label}: High ${high} · Med ${med} · Low ${low} → ${model}`;
-    })
-    .join("\n");
-
-  return [
-    "Here's a first-pass read — react to the numbers in the next three questions.",
-    "",
-    `Addressable: ${addressable} FTEs (${Math.round((addressable / Math.max(totalFte, 1)) * 100)}% of ${totalFte})`,
-    `Loaded cost in scope: ~$${loaded}M`,
-    `Base-case annual run-rate saving: ~$${annual}M`,
-    `3-year cumulative net: ~$${threeYear}M · payback ~${payback} months`,
-    "",
-    "Function heatmap (mock seed scores):",
-    rows,
-  ].join("\n");
+  return previewToText(buildPreviewSnapshot(functions));
 }
 
 function startDiscovery(

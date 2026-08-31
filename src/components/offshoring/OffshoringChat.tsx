@@ -44,6 +44,8 @@ import { ClarificationPrompt } from "./ClarificationPrompt";
 import { InterviewStage } from "@/components/interview/InterviewStage";
 import { InterviewTopbarActions } from "@/components/interview/InterviewTopbarActions";
 import { PayrollUploadPrompt } from "./PayrollUploadPrompt";
+import { FunctionScopeList, PreviewPanel } from "./StagePanels";
+import { buildPreviewSnapshot } from "@/lib/offshoring/preview";
 import { StageQuestionPrompt } from "@/components/interview/StageQuestionPrompt";
 
 const QUESTION_PHASES: OffshoringPhase[] = [
@@ -113,12 +115,39 @@ export function OffshoringChat() {
     );
     const pending = session.messages.slice(lastUserIndex + 1);
     const headline = pending.at(-1);
+    const framing = pending.slice(0, -1);
     return {
       key: headline?.id ?? "empty",
       headline: headline?.content ?? "",
-      context: pending.slice(0, -1).map((message) => message.content),
+      // The heatmap preview is structured data — it is rendered as a panel
+      // below the question rather than pasted in as a multi-line paragraph.
+      context: framing
+        .filter((message) => message.kind !== "preview")
+        .map((message) => message.content),
     };
   }, [session.messages]);
+
+  const previewSnapshot = useMemo(
+    () => buildPreviewSnapshot(session.detectedFunctions),
+    [session.detectedFunctions],
+  );
+
+  const activeClarification = getActiveClarification(session);
+
+  const currentQuestion = session.currentQuestionId
+    ? resolveQuestionForSession(session, session.currentQuestionId)
+    : undefined;
+
+  // The data the current question is asking about, shown under the headline.
+  // Keyed on the question — not on which messages happen to be pending — so
+  // revisiting a step from the review panel still shows the right panel.
+  const stageDetail = activeClarification
+    ? undefined
+    : currentQuestion?.id === "d3-q1-sanity"
+      ? <PreviewPanel snapshot={previewSnapshot} />
+      : currentQuestion?.id === "d1-q1-scope"
+        ? <FunctionScopeList functions={session.detectedFunctions} />
+        : undefined;
 
   const persist = (next: typeof session) => {
     saveOffshoringSession(next);
@@ -132,11 +161,6 @@ export function OffshoringChat() {
     }, 280);
   };
 
-  const currentQuestion = session.currentQuestionId
-    ? resolveQuestionForSession(session, session.currentQuestionId)
-    : undefined;
-
-  const activeClarification = getActiveClarification(session);
   const clarificationOptions = activeClarification?.optionsFromFunctions
     ? session.detectedFunctions.map((fn) => ({ id: fn.id, label: fn.label }))
     : activeClarification?.options;
@@ -198,6 +222,7 @@ export function OffshoringChat() {
         stepKey={typing ? `${step.key}-typing` : step.key}
         context={step.context}
         headline={step.headline}
+        detail={stageDetail}
       >
         {typing ? (
           <TypingIndicator />

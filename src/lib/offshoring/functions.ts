@@ -52,10 +52,6 @@ export function seedFunctionsForSector(sector: Sector): DetectedFunction[] {
   }));
 }
 
-export function formatFunctionList(functions: DetectedFunction[]): string {
-  return functions.map((fn) => `${fn.label} (${fn.fte})`).join(", ");
-}
-
 export function defaultSector(): Sector {
   return "Professional Services";
 }

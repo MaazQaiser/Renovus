@@ -44,12 +44,12 @@ export function InterviewTopbarActions({
       <IconButton
         icon={RotateCcw}
         label="Start over"
-        variant="primary"
+        variant="gold"
         className="sm:hidden"
         onClick={onRestart}
       />
       <Button
-        variant="primary"
+        variant="gold"
         size="sm"
         className="hidden sm:inline-flex"
         onClick={onRestart}
