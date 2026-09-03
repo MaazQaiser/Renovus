@@ -219,8 +219,12 @@ export function seedDemoRecords(): number {
  * 5 — workflow report split into baseline and agentic parts.
  * 6 — annual delta derived from the rounded figures the report displays.
  * 7 — workflow report reframed as capacity at a fixed team and budget.
+ * 8 — workflow stages carry a head count.
+ * 9 — head count became a role phrase, and `today` a composable verb phrase.
+ * 10 — `withAgent` became a composable verb phrase too.
+ * 11 — each stage's agent is named.
  */
-const DEMO_REVISION = 7;
+const DEMO_REVISION = 11;
 
 /**
  * Fills a first-run browser with the demo portfolio, so the product shows

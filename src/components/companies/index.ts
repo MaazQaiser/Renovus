@@ -8,6 +8,6 @@ export { CompanyFormDrawer } from "./CompanyFormDrawer";
 export { CompanyGrid } from "./CompanyGrid";
 export { CompanyManageCard } from "./CompanyManageCard";
 export { CompanySelector } from "./CompanySelector";
-export { CoverageMeter, DepartmentBadges } from "./CoverageIndicators";
+export { CoverageMeter } from "./CoverageIndicators";
 export { StageBadge } from "./StageBadge";
 export { companyHref } from "./companyMeta";

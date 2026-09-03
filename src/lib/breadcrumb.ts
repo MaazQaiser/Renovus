@@ -1,5 +1,6 @@
 import type { BreadcrumbItem } from "@/components/navigation/Breadcrumb";
 import { getCompanyById } from "@/lib/companies";
+import { getDepartmentById } from "@/data/departments";
 import type { AppHref } from "@/lib/routes";
 
 const labels: Record<string, string> = {
@@ -30,15 +31,17 @@ export function breadcrumbForPath(pathname: string): BreadcrumbItem[] {
     const href = `/${segments.slice(0, index + 1).join("/")}` as AppHref;
     const last = index === segments.length - 1;
     return {
-      // Ids are opaque: name the record's page, and resolve company slugs to
-      // the company's own name.
+      // Ids are opaque, so resolve the ones we can name: a saved report, a
+      // company slug, and a department slug nested under one.
       label:
         labels[segment] ??
         (segment.startsWith("rec-")
           ? "Saved report"
           : (segments[index - 1] === "companies"
               ? getCompanyById(segment)?.name
-              : undefined) ?? segment),
+              : segments[index - 2] === "companies"
+                ? getDepartmentById(segment)?.name
+                : undefined) ?? segment),
       href: last || NO_PAGE.has(segment) ? undefined : href,
     };
   });

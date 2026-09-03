@@ -14,7 +14,9 @@ import type { StepOwner, WorkflowReportData, WorkflowStage } from "@/types/workf
 interface StageSeed {
   id: string;
   name: string;
+  who: string;
   today: string;
+  agentName: string;
   withAgent: string;
   owner: StepOwner;
   hoursPerWeek: number;
@@ -25,8 +27,10 @@ const SALES_STAGES: StageSeed[] = [
   {
     id: "prospect",
     name: "Prospect",
-    today: "Reps build lists by hand across CRM and LinkedIn.",
-    withAgent: "Assembles and dedupes the weekly list, with a reason per account.",
+    who: "2 SDRs",
+    today: "build the weekly list by hand across CRM and LinkedIn",
+    agentName: "List Builder",
+    withAgent: "assembles and dedupes the weekly list, with a reason per account",
     owner: "Agent + review",
     hoursPerWeek: 14,
     automatablePct: 80,
@@ -34,8 +38,10 @@ const SALES_STAGES: StageSeed[] = [
   {
     id: "qualify",
     name: "Qualify",
-    today: "Each rep qualifies to their own definition.",
-    withAgent: "Scores every account against one written rubric.",
+    who: "2 SDRs and an AE",
+    today: "qualify to their own definitions, so no two agree",
+    agentName: "Qualifier",
+    withAgent: "scores every account against one written rubric",
     owner: "Agent + review",
     hoursPerWeek: 9,
     automatablePct: 65,
@@ -43,8 +49,10 @@ const SALES_STAGES: StageSeed[] = [
   {
     id: "discover",
     name: "Discover",
-    today: "Notes typed from memory after the call.",
-    withAgent: "Captures requirements from the transcript, drafts the recap.",
+    who: "2 AEs",
+    today: "type notes from memory after each call",
+    agentName: "Call Scribe",
+    withAgent: "captures requirements from the transcript and drafts the recap",
     owner: "Agent + review",
     hoursPerWeek: 11,
     automatablePct: 55,
@@ -52,8 +60,10 @@ const SALES_STAGES: StageSeed[] = [
   {
     id: "propose",
     name: "Propose",
-    today: "Last quarter's proposal, rewritten and repriced.",
-    withAgent: "Drafts from the approved template and price book.",
+    who: "2 AEs",
+    today: "rewrite and reprice last quarter's closest proposal",
+    agentName: "Proposal Drafter",
+    withAgent: "drafts from the approved template and price book",
     owner: "Agent + review",
     hoursPerWeek: 12,
     automatablePct: 70,
@@ -61,8 +71,10 @@ const SALES_STAGES: StageSeed[] = [
   {
     id: "negotiate",
     name: "Negotiate",
-    today: "Redlines over email, concessions agreed verbally.",
-    withAgent: "Logs every concession, flags terms outside the band.",
+    who: "2 AEs and the sales lead",
+    today: "trade redlines over email, agreeing concessions verbally",
+    agentName: "Deal Recorder",
+    withAgent: "logs every concession and flags terms outside the band",
     owner: "Human",
     hoursPerWeek: 6,
     automatablePct: 30,
@@ -70,8 +82,10 @@ const SALES_STAGES: StageSeed[] = [
   {
     id: "close",
     name: "Close",
-    today: "Contract by hand, then re-keyed into CRM.",
-    withAgent: "Assembles it and writes booked terms straight back.",
+    who: "An AE and ops",
+    today: "assemble the contract by hand, then re-key it into CRM",
+    agentName: "Contract Assembler",
+    withAgent: "assembles the contract and writes the booked terms straight back",
     owner: "Agent + review",
     hoursPerWeek: 5,
     automatablePct: 75,
@@ -79,8 +93,10 @@ const SALES_STAGES: StageSeed[] = [
   {
     id: "handoff",
     name: "Hand off",
-    today: "Delivery re-asks what the buyer already answered.",
-    withAgent: "Builds the handoff pack with every commitment listed.",
+    who: "2 AEs",
+    today: "retell the sale on a kickoff call, so delivery re-asks what the buyer answered",
+    agentName: "Handoff Packer",
+    withAgent: "builds the handoff pack with every commitment listed",
     owner: "Agent + review",
     hoursPerWeek: 4,
     automatablePct: 60,
@@ -88,8 +104,10 @@ const SALES_STAGES: StageSeed[] = [
   {
     id: "expand",
     name: "Renew",
-    today: "Renewal dates tracked in a spreadsheet.",
-    withAgent: "Raises renewal and expansion plays on a schedule.",
+    who: "2 AEs",
+    today: "track renewal dates in a spreadsheet",
+    agentName: "Renewal Watcher",
+    withAgent: "raises renewal and expansion plays on a schedule",
     owner: "Agent + review",
     hoursPerWeek: 7,
     automatablePct: 50,
@@ -121,7 +139,9 @@ export function getMockWorkflowReport(
   const stages: WorkflowStage[] = SALES_STAGES.map((seed) => ({
     id: seed.id,
     name: seed.name,
+    who: seed.who,
     today: seed.today,
+    agentName: seed.agentName,
     withAgent: seed.withAgent,
     owner: seed.owner,
     hoursPerWeek: seed.hoursPerWeek,

@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useMemo, useState, useSyncExternalStore } from "react";
+import { useMemo, useState, useSyncExternalStore } from "react";
 import {
   Archive,
   ArrowRight,
@@ -64,6 +64,7 @@ import type { AssessmentRecord } from "@/types/record";
 import { CompanyAvatar } from "./CompanyAvatar";
 import { CompanyFormDrawer } from "./CompanyFormDrawer";
 import { CoverageMeter } from "./CoverageIndicators";
+import { DepartmentCard } from "./DepartmentCard";
 import { StageBadge } from "./StageBadge";
 
 const STATUS_ICON: Record<CoverageStatus, typeof CircleCheck> = {
@@ -76,19 +77,6 @@ const STATUS_TONE: Record<CoverageStatus, string> = {
   covered: "text-success",
   "not-assessed": "text-warning",
   "no-agent": "text-disabled",
-};
-
-const STATUS_EXPLAINER: Record<CoverageStatus, string> = {
-  covered: "A saved assessment exists for this department.",
-  "not-assessed": "An agent is ready for this department, but nothing has been assessed yet.",
-  "no-agent": "No assessment agent has been built for this department yet, so it cannot be covered.",
-};
-
-/** The workflow step is only shown once its department's baseline is covered. */
-const WORKFLOW_EXPLAINER: Record<"covered" | "not-assessed", string> = {
-  covered: "The workflow has been mapped against an agentic redesign.",
-  "not-assessed":
-    "Next step for this department. The workflow agent is still in build, so this cannot be run yet.",
 };
 
 /** The offshoring line is never "no-agent", and it counts toward no department. */
@@ -368,45 +356,25 @@ export function CompanyDetail({ companyId }: CompanyDetailProps) {
             Department coverage
           </Heading>
           <Text size="caption" tone="tertiary">
-            Hover any status for what it means
+            Open a department for its reports and next step
           </Text>
         </div>
 
-        <ul className="overflow-hidden rounded-xl border border-glass-border bg-glass shadow-[var(--shadow-glass)] backdrop-blur-2xl">
+        <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {coverage.departments.map((item) => (
-            <Fragment key={item.department.id}>
-              <CoverageLine
-                name={item.department.name}
-                description={item.department.description}
-                status={item.status}
-                assessmentCount={item.assessmentCount}
-                lastAssessedAt={item.lastAssessedAt}
-                latestRecordId={item.latestRecordId}
-                explainer={STATUS_EXPLAINER[item.status]}
-                // Only the sales agent is department-scoped, so it is the only
-                // department line that can be assessed today.
-                agent={item.department.available ? "sales" : undefined}
-                onAssess={assess}
-              />
-
-              {/* The step after the baseline, nested under the department whose
-                  current-state process it reads. */}
-              {item.workflow ? (
-                <CoverageLine
-                  nested
-                  name={`${item.department.name} workflow assessment`}
-                  description="Current process against the agentic version, stage by stage."
-                  status={item.workflow.status}
-                  assessmentCount={item.workflow.assessmentCount}
-                  lastAssessedAt={item.workflow.lastAssessedAt}
-                  latestRecordId={item.workflow.latestRecordId}
-                  explainer={WORKFLOW_EXPLAINER[item.workflow.status]}
-                  onAssess={assess}
-                />
-              ) : null}
-            </Fragment>
+            <DepartmentCard key={item.department.id} companyId={company.id} item={item} />
           ))}
+        </ul>
+      </section>
 
+      {/* The offshoring assessment spans functions, so it sits outside the
+          department grid rather than pretending to be one of them. */}
+      <section>
+        <Heading level={2} size="h3" className="mb-3">
+          Cross-department
+        </Heading>
+
+        <ul className="overflow-hidden rounded-xl border border-glass-border bg-glass shadow-[var(--shadow-glass)] backdrop-blur-2xl">
           <CoverageLine
             name="Workforce sourcing"
             description="Offshoring potential across functions, not inside one department."

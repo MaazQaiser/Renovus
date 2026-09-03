@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/primitives/Button";
 import {
@@ -114,7 +115,13 @@ export function WorkflowReport({ report: archived, backHref }: WorkflowReportPro
   );
   useSetTopbarMeta(topbarMeta);
 
-  const [tab, setTab] = useState<TabId>("current");
+  // ?tab=agentic lets the department page's workflow card land on the redesign,
+  // since that card already shows the current state.
+  const params = useSearchParams();
+  const requested = params.get("tab");
+  const [tab, setTab] = useState<TabId>(
+    TABS.some((item) => item.id === requested) ? (requested as TabId) : "current",
+  );
 
   const step = useCallback((delta: number) => {
     setTab((current) => {
@@ -220,7 +227,7 @@ export function WorkflowReport({ report: archived, backHref }: WorkflowReportPro
                 </span>
                 <span className="text-[13px] font-semibold text-doc-ink">{stage.name}</span>
                 <span className="min-w-0 text-[12.5px] leading-[1.5] text-doc-muted">
-                  {stage.today}
+                  {stage.who} {stage.today}.
                 </span>
                 <span className="flex items-center justify-end gap-2">
                   <span className="flex h-1.5 w-12 overflow-hidden rounded-full bg-doc-hair">
@@ -282,7 +289,8 @@ export function WorkflowReport({ report: archived, backHref }: WorkflowReportPro
                   </span>
                 </span>
                 <span className="min-w-0 border-l-2 border-doc-gold pl-3 text-[12.5px] leading-[1.5] text-doc-body">
-                  {stage.withAgent}
+                  <span className="font-semibold">{stage.agentName}</span>{" "}
+                  {stage.withAgent}.
                 </span>
                 <span className="flex items-center justify-end gap-2">
                   <span className="flex h-1.5 w-12 overflow-hidden rounded-full bg-doc-hair">

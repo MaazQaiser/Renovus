@@ -120,6 +120,26 @@ export function companyRecords(
   return records.filter((record) => matchesCompany(record, company));
 }
 
+/**
+ * A department's own records, split by which step they belong to. The
+ * department page lists both, so it needs them apart rather than merged.
+ */
+export function departmentRecords(
+  company: Company,
+  records: AssessmentRecord[],
+  departmentId: string,
+): { baseline: AssessmentRecord[]; workflow: AssessmentRecord[] } {
+  const own = companyRecords(company, records);
+  return {
+    baseline: newestFirst(
+      own.filter((record) => AGENT_DEPARTMENT[record.agent] === departmentId),
+    ),
+    workflow: newestFirst(
+      own.filter((record) => WORKFLOW_DEPARTMENT[record.agent] === departmentId),
+    ),
+  };
+}
+
 export function companyCoverage(
   company: Company,
   records: AssessmentRecord[],

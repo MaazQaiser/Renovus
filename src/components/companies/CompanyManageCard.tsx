@@ -9,7 +9,7 @@ import { Text } from "@/components/primitives/Text";
 import { formatAssessmentCount } from "@/lib/format";
 import type { CompanyCoverage } from "@/lib/coverage";
 import { CompanyAvatar } from "./CompanyAvatar";
-import { CoverageMeter, DepartmentBadges } from "./CoverageIndicators";
+import { CoverageMeter } from "./CoverageIndicators";
 import { StageBadge } from "./StageBadge";
 import { companyHref } from "./companyMeta";
 import type { Company } from "@/types/company";
@@ -81,7 +81,6 @@ export function CompanyManageCard({
 
       <div className="relative z-10 mt-4 border-t border-border-subtle pt-3">
         <CoverageMeter coverage={coverage} withCaption />
-        <DepartmentBadges coverage={coverage} className="mt-2.5" />
       </div>
     </Card>
   );

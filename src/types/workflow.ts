@@ -11,9 +11,22 @@ export interface WorkflowStage {
   id: string;
   /** Stage name from the standard process, e.g. "Qualify". */
   name: string;
-  /** How it runs today, in a phrase. */
+  /**
+   * Who runs it today, as a countable phrase — "2 SDRs", "An AE and ops".
+   * Always plural or compound so it agrees with `today`'s verb.
+   */
+  who: string;
+  /**
+   * What they do, as a verb phrase that follows `who` — "build the weekly list
+   * by hand". Stored without a subject so the two compose into one sentence.
+   */
   today: string;
-  /** What the agent takes over, in a phrase. */
+  /** The agent that takes this stage over, named so it can be talked about. */
+  agentName: string;
+  /**
+   * What that agent does, as a verb phrase following its name — stored without
+   * a subject so it composes the same way `today` does.
+   */
   withAgent: string;
   owner: StepOwner;
   /** Person-hours a week this stage costs today. */

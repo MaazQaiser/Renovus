@@ -8,7 +8,7 @@ import { Tooltip } from "@/components/primitives/Tooltip";
 import { cn } from "@/lib/cn";
 import type { CompanyCoverage } from "@/lib/coverage";
 import { CompanyAvatar } from "./CompanyAvatar";
-import { CoverageMeter, DepartmentBadges } from "./CoverageIndicators";
+import { CoverageMeter } from "./CoverageIndicators";
 import { StageBadge } from "./StageBadge";
 import { companyHref } from "./companyMeta";
 import type { Company } from "@/types/company";
@@ -30,7 +30,6 @@ const COLUMNS = [
   { key: "company", label: "PortCo", className: "" },
   { key: "stage", label: "Stage", className: "hidden sm:table-cell" },
   { key: "industry", label: "Industry", className: "hidden lg:table-cell" },
-  { key: "departments", label: "Departments", className: "hidden md:table-cell" },
   { key: "coverage", label: "Coverage", className: "" },
   {
     key: "assessments",
@@ -99,11 +98,7 @@ export function CompaniesTable({ rows, onEdit, onDelete }: CompaniesTableProps) 
                 </Tooltip>
               </td>
 
-              <td className={cn(CELL, "hidden w-[190px] md:table-cell")}>
-                <DepartmentBadges coverage={coverage} />
-              </td>
-
-              <td className={cn(CELL, "w-40")}>
+              <td className={cn(CELL, "w-[248px]")}>
                 <CoverageMeter coverage={coverage} />
               </td>
 
