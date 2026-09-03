@@ -27,6 +27,24 @@ export interface CompanyAvatarProps {
 }
 
 export function CompanyAvatar({ company, size = "md", className }: CompanyAvatarProps) {
+  if (company.logoUrl) {
+    return (
+      // Plain img, not next/image: the source is a data URL already sized to
+      // 128px, and the optimizer would flatten transparency onto white.
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={company.logoUrl}
+        alt=""
+        aria-hidden
+        className={cn(
+          "shrink-0 rounded-md border border-glass-border bg-glass object-contain",
+          sizes[size],
+          className,
+        )}
+      />
+    );
+  }
+
   return (
     <span
       aria-hidden

@@ -137,7 +137,7 @@ export const agents: Agent[] = [
     name: "Operational assessment",
     tagline: "Map operating workflows for efficiency gains.",
     description:
-      "We're building a deeper look at day-to-day operations, throughput, quality, and cost across Renovus portfolio companies.",
+      "We're building a deeper look at day-to-day operations, throughput, quality, and cost across Renovus PortCos.",
     purpose:
       "Identify operational processes where AI or automation could improve throughput, quality, or cost.",
     status: "in-progress",
@@ -152,6 +152,28 @@ export const agents: Agent[] = [
       "Map operating workflows",
       "Score process automation potential",
       "Prioritize operational opportunities",
+    ],
+    steps: [],
+  },
+  {
+    id: "workflow",
+    name: "Workflow assessment agent",
+    tagline: "Turn a current-state workflow into an agentic one.",
+    description:
+      "We're building an agent that reads how a workflow runs today, then proposes the agentic version of it — which steps an agent owns, which stay human, and what it takes to get there.",
+    purpose:
+      "Take a company's current workflow and recommend an agentic redesign, naming the steps an agent can own and the handoffs that stay human.",
+    status: "in-progress",
+    icon: "workflow",
+    accent: "warning",
+    route: "/agents",
+    estimatedMinutes: 30,
+    requiresDocuments: false,
+    requiresDepartment: false,
+    capabilities: [
+      "Capture the current workflow step by step",
+      "Propose the agentic version of each step",
+      "Flag the handoffs that stay human",
     ],
     steps: [],
   },

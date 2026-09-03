@@ -555,7 +555,7 @@ function buildPortfolio(
         : "—",
     })),
     note: benchmarked
-      ? `Positions are relative to the ${assessedCompanyCount} portfolio companies assessed so far.`
+      ? `Positions are relative to the ${assessedCompanyCount} PortCos assessed so far.`
       : "Among the first companies assessed — the benchmark builds as the portfolio completes.",
   };
 }

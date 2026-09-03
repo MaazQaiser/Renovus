@@ -2,45 +2,32 @@
 
 import { useState, useSyncExternalStore } from "react";
 import { Plus } from "lucide-react";
-import { companies as seedCompanies } from "@/data/companies";
 import { StageComposer } from "@/components/interview/StageComposer";
 import { Text } from "@/components/primitives/Text";
 import {
-  addCustomCompany,
-  CUSTOM_COMPANIES_EVENT,
-  listAssessmentCompanies,
-} from "@/lib/assessment/custom-companies";
+  createCompanyFromName,
+  getServerCompanies,
+  listCompanies,
+  subscribeToCompanies,
+} from "@/lib/companies";
 
 export interface CompanySelectionPromptProps {
   onSelect: (companyId: string, companyName: string) => void;
 }
 
-function subscribe(onStoreChange: () => void) {
-  window.addEventListener(CUSTOM_COMPANIES_EVENT, onStoreChange);
-  window.addEventListener("storage", onStoreChange);
-  return () => {
-    window.removeEventListener(CUSTOM_COMPANIES_EVENT, onStoreChange);
-    window.removeEventListener("storage", onStoreChange);
-  };
-}
-
-function getSnapshot() {
-  return listAssessmentCompanies(seedCompanies);
-}
-
-function getServerSnapshot() {
-  return seedCompanies;
-}
-
 export function CompanySelectionPrompt({ onSelect }: CompanySelectionPromptProps) {
   const [adding, setAdding] = useState(false);
   const [name, setName] = useState("");
-  const companies = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const companies = useSyncExternalStore(
+    subscribeToCompanies,
+    listCompanies,
+    getServerCompanies,
+  );
 
   const submitNew = () => {
     const trimmed = name.trim();
     if (!trimmed) return;
-    const record = addCustomCompany(trimmed);
+    const record = createCompanyFromName(trimmed);
     setName("");
     setAdding(false);
     onSelect(record.id, record.name);
@@ -81,7 +68,7 @@ export function CompanySelectionPrompt({ onSelect }: CompanySelectionPromptProps
             <span className="flex size-9 items-center justify-center rounded-lg border border-dashed border-slate-300 bg-glass-quiet">
               <Plus size={16} strokeWidth={1.75} aria-hidden />
             </span>
-            <span className="text-[15px] font-semibold leading-5">Add new company</span>
+            <span className="text-[15px] font-semibold leading-5">Add new PortCo</span>
             <span className="text-[12px] leading-4 text-tertiary">Not in the portfolio list</span>
           </button>
         ) : null}

@@ -83,7 +83,7 @@ export function LoginForm() {
     }
 
     signIn(result.session);
-    router.replace("/agents");
+    router.replace("/companies");
   }
 
   return (
@@ -95,7 +95,7 @@ export function LoginForm() {
         Welcome back
       </Heading>
       <Text tone="secondary" className="mt-2">
-        Access Renovus AI agents for portfolio companies.
+        Access Renovus AI agents for PortCos.
       </Text>
 
       <form onSubmit={onSubmit} className="mt-8 flex flex-col gap-6" noValidate>

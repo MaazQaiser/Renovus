@@ -1,9 +1,12 @@
 import { DEMO_SALES_SESSIONS } from "@/data/demo/salesSessions";
 import { OFFSHORING_PROFILES } from "@/data/offshoringProfiles";
 import { getMockOffshoringReport } from "@/data/offshoringReport";
-import { getCompanyById, companies } from "@/data/companies";
+import { getMockWorkflowReport } from "@/data/workflowReport";
+import { companies } from "@/data/companies";
+import { getCompanyById } from "@/lib/companies";
 import { buildSalesReport, buildSalesRecord } from "@/lib/assessment/sales-report";
 import { deleteRecord, listRecords, saveRecord } from "@/lib/records";
+import { readStorage, storageKeys, writeStorage } from "@/lib/storage";
 import type { Sector } from "@/types/company";
 import type { AssessmentRecord } from "@/types/record";
 import type { OffshoringSession } from "@/types/offshoring";
@@ -40,6 +43,13 @@ const OFFSHORING_AGE_DAYS: Record<string, number> = {
   "behaviour-framework": 26,
   eosis: 34,
 };
+
+/**
+ * Days after its sales baseline that each workflow assessment completed, when
+ * there is room for it. The workflow assessment reads the process the baseline
+ * captured, so it is always dated after it — see buildWorkflowDemoRecord.
+ */
+const WORKFLOW_LAG_DAYS = 3;
 
 function isoDaysAgo(days: number): string {
   return new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
@@ -110,6 +120,47 @@ function buildOffshoringDemoRecord(companyId: string): AssessmentRecord | undefi
   };
 }
 
+/**
+ * The workflow assessment that follows a department's baseline.
+ *
+ * Seeded for every company that has a sales baseline rather than a hand-picked
+ * subset, so the demo never shows a covered department whose next step is
+ * missing. `baselineCompletedAt` keeps it dated after the baseline it reads.
+ */
+function buildWorkflowDemoRecord(
+  companyId: string,
+  baselineCompletedAt: string,
+): AssessmentRecord | undefined {
+  const company = getCompanyById(companyId);
+  if (!company) return undefined;
+
+  // After the baseline, but never in the future: a recent baseline leaves less
+  // than the full lag before now, so fall back to the midpoint between them.
+  const baseline = new Date(baselineCompletedAt).getTime();
+  const now = Date.now();
+  const lagged = baseline + WORKFLOW_LAG_DAYS * 24 * 60 * 60 * 1000;
+  const completedAt = new Date(
+    lagged < now ? lagged : baseline + (now - baseline) / 2,
+  ).toISOString();
+  const report = getMockWorkflowReport(company.name, "Sales");
+
+  return {
+    id: `${DEMO_PREFIX}workflow-${companyId}`,
+    agent: "workflow",
+    title: "Workflow Assessment",
+    companyId,
+    companyName: company.name,
+    completedAt,
+    summary: `${report.headlineValue} ${report.headlineRest}.`,
+    metrics: [
+      { label: "Selling time a week", value: `+${report.delta.sellingHoursGained} hrs` },
+      { label: "Accounts a week", value: `+${report.delta.accountsGained}` },
+      { label: "Of the workflow", value: `${report.delta.percent}%` },
+    ],
+    payload: { kind: "workflow", report },
+  };
+}
+
 /** Every demo record, newest first. Pure — the caller persists. */
 export function buildDemoRecords(): AssessmentRecord[] {
   const assessedCompanyCount = companies.length;
@@ -128,7 +179,16 @@ export function buildDemoRecords(): AssessmentRecord[] {
     (record): record is AssessmentRecord => Boolean(record),
   );
 
-  return [...sales, ...offshoring].sort((a, b) =>
+  // One per sales baseline, so every covered Sales department has its
+  // workflow assessment behind it.
+  const workflow = DEMO_SALES_SESSIONS.map(({ session, completedAt }) =>
+    // A session with no company can't be attributed to a department.
+    session.companyId
+      ? buildWorkflowDemoRecord(session.companyId, completedAt)
+      : undefined,
+  ).filter((record): record is AssessmentRecord => Boolean(record));
+
+  return [...sales, ...offshoring, ...workflow].sort((a, b) =>
     b.completedAt.localeCompare(a.completedAt),
   );
 }
@@ -146,6 +206,41 @@ export function seedDemoRecords(): number {
   const records = buildDemoRecords();
   for (const record of records) saveRecord(record);
   return records.length;
+}
+
+/**
+ * Bumped when a demo record's payload shape changes. A stored record keeps the
+ * shape it was written with, so without this a browser seeded before the change
+ * would render a report against fields that no longer exist.
+ *
+ * 1 — first auto-seed. 2 — workflow report reshaped for the one-page layout.
+ * 3 — a workflow assessment for every sales baseline, not a subset.
+ * 4 — workflow dates clamped so a recent baseline cannot date one in the future.
+ * 5 — workflow report split into baseline and agentic parts.
+ * 6 — annual delta derived from the rounded figures the report displays.
+ * 7 — workflow report reframed as capacity at a fixed team and budget.
+ */
+const DEMO_REVISION = 7;
+
+/**
+ * Fills a first-run browser with the demo portfolio, so the product shows
+ * finished assessments and their reports instead of empty states. Re-seeds when
+ * DEMO_REVISION moves ahead of what this browser holds.
+ *
+ * Guarded by a revision rather than by `hasDemoRecords`, so clearing the demo
+ * data — or deleting a record by hand — stays cleared instead of coming back on
+ * the next page load. Returns how many records it wrote.
+ */
+export function seedDemoRecordsOnce(): number {
+  if (typeof window === "undefined") return 0;
+
+  // `true` is the revision-1 marker, written before this was a number.
+  const stored = readStorage<number | boolean>(storageKeys.demoSeeded);
+  const seen = typeof stored === "number" ? stored : stored ? 1 : 0;
+  if (seen >= DEMO_REVISION) return 0;
+
+  writeStorage(storageKeys.demoSeeded, DEMO_REVISION);
+  return seedDemoRecords();
 }
 
 /** Removes only what seeding added; assessments the user ran are untouched. */

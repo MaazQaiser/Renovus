@@ -10,11 +10,12 @@ import { TypingIndicator } from "./TypingIndicator";
 import { ReviewAnswersPanel } from "./ReviewAnswersPanel";
 import { InterviewStage } from "@/components/interview/InterviewStage";
 import { InterviewTopbarActions } from "@/components/interview/InterviewTopbarActions";
+import { ShareDialog } from "@/components/interview/ShareDialog";
 import { StageComposer } from "@/components/interview/StageComposer";
 import { StageQuestionPrompt } from "@/components/interview/StageQuestionPrompt";
 import { Button } from "@/components/primitives/Button";
 import { ConfirmationDialog } from "@/components/overlay/ConfirmationDialog";
-import { getCompanyById } from "@/data/companies";
+import { getCompanyById } from "@/lib/companies";
 import { getSalesQuestion } from "@/data/sales";
 import {
   acceptGate,
@@ -54,6 +55,7 @@ export function AssessmentChat() {
   const [typing, setTyping] = useState(false);
   const [reviewOpen, setReviewOpen] = useState(false);
   const [restartOpen, setRestartOpen] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
   const [whoText, setWhoText] = useState("");
 
   const company = session.companyId ? getCompanyById(session.companyId) : undefined;
@@ -69,6 +71,7 @@ export function AssessmentChat() {
           canReview={canReview}
           onReview={() => setReviewOpen(true)}
           onRestart={() => setRestartOpen(true)}
+          onShare={() => setShareOpen(true)}
         />
       ),
     }),
@@ -229,6 +232,18 @@ export function AssessmentChat() {
         onJump={(questionId) => {
           withTyping(() => jumpToQuestion(session, questionId));
         }}
+      />
+
+      <ShareDialog
+        open={shareOpen}
+        onOpenChange={setShareOpen}
+        subject="sales"
+        path="/agents/assessment"
+        label={
+          companyLabel
+            ? `sales assessment for ${companyLabel}`
+            : "sales function assessment"
+        }
       />
 
       <ConfirmationDialog

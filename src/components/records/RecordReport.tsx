@@ -3,11 +3,13 @@
 import { useCallback, useSyncExternalStore } from "react";
 import { FileQuestion } from "lucide-react";
 import { EmptyState } from "@/components/feedback/EmptyState";
+import { companyHref } from "@/components/companies/companyMeta";
 import { PageContainer } from "@/components/layout/PageContainer";
 import { Button } from "@/components/primitives/Button";
 import { Skeleton } from "@/components/primitives/Skeleton";
 import { OffshoringReport } from "@/components/offshoring/OffshoringReport";
 import { SalesReport } from "@/components/sales/SalesReport";
+import { WorkflowReport } from "@/components/workflow/WorkflowReport";
 import { listRecords, subscribeToRecords } from "@/lib/records";
 import type { AssessmentRecord } from "@/types/record";
 
@@ -45,11 +47,14 @@ export function RecordReport({ recordId }: RecordReportProps) {
           icon={FileQuestion}
           title="Record not found"
           description="This saved assessment is no longer on this device. Records are stored locally, so they don't follow you between browsers."
-          action={<Button href="/agents/records">Back to records</Button>}
+          action={<Button href="/companies">Back to PortCos</Button>}
         />
       </PageContainer>
     );
   }
+
+  // Records saved before `companyId` existed have no company page to return to.
+  const backHref = record.companyId ? companyHref(record.companyId) : undefined;
 
   if (record.payload.kind === "offshoring") {
     return (
@@ -58,9 +63,14 @@ export function RecordReport({ recordId }: RecordReportProps) {
           companyName: record.companyName,
           sector: record.payload.sector,
         }}
+        backHref={backHref}
       />
     );
   }
 
-  return <SalesReport report={record.payload.report} />;
+  if (record.payload.kind === "workflow") {
+    return <WorkflowReport report={record.payload.report} backHref={backHref} />;
+  }
+
+  return <SalesReport report={record.payload.report} backHref={backHref} />;
 }

@@ -1,3 +1,4 @@
+import type { Company } from "@/types/company";
 import type { AssessmentRecord } from "@/types/record";
 import { readStorage, removeStorage, storageKeys, writeStorage } from "./storage";
 
@@ -77,4 +78,27 @@ export function deleteRecord(id: string): void {
 /** Part F's benchmark needs at least three assessed companies. */
 export function assessedCompanyCount(): number {
   return new Set(listRecords().map((record) => record.companyName)).size;
+}
+
+/**
+ * How many saved assessments each company has. Records predating `companyId`
+ * are only attributable by name, so each record lands under exactly one of the
+ * two — read both back with `assessmentCountFor`, never a bare `get`.
+ */
+export function assessmentCountsByCompany(
+  records: AssessmentRecord[],
+): Map<string, number> {
+  const counts = new Map<string, number>();
+  for (const record of records) {
+    const key = record.companyId ?? record.companyName;
+    counts.set(key, (counts.get(key) ?? 0) + 1);
+  }
+  return counts;
+}
+
+export function assessmentCountFor(
+  counts: Map<string, number>,
+  company: Pick<Company, "id" | "name">,
+): number {
+  return (counts.get(company.id) ?? 0) + (counts.get(company.name) ?? 0);
 }

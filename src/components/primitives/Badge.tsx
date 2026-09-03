@@ -56,7 +56,9 @@ export function Badge({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-sm font-semibold uppercase tracking-[0.06em]",
+        // nowrap is load-bearing: the pill is a fixed h-5/h-6, so a label that
+        // wraps paints its second line outside the background.
+        "inline-flex items-center gap-1 whitespace-nowrap rounded-sm font-semibold uppercase tracking-[0.06em]",
         size === "sm" ? "h-5 px-1.5 text-[11px] leading-4" : "h-6 px-2 text-xs leading-4",
         tones[tone][variant],
         className,

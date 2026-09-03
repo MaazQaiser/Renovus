@@ -6,7 +6,8 @@ import { cn } from "@/lib/cn";
 import type { AppHref } from "@/lib/routes";
 
 export interface NavItemProps {
-  href: AppHref;
+  /** Absent on placeholders, which render as a span. */
+  href?: AppHref;
   label: string;
   icon: LucideIcon;
   active?: boolean;
@@ -45,7 +46,7 @@ export function NavItem({
     </>
   );
 
-  if (disabled) {
+  if (disabled || !href) {
     return (
       <span className={classes} title={label}>
         {content}

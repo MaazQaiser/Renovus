@@ -30,7 +30,7 @@ export function AgentHub() {
             operating leverage
           </Heading>
           <Text tone="secondary" className="mt-3 max-w-[48ch] text-[15px] leading-6">
-            Structured assessments for Renovus portfolio companies. Baseline the function,
+            Structured assessments for Renovus PortCos. Baseline the function,
             find leverage, prioritize action.
           </Text>
         </header>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Fira_Sans, Open_Sans, Source_Serif_4 } from "next/font/google";
+import { DemoDataProvider } from "@/providers/DemoDataProvider";
 import { SessionProvider } from "@/providers/SessionProvider";
 import "./globals.css";
 
@@ -30,7 +31,7 @@ export const metadata: Metadata = {
     default: "Renovus",
     template: "%s · Renovus",
   },
-  description: "Renovus AI Agent Platform for portfolio companies.",
+  description: "Renovus AI Agent Platform for PortCos.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -40,7 +41,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${firaSans.variable} ${openSans.variable} ${sourceSerif.variable} h-full antialiased`}
     >
       <body className="min-h-full font-sans">
-        <SessionProvider>{children}</SessionProvider>
+        <SessionProvider>
+          <DemoDataProvider>{children}</DemoDataProvider>
+        </SessionProvider>
       </body>
     </html>
   );

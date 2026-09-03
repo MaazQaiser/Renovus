@@ -20,7 +20,7 @@ export function AuthGuard({
   const { status } = useSession();
   const router = useRouter();
   const destination =
-    redirectTo ?? (require === "authenticated" ? "/login" : "/agents");
+    redirectTo ?? (require === "authenticated" ? "/login" : "/companies");
 
   useEffect(() => {
     if (status === "loading") return;

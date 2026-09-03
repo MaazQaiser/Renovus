@@ -17,7 +17,7 @@ export function AuthLayout({ children }: AuthLayoutProps) {
             Renovus
           </Text>
           <Heading level={2} size="display" tone="inverse" className="mt-3 max-w-sm">
-            AI agents for portfolio companies
+            AI agents for PortCos
           </Heading>
           <Text className="mt-6 max-w-[36ch] text-inverse/72">
             Identify where AI and offshoring can create operating leverage — one structured

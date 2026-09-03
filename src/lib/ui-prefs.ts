@@ -4,6 +4,7 @@ const UI_PREFS_EVENT = "renovers:ui-prefs";
 
 export interface UiPrefs {
   recordsView?: "list" | "grid";
+  companiesView?: "list" | "grid";
   sidebarCollapsed?: boolean;
 }
 

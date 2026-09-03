@@ -57,6 +57,7 @@ export function AgentGrid({ agents, loading = false }: AgentGridProps) {
             description={agent.description}
             status={agent.status}
             artSrc={agent.artSrc}
+            icon={agent.icon}
             href={agent.route}
           />
         </li>

@@ -7,7 +7,7 @@ import { TypingIndicator } from "@/components/assessment/chat/TypingIndicator";
 import { ReviewAnswersPanel } from "@/components/assessment/chat/ReviewAnswersPanel";
 import { Button } from "@/components/primitives/Button";
 import { ConfirmationDialog } from "@/components/overlay/ConfirmationDialog";
-import { getCompanyById } from "@/data/companies";
+import { getCompanyById } from "@/lib/companies";
 import {
   getOffshoringQuestion,
   offshoringQuestions,

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import { Button } from "@/components/primitives/Button";
-import { getCompanyById } from "@/data/companies";
+import { getCompanyById } from "@/lib/companies";
 import { getMockOffshoringReport } from "@/data/offshoringReport";
 import {
   getOrInitOffshoringSession,
@@ -10,6 +10,7 @@ import {
   subscribeToOffshoringSession,
 } from "@/lib/offshoring/session";
 import { useSetTopbarMeta } from "@/providers/TopbarMetaProvider";
+import type { AppHref } from "@/lib/routes";
 import { cn } from "@/lib/cn";
 import type { Sector } from "@/types/company";
 import {
@@ -51,9 +52,15 @@ type TabId = (typeof TABS)[number]["id"];
 export interface OffshoringReportProps {
   /** An archived record. Omit to render the live session. */
   archived?: { companyName: string; sector: Sector };
+  /**
+   * Where "back" goes for an archived report — the owning company's page, which
+   * is where saved assessments are listed. Falls back to the whole roster when
+   * the record predates `companyId`.
+   */
+  backHref?: AppHref;
 }
 
-export function OffshoringReport({ archived }: OffshoringReportProps = {}) {
+export function OffshoringReport({ archived, backHref }: OffshoringReportProps = {}) {
   const session = useSyncExternalStore(
     subscribeToOffshoringSession,
     getOrInitOffshoringSession,
@@ -69,22 +76,24 @@ export function OffshoringReport({ archived }: OffshoringReportProps = {}) {
   );
   const [tab, setTab] = useState<TabId>("answer");
 
-  const topbarMeta = useMemo(
-    () => ({
+  const topbarMeta = useMemo(() => {
+    const back = archived
+      ? {
+          href: backHref ?? ("/companies" as AppHref),
+          label: backHref ? "Back to PortCo" : "Back to PortCos",
+        }
+      : { href: "/agents/offshoring" as AppHref, label: "Back to conversation" };
+
+    return {
       title: "Workforce Sourcing Assessment",
       badges: [companyName],
       actions: (
-        <Button
-          href={archived ? "/agents/records" : "/agents/offshoring"}
-          variant="secondary"
-          size="sm"
-        >
-          {archived ? "Back to records" : "Back to conversation"}
+        <Button href={back.href} variant="secondary" size="sm">
+          {back.label}
         </Button>
       ),
-    }),
-    [companyName, archived],
-  );
+    };
+  }, [companyName, archived, backHref]);
   useSetTopbarMeta(topbarMeta);
 
   // ← / → step through the panels, as in the printed deck.

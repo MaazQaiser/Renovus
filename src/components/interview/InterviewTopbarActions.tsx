@@ -1,6 +1,6 @@
 "use client";
 
-import { ListChecks, RotateCcw } from "lucide-react";
+import { ListChecks, RotateCcw, Share2 } from "lucide-react";
 import { Button } from "@/components/primitives/Button";
 import { IconButton } from "@/components/primitives/IconButton";
 
@@ -8,6 +8,8 @@ export interface InterviewTopbarActionsProps {
   canReview: boolean;
   onReview: () => void;
   onRestart: () => void;
+  /** Omitted by agents that have not adopted sharing yet. */
+  onShare?: () => void;
 }
 
 /**
@@ -18,6 +20,7 @@ export function InterviewTopbarActions({
   canReview,
   onReview,
   onRestart,
+  onShare,
 }: InterviewTopbarActionsProps) {
   return (
     <div className="flex items-center justify-end gap-1">
@@ -37,6 +40,27 @@ export function InterviewTopbarActions({
             onClick={onReview}
           >
             Review answers
+          </Button>
+        </>
+      ) : null}
+
+      {onShare ? (
+        <>
+          <IconButton
+            icon={Share2}
+            label="Share assessment"
+            variant="ghost"
+            className="sm:hidden"
+            onClick={onShare}
+          />
+          <Button
+            variant="ghost"
+            size="sm"
+            leadingIcon={Share2}
+            className="hidden sm:inline-flex"
+            onClick={onShare}
+          >
+            Share
           </Button>
         </>
       ) : null}

@@ -65,6 +65,14 @@ export function getServerOffshoringSession(): OffshoringSession {
   return SERVER_PLACEHOLDER;
 }
 
+/**
+ * Read-only peek at the stored session. Unlike getOrInit, an absent session
+ * stays absent — the home page must not conjure a phantom run to resume.
+ */
+export function getOffshoringSession(): OffshoringSession | null {
+  return readStoredSession();
+}
+
 export function getOrInitOffshoringSession(): OffshoringSession {
   if (typeof window === "undefined") return SERVER_PLACEHOLDER;
 

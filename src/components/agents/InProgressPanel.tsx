@@ -4,7 +4,7 @@ import { useMemo, useState, useSyncExternalStore } from "react";
 import { deleteRun, listRuns, subscribeToRuns } from "@/lib/runs";
 import { ACTIVE_RUN_STATUSES, type AgentRun } from "@/types/run";
 import { formatDateTime } from "@/lib/format";
-import { getCompanyById } from "@/data/companies";
+import { getCompanyById } from "@/lib/companies";
 import { getDepartmentById } from "@/data/departments";
 import { ConfirmationDialog } from "@/components/overlay/ConfirmationDialog";
 import { InProgressRunCard } from "./InProgressRunCard";
@@ -54,7 +54,7 @@ export function InProgressPanel({ agent, continueHref }: InProgressPanelProps) {
         open={confirmOpen}
         onOpenChange={setConfirmOpen}
         title="Start over?"
-        description="This discards the in-progress assessment on this device. You can start again from company selection."
+        description="This discards the in-progress assessment on this device. You can start again from PortCo selection."
         confirmLabel="Start over"
         cancelLabel="Keep progress"
         onConfirm={() => {

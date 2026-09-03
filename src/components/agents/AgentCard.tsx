@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { Card } from "@/components/primitives/Card";
 import { Heading } from "@/components/primitives/Heading";
 import { Text } from "@/components/primitives/Text";
+import { AgentIcon } from "./AgentIcon";
 import { isAgentLaunchable } from "./AgentStatus";
 import type { AgentStatus as AgentStatusValue } from "@/types/agent";
 import type { AppHref } from "@/lib/routes";
@@ -13,10 +14,18 @@ export interface AgentCardProps {
   description: string;
   status: AgentStatusValue;
   artSrc?: string;
+  icon?: string;
   href: AppHref;
 }
 
-export function AgentCard({ name, description, status, artSrc, href }: AgentCardProps) {
+export function AgentCard({
+  name,
+  description,
+  status,
+  artSrc,
+  icon,
+  href,
+}: AgentCardProps) {
   const launchable = isAgentLaunchable(status);
 
   const footerLabel = launchable
@@ -56,7 +65,18 @@ export function AgentCard({ name, description, status, artSrc, href }: AgentCard
             // it is line art, so optimization buys little anyway.
             unoptimized
           />
-        ) : null}
+        ) : (
+          // Agents without hero art still need to fill the art well, so the
+          // glyph stands in at the same footprint.
+          <AgentIcon
+            name={icon}
+            size="lg"
+            className={cn(
+              "size-[180px] bg-transparent text-tertiary [&>svg]:size-16",
+              !launchable && "opacity-70",
+            )}
+          />
+        )}
       </div>
 
       <div className="flex flex-1 flex-col px-6 pb-7 pt-2 text-left">

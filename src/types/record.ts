@@ -1,8 +1,9 @@
 import type { SalesReportData } from "@/lib/assessment/sales-report";
 import type { OffshoringSession } from "./offshoring";
+import type { WorkflowReportData } from "./workflow";
 import type { Sector } from "./company";
 
-export type AssessmentRecordAgent = "sales" | "offshoring";
+export type AssessmentRecordAgent = "sales" | "offshoring" | "workflow";
 
 export interface RecordMetric {
   label: string;
@@ -35,6 +36,11 @@ export type AssessmentRecordPayload =
       kind: "sales";
       /** The derived report, not the transcript — see buildSalesRecord. */
       report: SalesReportData;
+    }
+  | {
+      kind: "workflow";
+      /** The current-state vs agentic comparison, already derived. */
+      report: WorkflowReportData;
     };
 
 export interface AssessmentRecord extends AssessmentRecordSummary {

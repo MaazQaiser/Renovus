@@ -35,15 +35,15 @@ export function CompanyGrid({
   onSelect,
   loading = false,
   error,
-  emptyTitle = "No companies found",
-  emptyDescription = "Try a different company name or search term.",
+  emptyTitle = "No PortCos found",
+  emptyDescription = "Try a different PortCo name or search term.",
 }: CompanyGridProps) {
   if (loading) {
     return (
       <div
         className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3"
         aria-busy="true"
-        aria-label="Loading companies"
+        aria-label="Loading PortCos"
       >
         <CompanyCardSkeleton />
         <CompanyCardSkeleton />
@@ -55,7 +55,7 @@ export function CompanyGrid({
 
   if (error) {
     return (
-      <Alert tone="error" title="Unable to load companies">
+      <Alert tone="error" title="Unable to load PortCos">
         {error}
       </Alert>
     );
@@ -78,7 +78,7 @@ export function CompanyGrid({
   return (
     <div
       role="radiogroup"
-      aria-label="Portfolio companies"
+      aria-label="PortCos"
       className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3"
       onKeyDown={(event) => {
         if (!onSelect) return;

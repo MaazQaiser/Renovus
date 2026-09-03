@@ -4,6 +4,7 @@ import type { AssessmentRecordAgent } from "@/types/record";
 export const AGENT_LABEL: Record<AssessmentRecordAgent, string> = {
   sales: "Sales",
   offshoring: "Offshoring",
+  workflow: "Workflow",
 };
 
 export function recordHref(id: string): AppHref {

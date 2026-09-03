@@ -26,6 +26,7 @@ import {
   subscribeToSalesSession,
 } from "@/lib/assessment/sales-session";
 import { assessedCompanyCount } from "@/lib/records";
+import type { AppHref } from "@/lib/routes";
 import { cn } from "@/lib/cn";
 import { useSetTopbarMeta } from "@/providers/TopbarMetaProvider";
 
@@ -46,9 +47,15 @@ type TabId = (typeof TABS)[number]["id"];
 export interface SalesReportProps {
   /** A rebuilt archived report. Omit to render the live session. */
   report?: SalesReportData;
+  /**
+   * Where "back" goes for an archived report — the owning company's page, which
+   * is where saved assessments are listed. Falls back to the whole roster when
+   * the record predates `companyId`.
+   */
+  backHref?: AppHref;
 }
 
-export function SalesReport({ report: archived }: SalesReportProps = {}) {
+export function SalesReport({ report: archived, backHref }: SalesReportProps = {}) {
   const session = useSyncExternalStore(
     subscribeToSalesSession,
     getOrInitSalesSession,
@@ -69,22 +76,24 @@ export function SalesReport({ report: archived }: SalesReportProps = {}) {
 
   const [tab, setTab] = useState<TabId>("snapshot");
 
-  const topbarMeta = useMemo(
-    () => ({
+  const topbarMeta = useMemo(() => {
+    const back = archived
+      ? {
+          href: backHref ?? ("/companies" as AppHref),
+          label: backHref ? "Back to PortCo" : "Back to PortCos",
+        }
+      : { href: "/agents/assessment" as AppHref, label: "Back to conversation" };
+
+    return {
       title: "Sales Baseline Report",
       badges: [report.meta.companyName],
       actions: (
-        <Button
-          href={archived ? "/agents/records" : "/agents/assessment"}
-          variant="secondary"
-          size="sm"
-        >
-          {archived ? "Back to records" : "Back to conversation"}
+        <Button href={back.href} variant="secondary" size="sm">
+          {back.label}
         </Button>
       ),
-    }),
-    [report.meta.companyName, archived],
-  );
+    };
+  }, [report.meta.companyName, archived, backHref]);
   useSetTopbarMeta(topbarMeta);
 
   const step = useCallback((delta: number) => {

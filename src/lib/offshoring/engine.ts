@@ -7,7 +7,7 @@ import {
   getOffshoringQuestion,
   phaseForQuestionId,
 } from "@/data/offshoringQuestions";
-import { getCompanyById } from "@/data/companies";
+import { getCompanyById } from "@/lib/companies";
 import { getMockOffshoringReport } from "@/data/offshoringReport";
 import { createId } from "@/lib/id";
 import { defaultSector, seedFunctionsForSector } from "@/lib/offshoring/functions";

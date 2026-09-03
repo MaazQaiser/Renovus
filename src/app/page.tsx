@@ -10,7 +10,7 @@ export default function RootPage() {
   const router = useRouter();
 
   useEffect(() => {
-    if (status === "authenticated") router.replace("/agents");
+    if (status === "authenticated") router.replace("/home");
     if (status === "anonymous") router.replace("/login");
   }, [status, router]);
 

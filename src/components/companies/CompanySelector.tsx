@@ -27,8 +27,8 @@ export function CompanySelector({
   return (
     <div className="flex flex-col gap-6">
       <SearchInput
-        label="Search companies"
-        placeholder="Search companies"
+        label="Search PortCos"
+        placeholder="Search PortCos"
         value={query}
         onChange={(event) => setQuery(event.target.value)}
       />
@@ -42,7 +42,7 @@ export function CompanySelector({
         emptyDescription={
           query.trim()
             ? "Try a different company name or search term."
-            : "No portfolio companies are configured for this workspace."
+            : "No PortCos are configured for this workspace."
         }
       />
     </div>

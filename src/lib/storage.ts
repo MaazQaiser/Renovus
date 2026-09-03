@@ -12,6 +12,9 @@ export const storageKeys = {
   run: (id: string) => `renovers:run:${id}`,
   result: (runId: string) => `renovers:results:${runId}`,
   records: "renovers:records",
+  companies: "renovers:companies",
+  companiesSeedRevision: "renovers:companies-seed-revision",
+  demoSeeded: "renovers:demo-seeded",
   record: (id: string) => `renovers:record:${id}`,
 } as const;
 

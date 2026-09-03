@@ -27,7 +27,12 @@ export function AppShell({ children, breadcrumb }: AppShellProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const collapsed = useSyncExternalStore(subscribeToUiPrefs, readCollapsed, () => true);
   const items = breadcrumb ?? breadcrumbForPath(pathname);
-  const hideTopbar = pathname === "/agents" || pathname === "/agents/";
+  /*
+   * A single crumb just repeats the sidebar's active item, so the bar would be
+   * 64px of chrome saying nothing. Keep it only where the trail actually
+   * locates you — /agents/assessment/results and the like.
+   */
+  const hideTopbar = items.length <= 1;
 
   const setCollapsed = useCallback((next: boolean | ((current: boolean) => boolean)) => {
     const resolved = typeof next === "function" ? next(readCollapsed()) : next;

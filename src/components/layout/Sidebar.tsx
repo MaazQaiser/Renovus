@@ -5,7 +5,7 @@ import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { Logo } from "@/components/brand/Logo";
 import { NavItem } from "@/components/navigation/NavItem";
 import { IconButton } from "@/components/primitives/IconButton";
-import { isNavItemActive, type NavItemConfig } from "@/data/nav";
+import { isNavItemActive, secondaryNav, type NavItemConfig } from "@/data/nav";
 import { cn } from "@/lib/cn";
 
 export interface SidebarProps {
@@ -66,17 +66,35 @@ export function Sidebar({
       >
         {items.map((item) => (
           <NavItem
-            key={item.href}
+            key={item.label}
             href={item.href}
             label={item.label}
             icon={item.icon}
+            badge={item.badge}
+            disabled={item.disabled}
             collapsed={collapsed}
             active={isNavItemActive(item, pathname)}
           />
         ))}
       </nav>
+      {secondaryNav.length > 0 ? (
+        <div className="flex shrink-0 flex-col gap-1 px-3 pb-1">
+          {secondaryNav.map((item) => (
+            <NavItem
+              key={item.label}
+              href={item.href}
+              label={item.label}
+              icon={item.icon}
+              badge={item.badge}
+              disabled={item.disabled}
+              collapsed={collapsed}
+              active={isNavItemActive(item, pathname)}
+            />
+          ))}
+        </div>
+      ) : null}
       {footer ? (
-        <div className="shrink-0 border-t border-border-inverse p-3">{footer}</div>
+        <div className="mt-2 shrink-0 border-t border-border-inverse p-3">{footer}</div>
       ) : null}
     </aside>
   );
