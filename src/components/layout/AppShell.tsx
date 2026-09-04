@@ -9,6 +9,8 @@ import { primaryNav } from "@/data/nav";
 import { IconButton } from "@/components/primitives/IconButton";
 import { UserMenu } from "@/components/navigation/UserMenu";
 import { breadcrumbForPath } from "@/lib/breadcrumb";
+import { resetLocalData } from "@/lib/reset";
+import { ConfirmationDialog } from "@/components/overlay/ConfirmationDialog";
 import { getUiPrefs, setUiPref, subscribeToUiPrefs } from "@/lib/ui-prefs";
 import { getServerRecords, listRecords, subscribeToRecords } from "@/lib/records";
 import { TopbarMetaProvider } from "@/providers/TopbarMetaProvider";
@@ -26,6 +28,7 @@ export interface AppShellProps {
 export function AppShell({ children, breadcrumb }: AppShellProps) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [resetOpen, setResetOpen] = useState(false);
   const collapsed = useSyncExternalStore(subscribeToUiPrefs, readCollapsed, () => true);
   /*
    * A saved report's crumbs name its PortCo, which only the record knows. Read
@@ -65,6 +68,9 @@ export function AppShell({ children, breadcrumb }: AppShellProps) {
             collapsed={collapsed}
             onCollapsedChange={(next) => setCollapsed(next)}
             footer={sidebarFooter}
+            onAction={(action) => {
+              if (action === "reset") setResetOpen(true);
+            }}
           />
         </div>
 
@@ -81,6 +87,9 @@ export function AppShell({ children, breadcrumb }: AppShellProps) {
                 items={primaryNav}
                 footer={<UserMenu placement="sidebar" />}
                 className="w-full"
+                onAction={(action) => {
+                  if (action === "reset") setResetOpen(true);
+                }}
               />
               <IconButton
                 icon={X}
@@ -115,6 +124,27 @@ export function AppShell({ children, breadcrumb }: AppShellProps) {
           </main>
         </div>
       </div>
+
+      <ConfirmationDialog
+        open={resetOpen}
+        onOpenChange={setResetOpen}
+        title="Reset everything on this device?"
+        description="Deletes every saved report, assessment in progress, PortCo edit and share on this device, then reloads to a clean start. You stay signed in. This cannot be undone."
+        confirmLabel="Reset and start over"
+        cancelLabel="Keep my data"
+        tone="danger"
+        onConfirm={() => {
+          resetLocalData();
+          /*
+           * A hard navigation is required, not router.push. The session stores
+           * hold the live session in a module-level `clientSession` that
+           * outlives a client-side transition, so a soft navigation would
+           * resurrect the assessment we just deleted from storage.
+           */
+          // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+          window.location.href = "/agents";
+        }}
+      />
     </TopbarMetaProvider>
   );
 }

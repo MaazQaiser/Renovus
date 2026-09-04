@@ -14,6 +14,9 @@ export interface NavItemProps {
   badge?: string;
   collapsed?: boolean;
   disabled?: boolean;
+  /** Dimmed like a disabled item, but still interactive. */
+  ghost?: boolean;
+  onDoubleClick?: () => void;
 }
 
 export function NavItem({
@@ -24,11 +27,14 @@ export function NavItem({
   badge,
   collapsed,
   disabled,
+  ghost,
+  onDoubleClick,
 }: NavItemProps) {
   const classes = cn(
     "flex items-center gap-3 rounded-md px-3 h-10 text-[13px] font-semibold transition-colors duration-[120ms]",
     collapsed && "justify-center px-0",
     disabled && "pointer-events-none opacity-40",
+    ghost && "opacity-40 hover:opacity-100",
     active
       ? "bg-white/8 text-inverse"
       : "text-inverse/72 hover:bg-white/6 hover:text-inverse",
@@ -45,6 +51,19 @@ export function NavItem({
       ) : null}
     </>
   );
+
+  if (onDoubleClick) {
+    return (
+      <button
+        type="button"
+        className={cn(classes, "w-full text-left")}
+        title={`${label} — double-click to reset local data`}
+        onDoubleClick={onDoubleClick}
+      >
+        {content}
+      </button>
+    );
+  }
 
   if (disabled || !href) {
     return (

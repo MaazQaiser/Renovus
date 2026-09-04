@@ -17,6 +17,10 @@ export interface NavItemConfig {
   /** Short trailing hint shown after the label. */
   badge?: string;
   disabled?: boolean;
+  /** Dimmed like a placeholder, but interactive. */
+  ghost?: boolean;
+  /** A behaviour rather than a destination. See Sidebar's onAction. */
+  action?: "reset";
   /**
    * Sub-paths that should NOT mark this item active — needed where one nav
    * href is a prefix of another (/agents vs /agents/records).
@@ -55,12 +59,18 @@ export const primaryNav: NavItemConfig[] = [
   },
 ];
 
-/** Pinned to the foot of the sidebar, above the user menu. */
+/**
+ * Pinned to the foot of the sidebar, above the user menu. Settings has no page
+ * yet, so it doubles as the demo reset: double-clicking it clears this device's
+ * data. Deliberately obscure — it reads as a dimmed placeholder, and the
+ * gesture is confirmed before anything is deleted.
+ */
 export const secondaryNav: NavItemConfig[] = [
   {
     label: "Settings",
     icon: Settings,
-    disabled: true,
+    ghost: true,
+    action: "reset",
   },
 ];
 

@@ -14,6 +14,7 @@ export interface SidebarProps {
   onCollapsedChange?: (collapsed: boolean) => void;
   footer?: React.ReactNode;
   className?: string;
+  onAction?: (action: NonNullable<NavItemConfig["action"]>) => void;
 }
 
 export function Sidebar({
@@ -22,6 +23,7 @@ export function Sidebar({
   onCollapsedChange,
   footer,
   className,
+  onAction,
 }: SidebarProps) {
   const pathname = usePathname();
 
@@ -87,6 +89,10 @@ export function Sidebar({
               icon={item.icon}
               badge={item.badge}
               disabled={item.disabled}
+              ghost={item.ghost}
+              onDoubleClick={
+                item.action && onAction ? () => onAction(item.action!) : undefined
+              }
               collapsed={collapsed}
               active={isNavItemActive(item, pathname)}
             />
