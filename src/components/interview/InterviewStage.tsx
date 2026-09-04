@@ -29,7 +29,7 @@ export function InterviewStage({
 }: InterviewStageProps) {
   return (
     <div className={cn("flex min-h-0 flex-1 flex-col overflow-y-auto", className)}>
-      <div className="mx-auto flex w-full max-w-[680px] flex-1 flex-col justify-center px-6 py-10 md:px-8">
+      <div className="mx-auto flex w-full max-w-[680px] flex-1 flex-col justify-center px-8 py-10">
         <div key={stepKey} className="animate-stage-enter flex flex-col gap-6">
           <AgentAvatar />
 

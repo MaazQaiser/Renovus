@@ -25,6 +25,15 @@ const WORKFLOW_DEPARTMENT: Partial<Record<AssessmentRecordAgent, string>> = {
   workflow: "sales",
 };
 
+/**
+ * Which department each process baseline describes. Also kept separate: it is
+ * the current-state write-up behind a department's baseline, not the baseline
+ * itself and not the workflow step.
+ */
+const PROCESS_DEPARTMENT: Partial<Record<AssessmentRecordAgent, string>> = {
+  process: "sales",
+};
+
 export type CoverageStatus =
   /** At least one saved assessment for this company and department. */
   | "covered"
@@ -54,6 +63,8 @@ export interface DepartmentCoverage {
   latestRecordId?: string;
   /** Undefined until the baseline is covered, which unlocks this step. */
   workflow?: WorkflowStepCoverage;
+  /** Newest process baseline for this department, if one exists. */
+  processRecordId?: string;
 }
 
 /**
@@ -98,7 +109,11 @@ function matchesCompany(record: AssessmentRecord, company: Company): boolean {
  * every future agent would silently land in the cross-department bucket.
  */
 function isCrossDepartment(record: AssessmentRecord): boolean {
-  return !AGENT_DEPARTMENT[record.agent] && !WORKFLOW_DEPARTMENT[record.agent];
+  return (
+    !AGENT_DEPARTMENT[record.agent] &&
+    !WORKFLOW_DEPARTMENT[record.agent] &&
+    !PROCESS_DEPARTMENT[record.agent]
+  );
 }
 
 /** Callers can't rely on the incoming array's order, so sort rather than assume. */
@@ -128,7 +143,11 @@ export function departmentRecords(
   company: Company,
   records: AssessmentRecord[],
   departmentId: string,
-): { baseline: AssessmentRecord[]; workflow: AssessmentRecord[] } {
+): {
+  baseline: AssessmentRecord[];
+  workflow: AssessmentRecord[];
+  process: AssessmentRecord[];
+} {
   const own = companyRecords(company, records);
   return {
     baseline: newestFirst(
@@ -136,6 +155,9 @@ export function departmentRecords(
     ),
     workflow: newestFirst(
       own.filter((record) => WORKFLOW_DEPARTMENT[record.agent] === departmentId),
+    ),
+    process: newestFirst(
+      own.filter((record) => PROCESS_DEPARTMENT[record.agent] === departmentId),
     ),
   };
 }
@@ -170,6 +192,9 @@ export function companyCoverage(
           )
         : [];
     const newestWorkflow = workflowRecords[0];
+    const newestProcess = newestFirst(
+      own.filter((record) => PROCESS_DEPARTMENT[record.agent] === department.id),
+    )[0];
 
     return {
       department,
@@ -186,6 +211,7 @@ export function companyCoverage(
               latestRecordId: newestWorkflow?.id,
             }
           : undefined,
+      processRecordId: newestProcess?.id,
     };
   });
 

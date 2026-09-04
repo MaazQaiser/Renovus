@@ -29,7 +29,7 @@ export function AuthLayout({ children }: AuthLayoutProps) {
         </Text>
       </aside>
 
-      <main className="flex flex-1 flex-col items-center justify-center px-6 py-10 md:px-10">
+      <main className="flex flex-1 flex-col items-center justify-center px-8 py-10">
         <div className="mb-8 lg:hidden">
           <Logo variant="lockup" size="md" priority />
         </div>

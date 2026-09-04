@@ -6,7 +6,6 @@ import { EmptyState } from "@/components/feedback/EmptyState";
 import { ConfirmationDialog } from "@/components/overlay/ConfirmationDialog";
 import { Button } from "@/components/primitives/Button";
 import { Heading } from "@/components/primitives/Heading";
-import { Text } from "@/components/primitives/Text";
 import type { ViewMode } from "@/components/primitives/ViewToggle";
 import { filterCompanies } from "@/data/companies";
 import {
@@ -38,6 +37,18 @@ import { CompanyFormDrawer } from "./CompanyFormDrawer";
 import { CompaniesTable } from "./CompaniesTable";
 import { CompanyManageCard } from "./CompanyManageCard";
 
+/**
+ * PortCos held at the top of the list, in this order, ahead of the A–Z run.
+ * Pinning by id rather than reordering the seed array so it survives rosters
+ * already in storage, which keep their own insertion order.
+ */
+const PINNED_IDS = ["xfact"];
+
+function pinRank(id: string): number {
+  const index = PINNED_IDS.indexOf(id);
+  return index === -1 ? PINNED_IDS.length : index;
+}
+
 export function CompaniesScreen() {
   const companies = useSyncExternalStore(
     subscribeToCompanies,
@@ -45,7 +56,8 @@ export function CompaniesScreen() {
     getServerCompanies,
   );
   const prefs = useSyncExternalStore(subscribeToUiPrefs, getUiPrefs, getServerUiPrefs);
-  const view: ViewMode = prefs.companiesView ?? "list";
+  // Cards are the default; the toggle still overrides it and persists.
+  const view: ViewMode = prefs.companiesView ?? "grid";
 
   // Counted once per archive change rather than per card.
   const records = useSyncExternalStore(subscribeToRecords, listRecords, getServerRecords);
@@ -66,8 +78,12 @@ export function CompaniesScreen() {
 
     const searched = filterCompanies(bySector, query);
 
-    // Always A–Z. Copy first: the store's array is a cached snapshot.
-    return [...searched].sort((a, b) => a.name.localeCompare(b.name));
+    // Pinned first, then A–Z. Copy first: the store's array is a cached
+    // snapshot, so sorting in place would mutate it.
+    return [...searched].sort((a, b) => {
+      const pinDelta = pinRank(a.id) - pinRank(b.id);
+      return pinDelta !== 0 ? pinDelta : a.name.localeCompare(b.name);
+    });
   }, [companies, sector, query]);
 
   // Derived once per row rather than inside each card, so both views render
@@ -109,15 +125,10 @@ export function CompaniesScreen() {
 
   return (
     <div className="flex flex-col gap-6">
-      <header className="flex flex-wrap items-end justify-between gap-4 pt-8">
-        <div>
-          <Heading level={1} size="h1">
-            PortCos
-          </Heading>
-          <Text tone="secondary" className="mt-1.5">
-            The PortCos every agent can assess. Changes apply everywhere.
-          </Text>
-        </div>
+      <header className="flex flex-wrap items-end justify-between gap-4">
+        <Heading level={1} size="h1">
+          PortCos
+        </Heading>
         <Button variant="primary" leadingIcon={Plus} onClick={openCreate}>
           New PortCo
         </Button>

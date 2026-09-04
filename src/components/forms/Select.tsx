@@ -43,7 +43,7 @@ export function Select({
         aria-invalid={isInvalid || undefined}
         aria-describedby={field?.describedBy}
         className={cn(
-          "w-full appearance-none rounded-full border bg-glass py-0 font-medium text-foreground backdrop-blur-xl",
+          "w-full appearance-none rounded-control border bg-glass py-0 font-medium text-foreground backdrop-blur-xl",
           "shadow-[var(--shadow-glass)] transition-colors duration-[120ms] ease-[var(--ease-standard)]",
           "hover:border-border-strong focus:outline-none focus-visible:border-accent focus-visible:ring-2 focus-visible:ring-accent",
           "disabled:cursor-not-allowed disabled:bg-surface-tertiary disabled:text-disabled",

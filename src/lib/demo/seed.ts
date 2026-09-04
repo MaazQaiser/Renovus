@@ -2,11 +2,13 @@ import { DEMO_SALES_SESSIONS } from "@/data/demo/salesSessions";
 import { OFFSHORING_PROFILES } from "@/data/offshoringProfiles";
 import { getMockOffshoringReport } from "@/data/offshoringReport";
 import { getMockWorkflowReport } from "@/data/workflowReport";
+import { getMockSalesPreAssessment } from "@/data/salesPreAssessment";
 import { companies } from "@/data/companies";
 import { getCompanyById } from "@/lib/companies";
 import { buildSalesReport, buildSalesRecord } from "@/lib/assessment/sales-report";
 import { deleteRecord, listRecords, saveRecord } from "@/lib/records";
 import { readStorage, storageKeys, writeStorage } from "@/lib/storage";
+import { allStats, impactTotals } from "@/lib/pre-assessment";
 import type { Sector } from "@/types/company";
 import type { AssessmentRecord } from "@/types/record";
 import type { OffshoringSession } from "@/types/offshoring";
@@ -30,7 +32,6 @@ const DEMO_PREFIX = "rec-demo-";
 const OFFSHORING_COMPANY_IDS = [
   "collegies",
   "xfact",
-  "dataserve",
   "behaviour-framework",
   "eosis",
 ] as const;
@@ -39,7 +40,6 @@ const OFFSHORING_COMPANY_IDS = [
 const OFFSHORING_AGE_DAYS: Record<string, number> = {
   collegies: 4,
   xfact: 9,
-  dataserve: 17,
   "behaviour-framework": 26,
   eosis: 34,
 };
@@ -161,6 +161,40 @@ function buildWorkflowDemoRecord(
   };
 }
 
+/**
+ * The sales process AI pre-assessment behind a department's baseline: what the
+ * report is built on, how selling runs today, the same work with software doing
+ * the repetitive parts, and what that is worth. Dated with the baseline, since
+ * it is the same round of discovery.
+ */
+function buildProcessDemoRecord(
+  companyId: string,
+  baselineCompletedAt: string,
+): AssessmentRecord | undefined {
+  const company = getCompanyById(companyId);
+  if (!company) return undefined;
+
+  const report = getMockSalesPreAssessment(company.name);
+  const stats = allStats(report.motions);
+  const impact = impactTotals(report.interventions);
+
+  return {
+    id: `${DEMO_PREFIX}process-${companyId}`,
+    agent: "process",
+    title: "Sales Process AI Pre-Assessment",
+    companyId,
+    companyName: company.name,
+    completedAt: baselineCompletedAt,
+    summary: `${report.motions.length} sales motions mapped against four stages. ${stats.freed} of ${stats.now} selling hours a week can move to software.`,
+    metrics: [
+      { label: "Revenue upside", value: `+$${impact.revLoM.toFixed(1)}–${impact.revHiM.toFixed(1)}M` },
+      { label: "Hours freed a week", value: String(stats.freed) },
+      { label: "Motions", value: String(report.motions.length) },
+    ],
+    payload: { kind: "process", report },
+  };
+}
+
 /** Every demo record, newest first. Pure — the caller persists. */
 export function buildDemoRecords(): AssessmentRecord[] {
   const assessedCompanyCount = companies.length;
@@ -188,7 +222,15 @@ export function buildDemoRecords(): AssessmentRecord[] {
       : undefined,
   ).filter((record): record is AssessmentRecord => Boolean(record));
 
-  return [...sales, ...offshoring, ...workflow].sort((a, b) =>
+  // One per sales baseline: the process baseline is that same discovery,
+  // written up motion by motion.
+  const process = DEMO_SALES_SESSIONS.map(({ session, completedAt }) =>
+    session.companyId
+      ? buildProcessDemoRecord(session.companyId, completedAt)
+      : undefined,
+  ).filter((record): record is AssessmentRecord => Boolean(record));
+
+  return [...sales, ...offshoring, ...workflow, ...process].sort((a, b) =>
     b.completedAt.localeCompare(a.completedAt),
   );
 }
@@ -223,8 +265,10 @@ export function seedDemoRecords(): number {
  * 9 — head count became a role phrase, and `today` a composable verb phrase.
  * 10 — `withAgent` became a composable verb phrase too.
  * 11 — each stage's agent is named.
+ * 12 — a sales process baseline per department.
+ * 13 — that baseline became the full pre-assessment: data, as-is, to-be, impact.
  */
-const DEMO_REVISION = 11;
+const DEMO_REVISION = 13;
 
 /**
  * Fills a first-run browser with the demo portfolio, so the product shows

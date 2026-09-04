@@ -7,7 +7,6 @@ import { Breadcrumb, type BreadcrumbItem } from "@/components/navigation/Breadcr
 import { Badge } from "@/components/primitives/Badge";
 import { Text } from "@/components/primitives/Text";
 import { useTopbarMeta } from "@/providers/TopbarMetaProvider";
-import { cn } from "@/lib/cn";
 
 export interface TopbarProps {
   onMenuClick?: () => void;
@@ -19,7 +18,7 @@ export function Topbar({ onMenuClick, breadcrumb }: TopbarProps) {
   const hasActions = Boolean(meta.actions);
 
   return (
-    <header className="flex h-16 shrink-0 items-center px-4 md:px-6">
+    <header className="flex h-16 shrink-0 items-center px-8">
       <div className="flex w-full items-center justify-between gap-4">
         <div className="flex min-w-0 flex-1 items-center gap-3">
           {onMenuClick ? (
@@ -31,17 +30,13 @@ export function Topbar({ onMenuClick, breadcrumb }: TopbarProps) {
             />
           ) : null}
 
-          {breadcrumb ? (
-            <Breadcrumb items={breadcrumb} className="hidden min-w-0 md:block" />
-          ) : null}
+          {breadcrumb ? <Breadcrumb items={breadcrumb} className="min-w-0" /> : null}
 
-          {/* The breadcrumb already names the page on md+, so the title only
-              stands in where the breadcrumb is hidden (or absent). */}
-          {meta.title ? (
-            <Text
-              weight="semibold"
-              className={cn("truncate text-[15px] leading-6", breadcrumb && "md:hidden")}
-            >
+          {/* The breadcrumb already names the page, so the title only stands in
+              where there is no trail at all. Hiding the trail on narrow screens
+              left no way back except the browser button. */}
+          {meta.title && !breadcrumb ? (
+            <Text weight="semibold" className="truncate text-[15px] leading-6">
               {meta.title}
             </Text>
           ) : null}

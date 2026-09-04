@@ -90,14 +90,14 @@ export function DepartmentDetail({ companyId, departmentId }: DepartmentDetailPr
     () =>
       company
         ? departmentRecords(company, records, departmentId)
-        : { baseline: [], workflow: [] },
+        : { baseline: [], workflow: [], process: [] },
     [company, records, departmentId],
   );
 
   if (!company || !department || !item) {
     return (
-      <div className="flex flex-col gap-6 pt-8">
-        <BackButton href="/companies" label="All PortCos" />
+      <div className="flex flex-col gap-6">
+        <div className="self-start"><BackButton href="/companies" label="All PortCos" /></div>
         <EmptyState
           icon={Building2}
           title="Department not found"
@@ -140,15 +140,13 @@ export function DepartmentDetail({ companyId, departmentId }: DepartmentDetailPr
     workflowRecord?.payload.kind === "workflow"
       ? workflowRecord.payload.report
       : undefined;
-  const allRecords = [...own.baseline, ...own.workflow].sort((left, right) =>
-    right.completedAt.localeCompare(left.completedAt),
+  const allRecords = [...own.baseline, ...own.workflow, ...own.process].sort(
+    (left, right) => right.completedAt.localeCompare(left.completedAt),
   );
 
   return (
-    <div className="flex flex-col gap-6 pb-16">
-      <div className="pt-8">
-        <BackButton href={companyHref(company.id)} label={company.name} />
-      </div>
+    <div className="flex flex-col gap-6">
+      <div className="self-start"><BackButton href={companyHref(company.id)} label={company.name} /></div>
 
       <header>
         <Heading level={1} size="h1">

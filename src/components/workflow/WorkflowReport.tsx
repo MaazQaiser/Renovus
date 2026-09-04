@@ -147,7 +147,7 @@ export function WorkflowReport({ report: archived, backHref }: WorkflowReportPro
 
   return (
     <div className="bg-surface font-sans text-doc-ink">
-      <div className="mx-auto max-w-[1100px] px-6 py-10 md:px-10">
+      <div className="mx-auto max-w-[1100px] px-8 py-10">
         <Kicker>
           Workflow Assessment · {report.department} · {report.processModel}
         </Kicker>

@@ -17,7 +17,7 @@ export function Textarea({ invalid, className, id, ...props }: TextareaProps) {
       aria-invalid={isInvalid || undefined}
       aria-describedby={field?.describedBy}
       className={cn(
-        "w-full rounded-lg border bg-glass backdrop-blur-xl px-4 py-3 text-[15px] leading-6 text-foreground placeholder:text-tertiary",
+        "w-full rounded-control border bg-glass backdrop-blur-xl px-4 py-3 text-[15px] leading-6 text-foreground placeholder:text-tertiary",
         "transition-colors duration-[120ms] ease-[var(--ease-standard)]",
         "hover:border-border-strong focus-visible:border-accent",
         "disabled:cursor-not-allowed disabled:bg-surface-tertiary disabled:text-disabled",

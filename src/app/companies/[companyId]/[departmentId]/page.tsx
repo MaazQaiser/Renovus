@@ -12,7 +12,7 @@ export default async function DepartmentDetailPage({
   const { companyId, departmentId } = await params;
 
   return (
-    <PageContainer width="default">
+    <PageContainer width="default" className="pb-16">
       <DepartmentDetail companyId={companyId} departmentId={departmentId} />
     </PageContainer>
   );

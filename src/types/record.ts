@@ -1,9 +1,10 @@
 import type { SalesReportData } from "@/lib/assessment/sales-report";
 import type { OffshoringSession } from "./offshoring";
 import type { WorkflowReportData } from "./workflow";
+import type { SalesPreAssessmentData } from "./sales-pre-assessment";
 import type { Sector } from "./company";
 
-export type AssessmentRecordAgent = "sales" | "offshoring" | "workflow";
+export type AssessmentRecordAgent = "sales" | "offshoring" | "workflow" | "process";
 
 export interface RecordMetric {
   label: string;
@@ -36,6 +37,11 @@ export type AssessmentRecordPayload =
       kind: "sales";
       /** The derived report, not the transcript — see buildSalesRecord. */
       report: SalesReportData;
+    }
+  | {
+      kind: "process";
+      /** Data needed, as-is, to-be and impact, motion by motion. */
+      report: SalesPreAssessmentData;
     }
   | {
       kind: "workflow";

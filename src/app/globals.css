@@ -150,6 +150,9 @@
   --color-doc-null: var(--doc-null);
   --color-doc-lead-border: var(--doc-lead-border);
 
+  /* Interactive controls — buttons, inputs, selects — share one radius. */
+  --radius-control: 12px;
+
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 14px;

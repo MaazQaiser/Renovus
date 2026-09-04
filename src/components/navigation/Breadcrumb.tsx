@@ -16,7 +16,9 @@ export interface BreadcrumbProps {
 export function Breadcrumb({ items, className }: BreadcrumbProps) {
   return (
     <nav aria-label="Breadcrumb" className={className}>
-      <ol className="flex items-center gap-1 text-[13px] leading-5">
+      {/* Scrolls rather than wrapping or truncating: on a narrow window the
+          trail is the only way back, so every crumb has to stay reachable. */}
+      <ol className="flex items-center gap-1 overflow-x-auto whitespace-nowrap text-[13px] leading-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {items.map((item, index) => {
           const last = index === items.length - 1;
           return (
@@ -25,7 +27,10 @@ export function Breadcrumb({ items, className }: BreadcrumbProps) {
                 <ChevronRight size={14} strokeWidth={1.75} className="text-tertiary" aria-hidden />
               ) : null}
               {item.href && !last ? (
-                <Link href={item.href} className="text-secondary hover:text-foreground">
+                <Link
+                  href={item.href}
+                  className="rounded-sm text-secondary transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                >
                   {item.label}
                 </Link>
               ) : (

@@ -11,6 +11,8 @@ const sizes = {
   sm: "max-w-md",
   md: "max-w-lg",
   lg: "max-w-2xl",
+  /** Wide enough for a horizontal task flow to stay on one row. */
+  xl: "max-w-[1240px]",
 } as const;
 
 export interface ModalProps {

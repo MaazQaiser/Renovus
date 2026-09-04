@@ -12,6 +12,7 @@ import {
   Pencil,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { getAgentById } from "@/data/agents";
 import { EmptyState } from "@/components/feedback/EmptyState";
 import { ConfirmationDialog } from "@/components/overlay/ConfirmationDialog";
 import { RecordRow } from "@/components/records/RecordRow";
@@ -254,8 +255,8 @@ export function CompanyDetail({ companyId }: CompanyDetailProps) {
 
   if (!company || !coverage) {
     return (
-      <div className="flex flex-col gap-6 pt-8">
-        <BackButton href="/companies" label="All PortCos" />
+      <div className="flex flex-col gap-6">
+        <div className="self-start"><BackButton href="/companies" label="All PortCos" /></div>
         <EmptyState
           icon={Building2}
           title="PortCo not found"
@@ -296,10 +297,8 @@ export function CompanyDetail({ companyId }: CompanyDetailProps) {
     : undefined;
 
   return (
-    <div className="flex flex-col gap-6 pb-16">
-      <div className="pt-8">
-        <BackButton href="/companies" label="All PortCos" />
-      </div>
+    <div className="flex flex-col gap-6">
+      <div className="self-start"><BackButton href="/companies" label="All PortCos" /></div>
 
       <header className="flex flex-wrap items-start justify-between gap-4">
         <div className="flex min-w-0 items-start gap-4">
@@ -376,8 +375,8 @@ export function CompanyDetail({ companyId }: CompanyDetailProps) {
 
         <ul className="overflow-hidden rounded-xl border border-glass-border bg-glass shadow-[var(--shadow-glass)] backdrop-blur-2xl">
           <CoverageLine
-            name="Workforce sourcing"
-            description="Offshoring potential across functions, not inside one department."
+            name={getAgentById("offshoring")?.name ?? "Offshoring potential assessment"}
+            description="Spans every function rather than sitting inside one department."
             status={cross.status}
             assessmentCount={cross.assessmentCount}
             lastAssessedAt={cross.lastAssessedAt}

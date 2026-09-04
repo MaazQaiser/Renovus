@@ -8,7 +8,7 @@ import type { AppHref } from "@/lib/routes";
 import { Spinner } from "./Spinner";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 font-semibold whitespace-nowrap rounded-full transition-[color,background-color,border-color,box-shadow] duration-[140ms] ease-[var(--ease-standard)] disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center gap-2 font-semibold whitespace-nowrap rounded-control transition-[color,background-color,border-color,box-shadow] duration-[140ms] ease-[var(--ease-standard)] disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {

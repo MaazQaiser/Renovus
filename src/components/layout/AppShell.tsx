@@ -10,6 +10,7 @@ import { IconButton } from "@/components/primitives/IconButton";
 import { UserMenu } from "@/components/navigation/UserMenu";
 import { breadcrumbForPath } from "@/lib/breadcrumb";
 import { getUiPrefs, setUiPref, subscribeToUiPrefs } from "@/lib/ui-prefs";
+import { getServerRecords, listRecords, subscribeToRecords } from "@/lib/records";
 import { TopbarMetaProvider } from "@/providers/TopbarMetaProvider";
 import type { BreadcrumbItem } from "@/components/navigation/Breadcrumb";
 
@@ -26,7 +27,13 @@ export function AppShell({ children, breadcrumb }: AppShellProps) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const collapsed = useSyncExternalStore(subscribeToUiPrefs, readCollapsed, () => true);
-  const items = breadcrumb ?? breadcrumbForPath(pathname);
+  /*
+   * A saved report's crumbs name its PortCo, which only the record knows. Read
+   * through the store rather than calling getRecord directly, so the server and
+   * hydration snapshots agree and the trail fills in on the client pass.
+   */
+  const records = useSyncExternalStore(subscribeToRecords, listRecords, getServerRecords);
+  const items = breadcrumb ?? breadcrumbForPath(pathname, records);
   /*
    * A single crumb just repeats the sidebar's active item, so the bar would be
    * 64px of chrome saying nothing. Keep it only where the trail actually
@@ -87,14 +94,19 @@ export function AppShell({ children, breadcrumb }: AppShellProps) {
 
         <div className="flex min-h-0 min-w-0 flex-1 flex-col">
           {hideTopbar ? (
-            <div className="flex h-14 shrink-0 items-center justify-between px-4 lg:hidden">
-              <IconButton
-                icon={Menu}
-                label="Open navigation"
-                onClick={() => setMobileOpen(true)}
-              />
-              <UserMenu placement="topbar" />
-            </div>
+            <>
+              <div className="flex h-16 shrink-0 items-center justify-between px-8 lg:hidden">
+                <IconButton
+                  icon={Menu}
+                  label="Open navigation"
+                  onClick={() => setMobileOpen(true)}
+                />
+                <UserMenu placement="topbar" />
+              </div>
+              {/* No bar to show, but page content still has to start level with
+                  the pages that do show one. */}
+              <div className="hidden h-16 shrink-0 lg:block" aria-hidden />
+            </>
           ) : (
             <Topbar onMenuClick={() => setMobileOpen(true)} breadcrumb={items} />
           )}

@@ -44,13 +44,14 @@ export function DepartmentCard({ companyId, item }: DepartmentCardProps) {
   const linked = item.status !== "no-agent";
 
   /**
-   * Straight to the workflow report once there is one — that report is what the
-   * card is a summary of. Without one the department page is the only place to
-   * start an assessment, so it stays the fallback.
+   * The process baseline is the fullest picture of how the department runs, so
+   * it is the destination when one exists; the workflow report is the fallback,
+   * and the department page last, since it is the only place to start an
+   * assessment when nothing is saved.
    */
-  const workflowRecordId = item.workflow?.latestRecordId;
-  const href: AppHref = workflowRecordId
-    ? recordHref(workflowRecordId)
+  const reportId = item.processRecordId ?? item.workflow?.latestRecordId;
+  const href: AppHref = reportId
+    ? recordHref(reportId)
     : departmentHref(companyId, item.department.id);
 
   const body = (

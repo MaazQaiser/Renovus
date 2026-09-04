@@ -70,7 +70,15 @@ export function initialsFromName(name: string): string {
  * Bumped whenever data/companies.ts gains a field that already-stored rosters
  * predate. Revision 1 added the portfolio logos.
  */
-const SEED_REVISION = 3;
+const SEED_REVISION = 4;
+
+/**
+ * Seed companies dropped from data/companies.ts. Removing the entry alone would
+ * leave it in every roster already in storage, and there is no way to tell a
+ * retired seed from a company the user added — so name them explicitly. Only
+ * these exact ids are pruned.
+ */
+const RETIRED_SEED_IDS = new Set(["dataserve"]);
 
 /**
  * First read with nothing stored seeds from data/companies.ts and folds in any
@@ -99,9 +107,10 @@ function upgradeStoredSeeds(stored: Company[]): Company[] {
   if (revision >= SEED_REVISION) return stored;
 
   const seedsById = new Map(seedCompanies.map((company) => [company.id, company]));
+  const kept = stored.filter((company) => !RETIRED_SEED_IDS.has(company.id));
   const validStages = new Set<string>(STAGES);
 
-  const upgraded = stored.map((company) => {
+  const upgraded = kept.map((company) => {
     const seed = seedsById.get(company.id);
     /*
      * Revision 3 replaced the ownership-lifecycle stages with assessment

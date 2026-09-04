@@ -24,7 +24,7 @@ export function PageContainer({
       className={cn(
         "mx-auto w-full",
         widths[width],
-        padded && "px-6 py-6 md:px-8 md:py-8 xl:px-10 xl:py-10",
+        padded && "px-8 py-6 md:py-8 xl:py-10",
         className,
       )}
     >

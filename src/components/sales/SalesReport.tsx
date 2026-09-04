@@ -119,7 +119,7 @@ export function SalesReport({ report: archived, backHref }: SalesReportProps = {
       <div
         role="tablist"
         aria-label="Report sections"
-        className="flex gap-6 overflow-x-auto border-b border-doc-sep px-6 md:px-10"
+        className="flex gap-6 overflow-x-auto border-b border-doc-sep px-8"
       >
         {TABS.map((item, index) => {
           const active = tab === item.id;
@@ -154,7 +154,7 @@ export function SalesReport({ report: archived, backHref }: SalesReportProps = {
         </span>
       </div>
 
-      <div className="px-6 py-10 md:px-10">
+      <div className="px-8 py-10">
         {tab === "snapshot" ? (
           <section>
             <Kicker>Sales &amp; Marketing Baseline · Portfolio Operations</Kicker>

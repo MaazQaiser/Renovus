@@ -131,9 +131,11 @@ content. A flat `2/4/6/8px` scale reads too hard for this material.
 --radius-2xl: 26px;
 ```
 
-- **Buttons / inputs / icon buttons / segmented controls** → `rounded-full`
+- **Buttons / inputs / icon buttons / segmented controls** → `rounded-control`
+  (12px, defined in `globals.css`). One radius for every interactive control;
+  the scale's `sm`/`md`/`lg` are for decoration, not controls.
 - **Cards / panels / list containers** → `rounded-xl` (16px)
-- Pills need more horizontal padding than rectangles: `px-3.5 / px-5 / px-6` at
+- Controls keep the generous horizontal padding: `px-3.5 / px-5 / px-6` at
   `h-8 / h-10 / h-12`.
 
 Round the **fill** of a progress bar as well as its track, or short values poke
@@ -188,7 +190,7 @@ const toRgb = css => { cx.fillStyle = css; cx.fillRect(0,0,1,1);
 --primary-active: #0f141d;
 ```
 
-Base for every variant: `rounded-full`, `font-semibold`, and a transition on
+Base for every variant: `rounded-control`, `font-semibold`, and a transition on
 `color, background-color, border-color, box-shadow` at `140ms`.
 
 | Variant | Treatment |
@@ -304,7 +306,7 @@ Two traps that produce false confidence:
 1. Paste the `body` gradient (§1). Strip opaque backgrounds off every full-height
    wrapper.
 2. Paste the `--glass-*` tokens and `--shadow-glass` / `--shadow-raised` (§2).
-3. Bump the radius scale; make interactive elements `rounded-full` (§3).
+3. Bump the radius scale; make interactive elements `rounded-control` (§3).
 4. Set borders to `slate-300`, quiet tracks to `slate-200` (§4).
 5. Apply glass to **every** chrome surface, including hand-rolled ones and nested
    chips (§2).

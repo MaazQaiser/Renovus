@@ -22,7 +22,7 @@ export function ViewToggle({ value, onChange, className }: ViewToggleProps) {
       role="radiogroup"
       aria-label="View mode"
       className={cn(
-        "inline-flex items-center gap-0.5 rounded-full border border-glass-border bg-glass p-1 shadow-[var(--shadow-glass)] backdrop-blur-xl",
+        "inline-flex items-center gap-0.5 rounded-control border border-glass-border bg-glass p-1 shadow-[var(--shadow-glass)] backdrop-blur-xl",
         className,
       )}
     >
@@ -38,7 +38,7 @@ export function ViewToggle({ value, onChange, className }: ViewToggleProps) {
             title={option.label}
             onClick={() => onChange(option.mode)}
             className={cn(
-              "flex size-8 items-center justify-center rounded-full transition-colors",
+              "flex size-8 items-center justify-center rounded-[8px] transition-colors",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
               selected
                 ? "bg-surface text-foreground shadow-[var(--shadow-glass)]"

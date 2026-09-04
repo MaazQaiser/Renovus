@@ -55,8 +55,8 @@ export function AskPanel() {
   const [pendingStart, setPendingStart] = useState<AskReply | undefined>();
   const tailRef = useRef<HTMLDivElement>(null);
 
-  // The ask bar is sticky, so a new answer lands behind it until the thread's
-  // tail is brought into view.
+  // The composer is pinned to the bottom, so a new answer lands behind it until
+  // the thread's tail is scrolled into view.
   useEffect(() => {
     if (turns.length === 0) return;
     tailRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
@@ -97,17 +97,23 @@ export function AskPanel() {
     : undefined;
 
   return (
-    <section className="flex flex-col">
+    <>
       {turns.length > 0 ? (
-        <>
+        <section>
           <SectionLabel className="mb-3">Ask</SectionLabel>
           <AskThread turns={turns} onPickCompany={pickCompany} onStart={start} />
-        </>
+        </section>
       ) : null}
 
       <div ref={tailRef} aria-hidden />
 
-      <div className="sticky bottom-0 z-10 flex flex-col items-center gap-2 pb-4 pt-8">
+      {/*
+        Pinned to the bottom of the scroll area. The negative margins bleed the
+        mask out to the container's edges, and the gradient fades content into
+        the page's warm foot as it passes underneath — without it, rows show
+        through the gaps either side of the composer.
+      */}
+      <div className="sticky bottom-0 z-10 -mx-6 flex flex-col items-center gap-2 bg-gradient-to-t from-[#f6f4e9] via-[#f6f4e9]/95 to-transparent px-6 pb-4 pt-10 md:-mx-8 md:px-8 xl:-mx-10 xl:px-10">
         {turns.length === 0 ? (
           <ul className="flex w-full max-w-[560px] flex-wrap justify-center gap-1.5">
             {SUGGESTED_PROMPTS.map((prompt) => (
@@ -152,6 +158,6 @@ export function AskPanel() {
           setPendingStart(undefined);
         }}
       />
-    </section>
+    </>
   );
 }
