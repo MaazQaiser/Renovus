@@ -102,8 +102,8 @@ function Delta({
   delta?: string;
 }) {
   return (
-    <span>
-      <span className="mr-1.5 text-secondary line-through decoration-border-strong">
+    <span className="whitespace-nowrap">
+      <span className="mr-1.5 text-[0.72em] text-secondary line-through decoration-border-strong">
         {from}
       </span>
       {to}
@@ -116,7 +116,7 @@ function Delta({
 
 function Unchanged({ value }: { value: string }) {
   return (
-    <span>
+    <span className="whitespace-nowrap">
       {value}
       <span className="ml-1.5 text-[11px] font-normal text-tertiary">unchanged</span>
     </span>
@@ -130,27 +130,26 @@ function Metrics({
   items: { value: React.ReactNode; label: string; lead?: boolean }[];
 }) {
   return (
-    <div className="mb-7 flex flex-wrap items-end gap-x-8 gap-y-5 border-b border-glass-hairline pb-6 md:flex-nowrap">
-      {items.map((item, index) => (
+    <div className="mb-7 flex flex-nowrap items-end gap-x-9 overflow-x-auto border-b border-glass-hairline pb-6">
+      {items.map((item) => (
         <div
           key={item.label}
           className={cn(
-            "min-w-0 md:flex-1",
-            item.lead && "border-border-subtle pr-6 sm:border-r",
-            index === 0 && "max-sm:w-full",
+            "shrink-0",
+            item.lead && "border-border-subtle pr-9 sm:border-r",
           )}
         >
           <p
             className={cn(
-              "font-display font-semibold leading-tight",
-              item.lead ? "text-[30px] text-accent" : "text-[22px] text-foreground",
+              "font-display font-semibold whitespace-nowrap leading-tight",
+              item.lead ? "text-[28px] text-accent" : "text-[21px] text-foreground",
             )}
           >
             {item.value}
           </p>
           <p
             className={cn(
-              "mt-1 text-[9px] font-semibold uppercase tracking-[0.08em]",
+              "mt-1 text-[9px] font-semibold whitespace-nowrap uppercase tracking-[0.08em]",
               item.lead ? "text-accent" : "text-tertiary",
             )}
           >
