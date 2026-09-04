@@ -2,13 +2,13 @@ import type { MockCredential, User } from "@/types/session";
 
 export const users: User[] = [
   {
-    id: "alex-morgan",
-    name: "Alex Morgan",
-    email: "alex.morgan@renovuscapital.com",
+    id: "jason-tanker",
+    name: "Jason Tanker",
+    email: "jason.tanker@renovuscapital.com",
     role: "operating-partner",
     roleLabel: "Operating Partner",
     title: "Operating Partner",
-    initials: "AM",
+    initials: "JT",
     active: true,
   },
   {
@@ -45,9 +45,9 @@ export const users: User[] = [
 
 export const credentials: MockCredential[] = [
   {
-    email: "alex.morgan@renovuscapital.com",
+    email: "jason.tanker@renovuscapital.com",
     password: "Renovus2026!",
-    userId: "alex-morgan",
+    userId: "jason-tanker",
   },
   {
     email: "jordan.lee@northbridge.edu",
