@@ -39,7 +39,7 @@ type SectionId = (typeof SECTIONS)[number]["id"];
 
 /** Glass, per DESIGN.md: translucent fill, wide blur, lit top edge. */
 const CARD =
-  "flex h-full flex-col rounded-xl border p-5 shadow-[var(--shadow-glass)] backdrop-blur-3xl";
+  "flex h-full flex-col rounded-[2px] border p-5 shadow-[var(--shadow-glass)] backdrop-blur-3xl";
 const CARD_PLAIN = "border-glass-border bg-glass";
 /** The stage that costs the most, lifted in the brand blue. */
 const CARD_HL = "border-accent-border bg-accent-subtle";
@@ -69,7 +69,7 @@ const PROVENANCE_LABEL: Record<BaselineProvenance, string> = {
  */
 function Chip({ source }: { source: BaselineProvenance }) {
   return (
-    <span className="ml-1.5 rounded bg-border-subtle px-1 py-px align-middle text-[9px] font-semibold uppercase tracking-[0.06em] text-secondary">
+    <span className="ml-1.5 rounded-[2px] bg-border-subtle px-1 py-px align-middle text-[9px] font-semibold uppercase tracking-[0.06em] text-secondary">
       {PROVENANCE_LABEL[source]}
     </span>
   );
@@ -361,7 +361,7 @@ export function SalesBaselineReport({
           <section>
             <SectionTitle>What this version is built on</SectionTitle>
 
-            <div className="mt-7 flex max-w-[900px] items-start gap-3 rounded-xl border border-accent-border bg-accent-subtle px-4 py-3.5">
+            <div className="mt-7 flex max-w-[900px] items-start gap-3 rounded-[2px] border border-accent-border bg-accent-subtle px-4 py-3.5">
               <Info className="mt-0.5 size-4 shrink-0 text-accent" aria-hidden />
               <p className="text-[13px] leading-[1.55] text-secondary">
                 <b className="mr-2 text-[9.5px] font-semibold uppercase tracking-[0.11em] whitespace-nowrap text-accent">
@@ -376,7 +376,7 @@ export function SalesBaselineReport({
                 <article key={card.title} className={cn(CARD, CARD_PLAIN)}>
                   <span
                     className={cn(
-                      "self-start rounded px-1.5 py-0.5 text-[9.5px] font-semibold uppercase tracking-[0.06em]",
+                      "self-start rounded-[2px] px-1.5 py-0.5 text-[9.5px] font-semibold uppercase tracking-[0.06em]",
                       SOURCE_STYLE[card.kind].className,
                     )}
                   >
@@ -475,7 +475,7 @@ export function SalesBaselineReport({
                       aria-selected={active}
                       onClick={() => setMotionCode(item.code)}
                       className={cn(
-                        "shrink-0 rounded-r-lg border-l-2 py-2.5 pr-3 pl-2.5 text-left transition-colors",
+                        "shrink-0 rounded-r-[2px] border-l-2 py-2.5 pr-3 pl-2.5 text-left transition-colors",
                         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
                         active
                           ? "border-accent bg-accent-subtle text-foreground"
@@ -986,7 +986,7 @@ function MotionCalculation({
                   >
                     <td className="py-4 pr-4 pl-5 font-semibold text-foreground">
                       {row.name}
-                      <span className="mt-1.5 block w-fit rounded bg-accent-subtle px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-[0.08em] text-accent">
+                      <span className="mt-1.5 block w-fit rounded-[2px] bg-accent-subtle px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-[0.08em] text-accent">
                         Tier {row.tier}
                       </span>
                     </td>
