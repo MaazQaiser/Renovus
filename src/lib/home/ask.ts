@@ -29,7 +29,7 @@ export type AskAgent = "sales" | "offshoring";
  */
 export const SUGGESTED_PROMPTS = [
   "What should I assess next?",
-  "How is xFact doing?",
+  "How is Halden doing?",
   "Which companies have nothing saved?",
 ] as const;
 

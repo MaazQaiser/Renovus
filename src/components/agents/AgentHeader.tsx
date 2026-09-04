@@ -27,7 +27,7 @@ export function AgentHeader({
   return (
     <header
       className={cn(
-        "rounded-lg border border-border bg-surface p-6 md:p-8",
+        "rounded-xl border border-glass-border bg-glass p-6 shadow-[var(--shadow-glass)] backdrop-blur-2xl md:p-8",
         className,
       )}
     >

@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Halden Technology Group · Sales Process AI Pre-Assessment</title>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Fira+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* Mapped onto the app's own tokens in src/app/globals.css. Redeclared rather
+       than imported because this is a standalone document served in an iframe,
+       so the app's stylesheet never reaches it. */
+    --ink:#20242a;--ink-soft:#586778;--muted:#68737f;--rule:#cbd5e1;--rule-soft:#e2e8f0;
+    /* App design system: glass material + the app's radii. */
+    --glass:rgba(255,255,255,.62);--glass-strong:rgba(255,255,255,.78);
+    --glass-border:rgba(255,255,255,.75);
+    --shadow-glass:inset 0 1px 0 0 rgb(255 255 255 / .75), 0 0 0 1px rgb(16 24 40 / .035), 0 8px 20px -8px rgb(16 24 40 / .10);
+    --radius-card:16px;--radius-control:12px;--radius-badge:6px;
+    /* Renovus blue. Deep enough to carry label text as well as act as a fill,
+       so it replaces the document's former gold in both roles. */
+    --accent:#3d6a8a;--accent-subtle:#e9f1f7;--cream:#e9f1f7;--cream-rule:#cedfeb;--paper:#FFFFFF;
+    --display:'Fira Sans',ui-sans-serif,system-ui,sans-serif;
+    --sans:'Open Sans',ui-sans-serif,system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:linear-gradient(180deg,#f0f3f3 0%,#f4f4ef 52%,#f6f4e9 100%);background-attachment:fixed;color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+  body.locked{overflow:hidden}
+
+  .sticky{position:sticky;top:0;z-index:40;background:var(--glass-strong);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--glass-border)}
+
+  .wrap{padding:22px 32px 48px;max-width:1760px;margin:0 auto}
+  .eyebrow{font-size:10.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+  h1{font-family:var(--display);font-size:26px;font-weight:600;letter-spacing:-.005em;margin:0 0 10px}
+  .standfirst{font-size:14px;color:var(--ink-soft);margin:0 0 34px;max-width:820px;line-height:1.55}
+
+  .inner{display:grid;grid-template-columns:170px minmax(0,1fr);gap:28px;align-items:start}
+  .motions{display:flex;flex-direction:column;gap:0;border-right:1px solid var(--rule);position:sticky;top:100px}
+  .motion{appearance:none;background:none;border:0;cursor:pointer;font-family:var(--sans);padding:7px 12px 7px 0;font-size:13px;color:var(--muted);text-align:left;border-right:2px solid transparent;margin-right:-1px;line-height:1.35}
+  .motion .n{font-size:10.5px;letter-spacing:.06em;margin-right:6px;display:inline-block;width:14px}
+  .motion:hover{color:var(--ink-soft)}
+  .motion[aria-selected="true"]{color:var(--ink);font-weight:600;border-right-color:var(--accent)}
+  .panel{display:none}
+  .panel.active{display:block}
+  .panel-intro{font-size:13px;color:var(--ink-soft);margin:0 0 16px;max-width:900px;line-height:1.5}
+  h1{margin-bottom:14px}
+
+  .metrics{display:flex;flex-wrap:wrap;align-items:flex-end;gap:8px 36px;margin-bottom:18px}
+  .metric .fig{font-family:var(--display);font-size:22px;font-weight:600;line-height:1.1}
+  .metric .lbl{font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:4px;font-weight:600}
+  .metric.rev .fig{font-size:30px;color:var(--accent)}
+  .metric.rev .lbl{color:var(--accent)}
+  .metric.rev{padding-right:32px;border-right:1px solid var(--rule)}
+
+  /* cards — equal width via grid columns, equal height via stretch + fixed min-height */
+  .stages{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;align-items:stretch}
+  .card{height:100%;min-height:0;border:1px solid var(--glass-border);border-radius:var(--radius-card);background:var(--glass);box-shadow:var(--shadow-glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding:16px 18px 14px;display:flex;flex-direction:column}
+  .card.hl{background:var(--cream);border-color:var(--cream-rule)}
+  .stage-no{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:3px}
+  .stage-name{font-family:var(--display);font-size:16px;font-weight:600;margin:0 0 10px;line-height:1.3;min-height:42px}
+  .row{padding-bottom:7px;margin-bottom:7px;border-bottom:1px solid var(--rule-soft)}
+  .card.hl .row{border-bottom-color:var(--cream-rule)}
+  .row .v{font-size:14px;font-weight:700;line-height:1.25}
+  .row .k{font-size:10.5px;color:var(--muted);margin-top:2px;line-height:1.3}
+  .split{display:flex;gap:10px;font-size:10.5px;color:var(--muted);margin-top:3px}
+  .split b{color:var(--accent);font-weight:700;margin-right:3px}
+  .agg div{display:flex;align-items:baseline;gap:6px;padding:1px 0;font-size:10.5px;line-height:1.3}
+  .agg b{color:var(--accent);font-weight:700;font-size:9.5px;letter-spacing:.06em;width:10px;flex:none}
+  .agg .n{font-weight:700;font-size:13px;color:var(--ink);flex:none;font-variant-numeric:tabular-nums}
+  .agg .k{color:var(--muted)}
+  .note{font-size:11.5px;color:var(--ink-soft);line-height:1.5;margin:4px 0 0}
+
+  .acts{margin-top:auto}
+  .sysmap{margin-top:34px;padding-top:22px;border-top:1px solid var(--rule)}
+  .sysmap-head{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;margin-bottom:14px}
+  .sysmap-head .t{font-size:9.5px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--accent)}
+  .sysmap-head .s{font-size:12px;color:var(--muted)}
+  .sysmap-row{display:flex;align-items:stretch}
+  .sm-box{flex:1 1 0;border:1px solid var(--rule);border-radius:var(--radius-card);padding:14px 16px}
+  .sm-stage{font-size:9.5px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+  .sm-sys{font-size:13px;font-weight:600;line-height:1.4;min-height:36px}
+  .sm-hand{font-size:11px;color:var(--muted);margin-top:10px}
+  .sm-hand b{color:var(--ink);font-size:14px;font-weight:700;margin-right:2px}
+  .sm-conn{flex:0 0 28px;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+  .sm-conn svg{width:18px;height:12px}
+  .acts-btn{appearance:none;border:1px solid var(--rule);background:transparent;border-radius:4px;cursor:pointer;font-family:var(--sans);font-size:11px;color:var(--ink-soft);padding:7px 10px;margin-top:10px;width:100%;text-align:left;display:flex;justify-content:space-between;align-items:center}
+  .card.hl .acts-btn{border-color:var(--cream-rule)}
+  .acts-btn:hover{border-color:var(--accent);color:var(--ink)}
+  .acts-btn .arr{color:var(--accent)}
+
+  .modal{position:fixed;inset:0;display:none;z-index:50}
+  .modal.open{display:block}
+  .modal .scrim{position:absolute;inset:0;background:rgba(17,17,20,.4)}
+  .modal .sheet{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(1240px,calc(100vw - 32px));max-height:calc(100vh - 32px);overflow:auto;background:var(--glass-strong);border-radius:var(--radius-card);box-shadow:0 30px 80px rgba(0,0,0,.22);padding:30px 34px 30px}
+  .m-head{display:flex;justify-content:space-between;align-items:flex-start;gap:20px}
+  .m-eyebrow{font-size:9.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+  .m-title{font-family:var(--display);font-size:25px;font-weight:600;margin:0 0 6px}
+  .m-sub{font-size:13px;color:var(--ink-soft);margin:0}
+  .m-close{appearance:none;border:1px solid var(--rule);background:none;border-radius:4px;width:32px;height:32px;cursor:pointer;font-size:18px;line-height:1;color:var(--muted);flex:none}
+  .m-close:hover{border-color:var(--ink);color:var(--ink)}
+  .m-metrics:empty{display:none}
+  .m-metrics{display:flex;gap:44px;margin:22px 0 26px;padding-bottom:22px;border-bottom:1px solid var(--rule)}
+  .m-metrics .fig{font-family:var(--display);font-size:22px;font-weight:600}
+  .m-metrics .lbl{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:4px;font-weight:600}
+
+  .flow{display:flex;align-items:stretch;overflow-x:auto;padding:4px 2px 8px}
+  .step{flex:1 1 0;min-width:168px;border:1px solid var(--glass-border);border-radius:var(--radius-card);padding:16px 18px 14px;background:var(--glass);box-shadow:var(--shadow-glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:flex;flex-direction:column;position:relative}
+  .step.heavy{background:var(--cream);border-color:var(--cream-rule)}
+  .step .idx{width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:10.5px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+  .step .task{font-size:12.5px;font-weight:600;line-height:1.4;margin-bottom:4px}
+  .step .who{font-size:11px;color:var(--muted);margin-bottom:4px}
+  .step .hrs{font-family:var(--display);font-size:22px;font-weight:600;line-height:1;margin-top:auto}
+  .step .hrs small{font-family:var(--sans);font-size:10px;color:var(--muted);font-weight:600;letter-spacing:.06em;margin-left:4px}
+  .step .bar{height:3px;background:var(--rule-soft);border-radius:2px;margin-top:10px;overflow:hidden}
+  .step .bar i{display:block;height:100%;background:var(--accent)}
+  .step .tag{position:absolute;top:14px;right:14px;font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);background:var(--accent-subtle);padding:2px 6px;border-radius:var(--radius-badge)}
+  .conn{flex:0 0 28px;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+  .conn svg{width:18px;height:12px;display:block}
+  .m-foot{font-size:11px;color:var(--muted);margin-top:16px}
+  .m-foot .sw{display:inline-block;width:10px;height:10px;border:1px solid var(--cream-rule);background:var(--cream);vertical-align:-1px;margin-right:6px;border-radius:2px}
+
+  @media (max-width:1100px){.stages{grid-template-columns:repeat(2,minmax(0,1fr))}.metrics{gap:0 40px}.metric.rev{padding-right:40px}}
+  @media (max-width:720px){
+    .wrap{padding-left:32px;padding-right:32px}
+    .stages{grid-template-columns:1fr}.card{min-height:0}.sysmap-row{flex-direction:column}.sm-conn{flex:0 0 22px}.sm-conn svg{transform:rotate(90deg)}.stage-name{min-height:0}
+    h1{font-size:27px}.motions{gap:20px}
+    .metric.rev{border-right:0;padding-right:0;width:100%;margin-bottom:12px}
+    .flow{flex-direction:column}.conn{flex:0 0 22px}.conn svg{transform:rotate(90deg)}.step{min-width:0}
+    .modal .sheet{padding:22px 18px}
+  }
+
+  /* ---------- top nav ---------- */
+  .topnav{display:flex;gap:32px;padding:0 32px;border-bottom:1px solid var(--rule);overflow-x:auto}
+  .topnav button{appearance:none;background:none;border:0;cursor:pointer;font-family:var(--sans);font-size:13px;color:var(--muted);height:50px;padding:0;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;display:inline-flex;align-items:center}
+  .topnav button .num{font-size:11px;letter-spacing:.06em;margin-right:8px;color:var(--muted)}
+  .topnav button:hover{color:var(--ink-soft)}
+  .topnav button[aria-selected="true"]{color:var(--ink);font-weight:600;border-bottom-color:var(--accent)}
+  .section{display:none}
+  .section.active{display:block}
+
+  /* ---------- 01 data ---------- */
+  .lede{font-size:14px;color:var(--ink-soft);line-height:1.55;max-width:820px;margin:0 0 22px}
+  .howto{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;margin:0 0 18px}
+  .howto > div{border:1px solid var(--rule);border-radius:var(--radius-card);padding:18px 18px 16px}
+  .howto .stepno{width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+  .howto h3{font-family:var(--display);font-size:16px;font-weight:600;margin:0 0 6px}
+  .howto p{font-size:12.5px;color:var(--ink-soft);line-height:1.55;margin:0}
+  .sub-h{font-family:var(--display);font-size:22px;font-weight:600;margin:0 0 6px}
+  .sub-p{font-size:13.5px;color:var(--ink-soft);margin:0 0 22px;max-width:760px;line-height:1.55}
+  .datagrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px;align-items:stretch}
+  .dcard{border:1px solid var(--rule);border-radius:var(--radius-card);padding:20px 20px 18px;display:flex;flex-direction:column}
+  .dcard .src{display:inline-block;font-size:9.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;padding:3px 8px;border-radius:2px;margin-bottom:12px;align-self:flex-start}
+  .src.export{background:#e9eef7;color:#3a5a9a}
+  .src.interview{background:var(--accent-subtle);color:var(--accent)}
+  .src.both{background:#e8f1ea;color:#3f7a4c}
+  .dcard h3{font-family:var(--display);font-size:17.5px;font-weight:600;margin:0 0 4px}
+  /* Collected footer, mirroring the short report's bar. margin-top:auto
+     pins it to the card floor so all five footers line up despite the
+     Why/How copy running to different lengths. */
+  .dcard .collected{margin-top:auto;padding-top:16px}
+  .dcard .collected .cap{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:6px}
+  .dcard .collected .cap .k{font-size:9.5px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}
+  .dcard .collected .cap .v{font-size:11.5px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--ink)}
+  .dcard .collected .track{height:6px;border-radius:999px;background:var(--rule-soft);overflow:hidden}
+  .dcard .collected .track i{display:block;height:100%;border-radius:999px;background:var(--accent)}
+  .dcard .what{font-size:12.5px;color:var(--ink-soft);line-height:1.5;margin:0 0 16px}
+  .dcard .lab{font-size:9.5px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--accent);margin:0 0 4px}
+  .dcard p{font-size:12.5px;color:var(--ink-soft);line-height:1.55;margin:0 0 14px}
+  .dcard p:last-child{margin-bottom:0}
+  .keyline{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:26px;font-size:12px;color:var(--muted)}
+  .keyline .src{margin:0;vertical-align:middle}
+
+  /* ---------- 03 to-be ---------- */
+  .legend{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:11.5px;color:var(--ink-soft);margin:0 0 26px}
+  .legend span{display:flex;align-items:center;gap:7px}
+  .sw{display:inline-block;width:11px;height:11px;border-radius:2px}
+  .sw.auto{background:#3d3d44}.sw.ai{background:var(--accent)}.sw.human{background:#fff;border:1px solid #b9b9b0}.sw.rm{background:repeating-linear-gradient(135deg,#d6d6d2 0 2px,#fff 2px 4px)}
+  .tb-hours{display:flex;align-items:baseline;gap:10px;margin:0 0 10px}
+  .tb-hours .now{font-family:var(--display);font-size:16px;color:var(--muted);text-decoration:line-through;text-decoration-color:#c9c9c4}
+  .tb-hours .arrow{color:var(--muted);font-size:13px}
+  .tb-hours .new{font-family:var(--display);font-size:26px;font-weight:600}
+  .tb-hours .new small{font-family:var(--sans);font-size:10px;color:var(--muted);letter-spacing:.06em;font-weight:600;margin-left:3px}
+  .tb-hours .freed{margin-left:auto;font-size:11px;font-weight:700;color:var(--accent);white-space:nowrap}
+  .hbar{height:6px;background:var(--rule-soft);border-radius:3px;overflow:hidden;position:relative}
+  .hbar i{display:block;height:100%;background:var(--ink);border-radius:3px}
+  .hbar.ghost i{background:#d9d9d5}
+  .hbars{display:flex;flex-direction:column;gap:4px;margin-bottom:14px}
+  .hbars .lbl{font-size:10px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;font-weight:600;display:flex;justify-content:space-between}
+  .mix{display:flex;height:8px;border-radius:3px;overflow:hidden;margin:4px 0 6px}
+  .mix i{display:block;height:100%}
+  .mix .auto{background:#3d3d44}.mix .ai{background:var(--accent)}.mix .human{background:#fff;box-shadow:inset 0 0 0 1px #b9b9b0}.mix .rm{background:repeating-linear-gradient(135deg,#d6d6d2 0 2px,#fff 2px 4px)}
+  .mixk{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:10.5px;color:var(--muted);margin-bottom:14px}
+  .mixk b{color:var(--ink);font-weight:700;margin-right:2px}
+  .stays{font-size:12px;color:var(--ink-soft);line-height:1.55;padding:10px 12px;border-radius:4px;background:var(--accent-subtle);margin-top:2px}
+  .stays b{color:var(--accent);font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;display:block;margin-bottom:3px}
+  .dv{color:var(--muted);text-decoration:line-through;text-decoration-color:#c9c9c4;font-weight:400;font-size:.8em;margin-right:6px}
+  .dd{color:var(--accent);font-size:11px;font-weight:700;margin-left:6px;white-space:nowrap}
+  .du{color:var(--muted);font-size:11px;font-weight:400;margin-left:6px}
+  .metric.rev .dv{font-size:18px}
+  .metric .dd{font-size:12px}
+  .modeline{font-size:10.5px;color:var(--muted);margin-top:8px;display:flex;gap:10px;flex-wrap:wrap}
+  .modeline b{color:var(--ink);font-weight:700;margin-right:2px}
+  .m-legend{display:flex;gap:16px;font-size:11px;color:var(--ink-soft);margin-top:10px}
+  .m-legend span{display:flex;align-items:center;gap:6px}
+  .card.tb{min-height:0}
+  .card.tb .split{margin-top:0}
+  .split span .bars{display:inline-block;width:60px;height:5px;background:var(--rule-soft);border-radius:3px;vertical-align:middle;margin:0 4px;position:relative;overflow:hidden}
+  .split span .bars i{position:absolute;left:0;top:0;height:100%;background:var(--ink);border-radius:3px}
+  .ladder{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:34px;padding-top:26px;border-top:1px solid var(--rule)}
+  .rung{border:1px solid var(--rule);border-radius:var(--radius-card);padding:18px 20px 16px}
+  .rung .tier{font-size:9.5px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+  .rung h3{font-family:var(--display);font-size:18px;font-weight:600;margin:0 0 2px}
+  .rung .when{font-size:11.5px;color:var(--muted);margin-bottom:12px}
+  .rung .big{font-family:var(--display);font-size:28px;font-weight:600}
+  .rung .big small{font-family:var(--sans);font-size:10px;color:var(--muted);letter-spacing:.06em;font-weight:600;margin-left:4px}
+  .rung ul{margin:12px 0 0;padding:0;list-style:none}
+  .rung li{font-size:12px;color:var(--ink-soft);line-height:1.5;padding:4px 0;border-top:1px solid var(--rule-soft);display:flex;justify-content:space-between;gap:10px}
+  .rung li .h{color:var(--muted);white-space:nowrap}
+  .step .modehead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+  .step .mode{display:inline-block;align-self:flex-start;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:2px 6px;border-radius:var(--radius-badge)}
+  .mode.auto{background:#3d3d44;color:#fff}.mode.ai{background:var(--accent);color:#fff}.mode.human{background:#fff;color:var(--ink-soft);box-shadow:inset 0 0 0 1px #b9b9b0}.mode.rm{background:#ececea;color:var(--muted);text-decoration:line-through}
+  .step .tierchip{font-size:9.5px;color:var(--muted)}
+  .step .how{font-size:11px;color:var(--ink-soft);line-height:1.45;margin:0 0 12px}
+  .step .delta{display:flex;align-items:baseline;gap:6px;margin-top:auto}
+  .step .delta .was{font-size:12px;color:var(--muted);text-decoration:line-through}
+  .step .delta .is{font-family:var(--display);font-size:22px;font-weight:600}
+  .step .delta small{font-family:var(--sans);font-size:10px;color:var(--muted);letter-spacing:.06em;font-weight:600}
+  .step.hum{background:var(--accent-subtle);border-color:var(--cream-rule)}
+
+  /* ---------- 04 impact ---------- */
+  .imp-hero{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-bottom:38px}
+  .imp{border:1px solid var(--rule);border-radius:var(--radius-card);padding:20px 22px 18px}
+  .imp .lab{font-size:9.5px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+  .imp .now{font-size:12px;color:var(--muted);margin-bottom:2px}
+  .imp .now b{color:var(--ink);font-weight:700}
+  .imp .rng{font-family:var(--display);font-size:32px;font-weight:600;line-height:1.1}
+  .imp .rng small{font-family:var(--sans);font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.04em;margin-left:5px}
+  .imp .sub{font-size:11.5px;color:var(--muted);margin-top:6px}
+  .rbar{position:relative;height:8px;background:var(--rule-soft);border-radius:4px;margin-top:14px}
+  .rbar .base{position:absolute;left:0;top:0;height:100%;background:#c9c9c4;border-radius:4px}
+  .rbar .lo{position:absolute;top:0;height:100%;background:var(--accent);opacity:.55}
+  .rbar .hi{position:absolute;top:0;height:100%;background:var(--accent)}
+  .rbar .tick{position:absolute;top:-4px;width:1px;height:16px;background:var(--ink)}
+  .imp-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+  .imp-motion{border:1px solid var(--rule);border-radius:var(--radius-card);padding:20px 20px 16px}
+  .imp-motion h3{font-family:var(--display);font-size:18px;font-weight:600;margin:0 0 2px}
+  .imp-motion .rev{font-size:12px;color:var(--muted);margin-bottom:16px}
+  .kpi{padding:10px 0;border-top:1px solid var(--rule-soft)}
+  .kpi .k{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;display:flex;justify-content:space-between}
+  .kpi .line{display:flex;align-items:baseline;gap:8px;margin-top:3px}
+  .kpi .was{font-size:13px;color:var(--muted)}
+  .kpi .arr{color:var(--muted);font-size:12px}
+  .kpi .to{font-family:var(--display);font-size:20px;font-weight:600}
+  .kpi .to small{font-family:var(--sans);font-size:10px;color:var(--muted);font-weight:600;margin-left:2px}
+  .kpi .rbar{margin-top:8px;height:6px}
+  .iv{margin-bottom:34px}
+  .iv h3{font-family:var(--display);font-size:18px;font-weight:600;margin:0 0 2px}
+  .iv .sub{font-size:12px;color:var(--muted);margin-bottom:12px}
+  .iv table{width:100%;border-collapse:collapse;font-size:12.5px;table-layout:fixed}
+  .iv th{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600;text-align:left;padding:0 14px 9px 0;border-bottom:1px solid var(--rule)}
+  .iv td{padding:14px 14px 14px 0;border-bottom:1px solid var(--rule-soft);vertical-align:top;line-height:1.45}
+  .iv tr.r{cursor:pointer}
+  .iv tr.r:hover td{background:#fbfbfa}
+  .iv td.n{font-weight:600;color:var(--ink)}
+  .iv td.n .tier{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:2px 6px;border-radius:var(--radius-badge);background:var(--accent-subtle);color:var(--accent);margin-top:6px}
+  .iv .src{display:block;font-size:11px;color:var(--muted);margin-top:3px}
+  .iv td.res{font-family:var(--display);font-size:17px;font-weight:600;color:var(--accent);white-space:nowrap}
+  .iv td.res.cap{color:var(--ink-soft);font-family:var(--sans);font-size:12.5px;font-weight:400;white-space:normal}
+  .iv td.res.cap b{display:block;font-family:var(--display);font-size:17px;font-weight:600;color:var(--ink)}
+  .iv td.res small{display:block;font-family:var(--sans);font-size:11px;color:var(--muted);font-weight:400;margin-top:3px}
+  .iv tr.why td{background:var(--accent-subtle);border-bottom:1px solid var(--cream-rule);font-size:12.5px;color:var(--ink-soft);padding:12px 16px}
+  .iv tr.why td b{color:var(--accent);font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;margin-right:10px}
+  .iv tr.why{display:none}
+  .iv tr.why.open{display:table-row}
+  .iv tr.tot td{border-bottom:0;padding-top:12px;font-size:12px;color:var(--muted)}
+  .iv tr.tot td.res{color:var(--ink)}
+  .imp-table{width:100%;border-collapse:collapse;font-size:13px}
+  .imp-table th{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600;text-align:left;padding:0 14px 10px 0;border-bottom:1px solid var(--rule)}
+  .imp-table td{padding:16px 14px 16px 0;border-bottom:1px solid var(--rule-soft);vertical-align:baseline}
+  .imp-table td.m{font-family:var(--display);font-size:16px;font-weight:600}
+  .imp-table td.m small{display:block;font-family:var(--sans);font-size:11px;color:var(--muted);font-weight:400;margin-top:2px}
+  .imp-table .was{color:var(--muted);font-size:12px;margin-right:6px}
+  .imp-table .to{font-family:var(--display);font-size:19px;font-weight:600}
+  .imp-table .to.gold{color:var(--accent)}
+  .imp-table tr.total td{border-bottom:0;border-top:1px solid var(--rule);padding-top:18px}
+  .phases{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:38px;padding-top:26px;border-top:1px solid var(--rule)}
+  .phase{border:1px solid var(--rule);border-radius:var(--radius-card);padding:18px 20px 16px;position:relative}
+  .phase .when{font-size:9.5px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+  .phase h3{font-family:var(--display);font-size:18px;font-weight:600;margin:0 0 10px}
+  .phase .row2{display:flex;gap:26px;margin-bottom:12px}
+  .phase .row2 .fig{font-family:var(--display);font-size:24px;font-weight:600;line-height:1.1}
+  .phase .row2 .lbl{font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-top:4px}
+  .phase ol{margin:0;padding:0;list-style:none;counter-reset:s}
+  .phase li{font-size:12px;color:var(--ink-soft);line-height:1.5;padding:6px 0 6px 26px;border-top:1px solid var(--rule-soft);position:relative;counter-increment:s}
+  .phase li::before{content:counter(s);position:absolute;left:0;top:7px;width:17px;height:17px;border-radius:50%;background:var(--accent);color:#fff;font-size:9.5px;font-weight:700;display:flex;align-items:center;justify-content:center}
+  .phase li b{color:var(--ink);font-weight:600}
+  .phase li .why{display:block;color:var(--muted);font-size:11.5px}
+  .assume{margin-top:38px;padding-top:26px;border-top:1px solid var(--rule)}
+  .assume ul{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 24px}
+  .assume li{font-size:12.5px;color:var(--ink-soft);line-height:1.5;padding:8px 0;border-bottom:1px solid var(--rule-soft);display:flex;gap:10px;align-items:flex-start}
+  .assume li .tag{flex:none;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:2px 6px;border-radius:var(--radius-badge);background:var(--accent-subtle);color:var(--accent);margin-top:2px}
+
+  @media (max-width:1100px){.howto,.datagrid,.ladder,.imp-hero,.imp-grid,.phases{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media (max-width:720px){.topnav{padding:0 32px;gap:22px}.howto,.datagrid,.ladder,.imp-hero,.imp-grid,.phases{grid-template-columns:1fr}.assume ul{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="sticky">
+
+<nav class="topnav" role="tablist">
+  <button role="tab" aria-selected="true" data-section="s-data"><span class="num">01</span>Data we need</button>
+  <button role="tab" aria-selected="false" data-section="s-asis"><span class="num">02</span>As-is</button>
+  <button role="tab" aria-selected="false" data-section="s-tobe"><span class="num">03</span>To-be</button>
+  <button role="tab" aria-selected="false" data-section="s-impact"><span class="num">04</span>Calculation</button>
+</nav>
+</div>
+
+<main class="wrap">
+  <div class="section active" id="s-data">
+    <h1>What this report is built on</h1>
+    <p class="lede">Everything in the report comes from five kinds of information. Some of it is exported from systems. Some of it is people telling us how they work. The tags say which is which. About one day of the company's time in total.</p>
+
+    <div class="datagrid">
+      <div class="dcard"><span class="src interview">Interview</span><h3>Sales motions and stages</h3><p class="what">Every way they win a deal, the steps in each, and who does what at each step.</p><div class="lab">Why</div><p>Sets the structure of the whole report. Every number hangs off a motion and a stage.</p><div class="lab">How</div><p>60 to 90 minutes with the head of sales. Ask them to walk through one recent deal per motion.</p><div class="collected"><div class="cap"><span class="k">Collected</span><span class="v">100%</span></div><div class="track" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" aria-label="Collected"><i style="width:100%"></i></div></div></div>
+      <div class="dcard"><span class="src export">Export</span><h3>Funnel and revenue by motion</h3><p class="what">Volume entering each stage per month, % moving on, days in stage, deals won, win rate, time to close, and last 12 months of closed revenue tagged by motion.</p><div class="lab">Why</div><p>Shows where deals die, where they wait, and which motion matters most. This is the core of the report.</p><div class="lab">How</div><p>CRM or deal tracker export, 12 to 24 months with stage history, plus the finance close list. If deals are not tagged by motion, tag them with the sales lead in an hour. If there is no CRM, a spreadsheet or the sales lead's estimate, flagged as such.</p><div class="collected"><div class="cap"><span class="k">Collected</span><span class="v">100%</span></div><div class="track" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" aria-label="Collected"><i style="width:100%"></i></div></div></div>
+      <div class="dcard"><span class="src both">Interview + Export</span><h3>People and time</h3><p class="what">Who sells, their role, full or part time, loaded cost, and how their week splits across stages and tasks.</p><div class="lab">Why</div><p>Gives FTE, hours per stage, cost per stage and the task flows. Effort usually does not go where the sales lead thinks.</p><div class="lab">How</div><p>Headcount and payroll from HR or finance. The time split from a 15 minute interview or short survey per person. Nobody has this in a system.</p><div class="collected"><div class="cap"><span class="k">Collected</span><span class="v">100%</span></div><div class="track" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" aria-label="Collected"><i style="width:100%"></i></div></div></div>
+      <div class="dcard"><span class="src interview">Interview</span><h3>Systems and handoffs</h3><p class="what">Which tool each stage lives in, and where a person re-keys, re-uploads or forwards information.</p><div class="lab">Why</div><p>Shows fragmentation and manual work. This is where automation and AI fit, so it has to be concrete.</p><div class="lab">How</div><p>Sit with one person per motion for an hour and watch a deal move through their tools. List the tools and count the handoffs.</p><div class="collected"><div class="cap"><span class="k">Collected</span><span class="v">100%</span></div><div class="track" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" aria-label="Collected"><i style="width:100%"></i></div></div></div>
+      <div class="dcard"><span class="src interview">Interview</span><h3>Friction points</h3><p class="what">The stories: "we rebuild every SOW", "legal takes three weeks", "30% no-show".</p><div class="lab">Why</div><p>Becomes the card notes and task tags. Makes the numbers believable and recognisable.</p><div class="lab">How</div><p>Falls out of the interviews above. Ask "what is the most annoying part of this stage" at every step.</p><div class="collected"><div class="cap"><span class="k">Collected</span><span class="v">100%</span></div><div class="track" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" aria-label="Collected"><i style="width:100%"></i></div></div></div>
+    </div>
+    <div class="keyline"><span><span class="src export">Export</span> pulled from a system, reliable</span><span><span class="src interview">Interview</span> what people tell us, an estimate</span><span><span class="src both">Interview + Export</span> a system pull plus what people tell us</span></div>
+  </div>
+
+  <div class="section" id="s-asis">
+    <h1>How selling works here</h1>
+    <div class="inner">
+  <div class="motions" role="tablist" aria-label="Sales motions">
+    <button class="motion" role="tab" aria-selected="true" data-panel="overview">Overview</button>
+    <button class="motion" role="tab" aria-selected="false" data-panel="referral"><span class="n">A</span>Relationship &amp; Referral</button>
+    <button class="motion" role="tab" aria-selected="false" data-panel="gov"><span class="n">B</span>Government Portal RFP</button>
+    <button class="motion" role="tab" aria-selected="false" data-panel="inside"><span class="n">C</span>Inside Sales</button>
+  </div>
+
+  <!-- ===== OVERVIEW ===== -->
+  <section class="panel active" id="overview" role="tabpanel">
+    <p class="panel-intro">Halden won $62.0M last year, about 28 deals a month, through three sales motions. Referrals win the most and win most often. Inside sales brings the most volume. The bid desk wins rarely and slowly. In all three, the Proposal stage is where deals slow down and where most manual work happens.</p>
+    <div class="metrics">
+      <div class="metric rev"><div class="fig">$62.0M</div><div class="lbl">Revenue won · trailing 12 mo</div></div>
+      <div class="metric"><div class="fig">28 / mo</div><div class="lbl">Deals won · all motions</div></div>
+      <div class="metric"><div class="fig">70 to 110</div><div class="lbl">Median days to close · by motion</div></div>
+      <div class="metric"><div class="fig">32</div><div class="lbl">Manual handoffs across motions</div></div>
+      <div class="metric"><div class="fig">25.9</div><div class="lbl">Selling FTE</div></div>
+      <div class="metric"><div class="fig">1,041 h</div><div class="lbl">Selling hours / week</div></div>
+    </div>
+    <div class="stages">
+      <article class="card">
+        <div class="stage-no">Stage 1 · Prospecting</div>
+        <h2 class="stage-name">Prospecting</h2>
+        <div class="row"><div class="agg">
+          <div><b>A</b><span class="n">34</span><span class="k">referral conversations / mo</span></div>
+          <div><b>B</b><span class="n">31</span><span class="k">solicitations screened / mo</span></div>
+          <div><b>C</b><span class="n">2,040</span><span class="k">outbound touches + inbound leads / mo</span></div>
+        </div></div>
+        <div class="row"><div class="agg">
+          <div><b>A</b><span class="n">56%</span><span class="k">to next stage · 9 d in stage</span></div>
+          <div><b>B</b><span class="n">29%</span><span class="k">to next stage · 6 d in stage</span></div>
+          <div><b>C</b><span class="n">4.7%</span><span class="k">to next stage · 12 d in stage</span></div>
+        </div></div>
+        <div class="row"><div class="v">310 h</div><div class="k">per week</div></div>
+        <div class="row"><div class="v">$636K</div><div class="k">people cost / yr</div><div class="split"><span><b>A</b>$186K</span><span><b>B</b>$58K</span><span><b>C</b>$392K</span></div></div>
+        <div class="row"><div class="v">Inbox, portals, sales engagement + CRM</div><div class="k">information lives in</div><div class="split"><span><b>7</b>manual handoffs across the three motions</span></div></div>
+        <p class="note">Referrals arrive in partners' inboxes, bids in portal alerts, and inside-sales leads in an engagement platform. No shared account list; the floor cold-calls companies a partner already knows.</p>
+      </article>
+      <article class="card">
+        <div class="stage-no">Stage 2 · Qualification</div>
+        <h2 class="stage-name">Qualification</h2>
+        <div class="row"><div class="agg">
+          <div><b>A</b><span class="n">19</span><span class="k">discovery meetings / mo</span></div>
+          <div><b>B</b><span class="n">9</span><span class="k">bid / no-bid decisions / mo</span></div>
+          <div><b>C</b><span class="n">96</span><span class="k">discovery calls / mo</span></div>
+        </div></div>
+        <div class="row"><div class="agg">
+          <div><b>A</b><span class="n">58%</span><span class="k">to next stage · 14 d in stage</span></div>
+          <div><b>B</b><span class="n">44%</span><span class="k">to next stage · 5 d in stage</span></div>
+          <div><b>C</b><span class="n">50%</span><span class="k">to next stage · 8 d in stage</span></div>
+        </div></div>
+        <div class="row"><div class="v">230 h</div><div class="k">per week</div></div>
+        <div class="row"><div class="v">$504K</div><div class="k">people cost / yr</div><div class="split"><span><b>A</b>$172K</span><span><b>B</b>$84K</span><span><b>C</b>$248K</span></div></div>
+        <div class="row"><div class="v">CRM (partial), compliance matrix</div><div class="k">information lives in</div><div class="split"><span><b>5</b>manual handoffs across the three motions</span></div></div>
+        <p class="note">Three different definitions of "qualified": a partner's gut, a compliance matrix, and a CRM fit score. None of them predict close rate, because nobody has checked.</p>
+      </article>
+      <article class="card hl">
+        <div class="stage-no">Stage 3 · Proposal</div>
+        <h2 class="stage-name">Proposal</h2>
+        <div class="row"><div class="agg">
+          <div><b>A</b><span class="n">11</span><span class="k">SOWs issued / mo</span></div>
+          <div><b>B</b><span class="n">4</span><span class="k">RFP responses submitted / mo</span></div>
+          <div><b>C</b><span class="n">48</span><span class="k">quotes issued / mo</span></div>
+        </div></div>
+        <div class="row"><div class="agg">
+          <div><b>A</b><span class="n">64%</span><span class="k">to next stage · 21 d in stage</span></div>
+          <div><b>B</b><span class="n">8%</span><span class="k">to next stage · 24 d in stage</span></div>
+          <div><b>C</b><span class="n">44%</span><span class="k">to next stage · 16 d in stage</span></div>
+        </div></div>
+        <div class="row"><div class="v">318 h</div><div class="k">per week</div></div>
+        <div class="row"><div class="v">$820K</div><div class="k">people cost / yr</div><div class="split"><span><b>A</b>$298K</span><span><b>B</b>$296K</span><span><b>C</b>$226K</span></div></div>
+        <div class="row"><div class="v">Estimation workbook, shared drive, spreadsheets</div><div class="k">information lives in</div><div class="split"><span><b>10</b>manual handoffs across the three motions</span></div></div>
+        <p class="note">A third of all selling cost. Every SOW, technical volume and quote starts from the last similar one and is rewritten; past performance and résumés are re-gathered for every bid.</p>
+      </article>
+      <article class="card">
+        <div class="stage-no">Stage 4 · Closing</div>
+        <h2 class="stage-name">Closing</h2>
+        <div class="row"><div class="agg">
+          <div><b>A</b><span class="n">7</span><span class="k">signed engagements / mo</span></div>
+          <div><b>B</b><span class="n">4</span><span class="k">awards / yr</span></div>
+          <div><b>C</b><span class="n">21</span><span class="k">closed-won / mo</span></div>
+        </div></div>
+        <div class="row"><div class="agg">
+          <div><b>A</b><span class="n">won</span><span class="k">28 d in stage</span></div>
+          <div><b>B</b><span class="n">won</span><span class="k">75 d in stage</span></div>
+          <div><b>C</b><span class="n">won</span><span class="k">34 d in stage</span></div>
+        </div></div>
+        <div class="row"><div class="v">183 h</div><div class="k">per week</div></div>
+        <div class="row"><div class="v">$436K</div><div class="k">people cost / yr</div><div class="split"><span><b>A</b>$186K</span><span><b>B</b>$78K</span><span><b>C</b>$172K</span></div></div>
+        <div class="row"><div class="v">DocuSign, PSA, procurement portals</div><div class="k">information lives in</div><div class="split"><span><b>10</b>manual handoffs across the three motions</span></div></div>
+        <p class="note">Legal, security questionnaires and vendor registration make Closing a waiting game in all three motions. Won deals are re-keyed into the PSA by hand.</p>
+      </article>
+    </div>
+
+  </section>
+
+  <!-- ===== MOTION A: RELATIONSHIP & REFERRAL ===== -->
+  <section class="panel" id="referral" role="tabpanel">
+    <p class="panel-intro">Four partners sell through their personal networks. This motion brings in half of all revenue and has the best win rate: 37% of qualified deals sign. The problem is that nothing is written down. Referrals sit in email, estimates sit in one workbook, and there is no pipeline report.</p>
+    <div class="metrics">
+      <div class="metric rev"><div class="fig">$31.0M</div><div class="lbl">Revenue won · trailing 12 mo</div></div>
+      <div class="metric"><div class="fig">37%</div><div class="lbl">Win rate · signed / qualified</div></div>
+      <div class="metric"><div class="fig">72</div><div class="lbl">Median days to close</div></div>
+      <div class="metric"><div class="fig">9</div><div class="lbl">Manual handoffs per deal</div></div>
+      <div class="metric"><div class="fig">8.2</div><div class="lbl">Selling FTE</div></div>
+      <div class="metric"><div class="fig">$842K</div><div class="lbl">People cost of selling</div></div>
+    </div>
+    <div class="stages">
+      <article class="card">
+        <div class="stage-no">Stage 1 · Prospecting</div>
+        <h2 class="stage-name">Network Cultivation &amp; Referral Intake</h2>
+        <div class="row"><div class="v">34</div><div class="k">referral conversations / mo</div></div>
+        <div class="row"><div class="v">56% · 9 d</div><div class="k">advance to next stage · median days in stage</div></div>
+        <div class="row"><div class="v">62 h</div><div class="k">per week</div></div>
+        <div class="row"><div class="v">$186K</div><div class="k">people cost / yr</div></div>
+        <div class="row"><div class="v">Partner inboxes &amp; notes</div><div class="k">information lives in</div><div class="split"><span><b>2</b>manual handoffs (re-keys, re-uploads, forwarded emails)</span></div></div>
+        <p class="note">Referrals come by email and text to whichever partner knows the source. About a third are never logged in the CRM, so the referral network's actual yield is unknown.</p>
+        <div class="acts" data-flow="A1"></div>
+      </article>
+      <article class="card">
+        <div class="stage-no">Stage 2 · Qualification</div>
+        <h2 class="stage-name">Partner Intro &amp; Discovery</h2>
+        <div class="row"><div class="v">19</div><div class="k">discovery meetings / mo</div></div>
+        <div class="row"><div class="v">58% · 14 d</div><div class="k">advance to next stage · median days in stage</div></div>
+        <div class="row"><div class="v">58 h</div><div class="k">per week</div></div>
+        <div class="row"><div class="v">$172K</div><div class="k">people cost / yr</div></div>
+        <div class="row"><div class="v">CRM (partial)</div><div class="k">information lives in</div><div class="split"><span><b>1</b>manual handoff (re-keys, re-uploads, forwarded emails)</span></div></div>
+        <p class="note">Partner and a solution architect run discovery together. Fit is judged in the room; budget and timeline are confirmed later by email and rarely written down.</p>
+        <div class="acts" data-flow="A2"></div>
+      </article>
+      <article class="card hl">
+        <div class="stage-no">Stage 3 · Proposal</div>
+        <h2 class="stage-name">Scoped SOW &amp; Estimate</h2>
+        <div class="row"><div class="v">11</div><div class="k">SOWs issued / mo</div></div>
+        <div class="row"><div class="v">64% · 21 d</div><div class="k">advance to next stage · median days in stage</div></div>
+        <div class="row"><div class="v">96 h</div><div class="k">per week</div></div>
+        <div class="row"><div class="v">$298K</div><div class="k">people cost / yr</div></div>
+        <div class="row"><div class="v">Estimation workbook</div><div class="k">information lives in</div><div class="split"><span><b>3</b>manual handoffs (re-keys, re-uploads, forwarded emails)</span></div></div>
+        <p class="note">Estimates built in a workbook one partner owns; SOWs drafted from the last similar engagement. Pricing review with the CFO adds a week to every proposal.</p>
+        <div class="acts" data-flow="A3"></div>
+      </article>
+      <article class="card">
+        <div class="stage-no">Stage 4 · Closing</div>
+        <h2 class="stage-name">MSA / SOW Signature &amp; Kickoff</h2>
+        <div class="row"><div class="v">7</div><div class="k">signed engagements / mo</div></div>
+        <div class="row"><div class="v">28 d</div><div class="k">median days in stage · deal is won</div></div>
+        <div class="row"><div class="v">61 h</div><div class="k">per week</div></div>
+        <div class="row"><div class="v">$186K</div><div class="k">people cost / yr</div></div>
+        <div class="row"><div class="v">DocuSign + PSA</div><div class="k">information lives in</div><div class="split"><span><b>3</b>manual handoffs (re-keys, re-uploads, forwarded emails)</span></div></div>
+        <p class="note">MSA redlines take two to four weeks. Signed SOWs are re-keyed into the PSA by the PMO; the referring source is thanked but rarely told what the deal became.</p>
+        <div class="acts" data-flow="A4"></div>
+      </article>
+    </div>
+
+  </section>
+
+  <!-- ===== MOTION B: GOVERNMENT PORTAL RFP ===== -->
+  <section class="panel" id="gov" role="tabpanel">
+    <p class="panel-intro">A small team of four answers government RFPs. They win 1 in 12 bids, and a win takes about 110 days. Most of the work is writing the technical volume, which is rebuilt from an old bid every time.</p>
+    <div class="metrics">
+      <div class="metric rev"><div class="fig">$12.8M</div><div class="lbl">Revenue won · trailing 12 mo</div></div>
+      <div class="metric"><div class="fig">8%</div><div class="lbl">Win rate · awarded / submitted</div></div>
+      <div class="metric"><div class="fig">110</div><div class="lbl">Median days to close</div></div>
+      <div class="metric"><div class="fig">11</div><div class="lbl">Manual handoffs per deal</div></div>
+      <div class="metric"><div class="fig">4.6</div><div class="lbl">Selling FTE</div></div>
+      <div class="metric"><div class="fig">$516K</div><div class="lbl">People cost of selling</div></div>
+    </div>
+    <div class="stages">
+      <article class="card">
+        <div class="stage-no">Stage 1 · Prospecting</div>
+        <h2 class="stage-name">Portal Monitoring &amp; Bid Intake</h2>
+        <div class="row"><div class="v">31</div><div class="k">solicitations screened / mo · 24 portals</div></div>
+        <div class="row"><div class="v">29% · 6 d</div><div class="k">advance to next stage · median days in stage</div></div>
+        <div class="row"><div class="v">22 h</div><div class="k">per week</div></div>
+        <div class="row"><div class="v">$58K</div><div class="k">people cost / yr</div></div>
+        <div class="row"><div class="v">Portals &amp; email alerts</div><div class="k">information lives in</div><div class="split"><span><b>2</b>manual handoffs (re-keys, re-uploads, forwarded emails)</span></div></div>
+        <p class="note">Twenty-four portals scanned by hand every morning against a keyword list last updated two years ago. Solicitations are found, on average, nine days after posting.</p>
+        <div class="acts" data-flow="B1"></div>
+      </article>
+      <article class="card">
+        <div class="stage-no">Stage 2 · Qualification</div>
+        <h2 class="stage-name">Bid / No-Bid &amp; Compliance Check</h2>
+        <div class="row"><div class="v">9</div><div class="k">bid / no-bid decisions / mo</div></div>
+        <div class="row"><div class="v">44% · 5 d</div><div class="k">advance to next stage · median days in stage</div></div>
+        <div class="row"><div class="v">31 h</div><div class="k">per week</div></div>
+        <div class="row"><div class="v">$84K</div><div class="k">people cost / yr</div></div>
+        <div class="row"><div class="v">Compliance matrix (Excel)</div><div class="k">information lives in</div><div class="split"><span><b>2</b>manual handoffs (re-keys, re-uploads, forwarded emails)</span></div></div>
+        <p class="note">Every solicitation is read cover to cover and hand-built into a compliance matrix before the go / no-go meeting. Set-aside eligibility is checked separately, sometimes after the matrix is done.</p>
+        <div class="acts" data-flow="B2"></div>
+      </article>
+      <article class="card hl">
+        <div class="stage-no">Stage 3 · Proposal</div>
+        <h2 class="stage-name">Response Assembly &amp; Pricing</h2>
+        <div class="row"><div class="v">4</div><div class="k">responses submitted / mo</div></div>
+        <div class="row"><div class="v">8% · 24 d</div><div class="k">advance to next stage · median days in stage</div></div>
+        <div class="row"><div class="v">104 h</div><div class="k">per week</div></div>
+        <div class="row"><div class="v">$296K</div><div class="k">people cost / yr</div></div>
+        <div class="row"><div class="v">Shared drive</div><div class="k">information lives in</div><div class="split"><span><b>4</b>manual handoffs (re-keys, re-uploads, forwarded emails)</span></div></div>
+        <p class="note">Technical volumes rewritten from the closest past bid; past performance write-ups and key-personnel résumés re-gathered each time. A typical response takes 110–160 hours.</p>
+        <div class="acts" data-flow="B3"></div>
+      </article>
+      <article class="card">
+        <div class="stage-no">Stage 4 · Closing</div>
+        <h2 class="stage-name">Award, Protest Window &amp; Contract Vehicle</h2>
+        <div class="row"><div class="v">4</div><div class="k">awards / yr</div></div>
+        <div class="row"><div class="v">75 d</div><div class="k">median days in stage · deal is won</div></div>
+        <div class="row"><div class="v">28 h</div><div class="k">per week</div></div>
+        <div class="row"><div class="v">$78K</div><div class="k">people cost / yr</div></div>
+        <div class="row"><div class="v">Contract-vehicle portals</div><div class="k">information lives in</div><div class="split"><span><b>3</b>manual handoffs (re-keys, re-uploads, forwarded emails)</span></div></div>
+        <p class="note">Awards arrive by email, then a protest window, then registration onto the contract vehicle: a second submission with its own paperwork. Loss debriefs are requested for about half of losses.</p>
+        <div class="acts" data-flow="B4"></div>
+      </article>
+    </div>
+
+  </section>
+
+  <!-- ===== MOTION C: INSIDE SALES ===== -->
+  <section class="panel" id="inside" role="tabpanel">
+    <p class="panel-intro">Six SDRs, five AEs and two engineers sell to mid-market buyers. They close 21 deals a month and win 22% of qualified deals. The biggest drop is at the top: only 4.7% of contacts reach a discovery call. This motion also has the most manual handoffs, 12 per deal.</p>
+    <div class="metrics">
+      <div class="metric rev"><div class="fig">$18.2M</div><div class="lbl">Revenue won · trailing 12 mo</div></div>
+      <div class="metric"><div class="fig">22%</div><div class="lbl">Win rate · closed / qualified</div></div>
+      <div class="metric"><div class="fig">70</div><div class="lbl">Median days to close</div></div>
+      <div class="metric"><div class="fig">12</div><div class="lbl">Manual handoffs per deal</div></div>
+      <div class="metric"><div class="fig">13.1</div><div class="lbl">Selling FTE</div></div>
+      <div class="metric"><div class="fig">$1.04M</div><div class="lbl">People cost of selling</div></div>
+    </div>
+    <div class="stages">
+      <article class="card hl">
+        <div class="stage-no">Stage 1 · Prospecting</div>
+        <h2 class="stage-name">Outbound Sequences &amp; Inbound Triage</h2>
+        <div class="row"><div class="v">1,900</div><div class="k">outbound touches / mo · 140 inbound leads</div></div>
+        <div class="row"><div class="v">4.7% · 12 d</div><div class="k">advance to next stage · median days in stage</div></div>
+        <div class="row"><div class="v">226 h</div><div class="k">per week</div></div>
+        <div class="row"><div class="v">$392K</div><div class="k">people cost / yr</div></div>
+        <div class="row"><div class="v">Sales engagement + CRM</div><div class="k">information lives in</div><div class="split"><span><b>3</b>manual handoffs (re-keys, re-uploads, forwarded emails)</span></div></div>
+        <p class="note">Lists bought and cleaned by hand; every sequence step "personalised" by an SDR. Activity is logged twice, in the engagement platform and the CRM, because the sync was never finished.</p>
+        <div class="acts" data-flow="C1"></div>
+      </article>
+      <article class="card">
+        <div class="stage-no">Stage 2 · Qualification</div>
+        <h2 class="stage-name">Discovery &amp; Fit Scoring</h2>
+        <div class="row"><div class="v">96</div><div class="k">discovery calls held / mo</div></div>
+        <div class="row"><div class="v">50% · 8 d</div><div class="k">advance to next stage · median days in stage</div></div>
+        <div class="row"><div class="v">141 h</div><div class="k">per week</div></div>
+        <div class="row"><div class="v">$248K</div><div class="k">people cost / yr</div></div>
+        <div class="row"><div class="v">CRM</div><div class="k">information lives in</div><div class="split"><span><b>2</b>manual handoffs (re-keys, re-uploads, forwarded emails)</span></div></div>
+        <p class="note">SDR books it, AE runs it, notes are re-typed at the handoff. The fit score is filled in after the call from memory; 30% of "qualified" deals stall before a demo.</p>
+        <div class="acts" data-flow="C2"></div>
+      </article>
+      <article class="card">
+        <div class="stage-no">Stage 3 · Proposal</div>
+        <h2 class="stage-name">Demo, Pilot Scope &amp; Quote</h2>
+        <div class="row"><div class="v">48</div><div class="k">quotes issued / mo</div></div>
+        <div class="row"><div class="v">44% · 16 d</div><div class="k">advance to next stage · median days in stage</div></div>
+        <div class="row"><div class="v">118 h</div><div class="k">per week</div></div>
+        <div class="row"><div class="v">$226K</div><div class="k">people cost / yr</div></div>
+        <div class="row"><div class="v">Demo env + quote spreadsheet</div><div class="k">information lives in</div><div class="split"><span><b>3</b>manual handoffs (re-keys, re-uploads, forwarded emails)</span></div></div>
+        <p class="note">Two SEs tailor a demo environment for every prospect. Quotes are built in a spreadsheet with rate cards pasted from three different price lists.</p>
+        <div class="acts" data-flow="C3"></div>
+      </article>
+      <article class="card">
+        <div class="stage-no">Stage 4 · Closing</div>
+        <h2 class="stage-name">Procurement, Security Review &amp; Signature</h2>
+        <div class="row"><div class="v">21</div><div class="k">closed-won / mo</div></div>
+        <div class="row"><div class="v">34 d</div><div class="k">median days in stage · deal is won</div></div>
+        <div class="row"><div class="v">94 h</div><div class="k">per week</div></div>
+        <div class="row"><div class="v">$172K</div><div class="k">people cost / yr</div></div>
+        <div class="row"><div class="v">Procurement portals &amp; questionnaires</div><div class="k">information lives in</div><div class="split"><span><b>4</b>manual handoffs (re-keys, re-uploads, forwarded emails)</span></div></div>
+        <p class="note">Security questionnaires answered from scratch each time by an SE and IT; vendor registration in the buyer's portal is a second submission. Median close-to-signature is 34 days.</p>
+        <div class="acts" data-flow="C4"></div>
+      </article>
+    </div>
+
+  </section>
+    </div>
+    </div>
+  </div>
+
+  <div class="section" id="s-tobe">
+    <h1>How sales works after transformation</h1>
+    <div id="tb-root" class="inner"></div>
+  </div>
+
+  <div class="section" id="s-impact">
+    <h1>Calculation</h1>
+    <p class="lede">Every intervention in one shape: base figure today, assumption, arithmetic, result as a low and high case. Conversion rates held flat. Freed hours go into more selling, never fewer people. Where the extra volume depends on another intervention, the row is shown as capacity and counted as zero.</p>
+
+    <h2 class="sub-h">The interventions and their arithmetic</h2>
+    <p class="sub-p">Grouped by motion. Click a row for the reasoning behind the assumption.</p>
+    <div id="imp-tables"></div>
+  </div>
+</main>
+
+<!-- ===== FLOW MODAL ===== -->
+<div class="modal" id="flowModal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+  <div class="scrim" data-close></div>
+  <div class="sheet">
+    <div class="m-head">
+      <div>
+        <div class="m-eyebrow" id="mEyebrow"></div>
+        <h2 class="m-title" id="mTitle"></h2>
+        <p class="m-sub" id="mSub"></p>
+      </div>
+      <button class="m-close" data-close aria-label="Close">×</button>
+    </div>
+    <div class="m-metrics" id="mMetrics"></div>
+    <div class="flow" id="mFlow"></div>
+    <div class="m-foot" id="mFoot"><span class="sw"></span>Heaviest task in this stage · hours are people-hours per week, all roles combined</div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var FLOWS = {
+    A1:{motion:'A · Relationship & Referral',grouping:'Stage 1 · Prospecting',name:'Network Cultivation & Referral Intake',cost:'$186K',hours:62,people:'4 partners · 1 SDR (part)',
+        tasks:[
+          {t:'Attend partner & industry events',w:'Partner',h:14},
+          {t:'Check in with referral network',w:'Partner',h:16},
+          {t:'Log referrals from inbox into CRM',w:'Partner',h:8,tag:'Leaks'},
+          {t:'Research the referred account',w:'SDR',h:12},
+          {t:'Coordinate the warm intro',w:'Partner',h:12}
+        ]},
+    A2:{motion:'A · Relationship & Referral',grouping:'Stage 2 · Qualification',name:'Partner Intro & Discovery',cost:'$172K',hours:58,people:'4 partners · Solution architect · Delivery manager',
+        tasks:[
+          {t:'Prep intro meeting',w:'Partner',h:8},
+          {t:'Run discovery meeting',w:'Partner + Solution architect',h:22},
+          {t:'Confirm budget, timeline & stakeholders',w:'Partner',h:10,tag:'By email'},
+          {t:'Write notes; judge fit',w:'Partner',h:10},
+          {t:'Assign delivery lead',w:'Delivery manager',h:8}
+        ]},
+    A3:{motion:'A · Relationship & Referral',grouping:'Stage 3 · Proposal',name:'Scoped SOW & Estimate',cost:'$298K',hours:96,people:'Partners · Solution architects · Delivery · CFO (part)',
+        tasks:[
+          {t:'Solution design workshop',w:'Solution architect',h:24},
+          {t:'Build estimate in workbook',w:'Solution architect + Delivery',h:26},
+          {t:'Draft SOW from last similar one',w:'Partner',h:20,tag:'Rework'},
+          {t:'Internal pricing review',w:'CFO + Partner',h:12,tag:'Wait ~1 wk'},
+          {t:'Present & iterate with client',w:'Partner',h:14}
+        ]},
+    A4:{motion:'A · Relationship & Referral',grouping:'Stage 4 · Closing',name:'MSA / SOW Signature & Kickoff',cost:'$186K',hours:61,people:'Partners · Legal · PMO · Delivery',
+        tasks:[
+          {t:'Negotiate MSA redlines',w:'Legal + Partner',h:18,tag:'Wait 2–4 wks'},
+          {t:'Chase signatures',w:'Partner',h:9},
+          {t:'Set up project in PSA',w:'PMO',h:12,tag:'Double entry'},
+          {t:'Staffing & kickoff handoff',w:'Delivery',h:14},
+          {t:'Thank-you & loop back to referral source',w:'Partner',h:8}
+        ]},
+
+    B1:{motion:'B · Government Portal RFP',grouping:'Stage 1 · Prospecting',name:'Portal Monitoring & Bid Intake',cost:'$58K',hours:22,people:'1 capture coordinator',
+        tasks:[
+          {t:'Scan SAM.gov & 23 state / local portals',w:'Capture coordinator',h:9},
+          {t:'Triage keyword alerts',w:'Capture coordinator',h:5,tag:'Stale keywords'},
+          {t:'Log to capture tracker',w:'Capture coordinator',h:4},
+          {t:'Download solicitation; register interest',w:'Capture coordinator',h:4}
+        ]},
+    B2:{motion:'B · Government Portal RFP',grouping:'Stage 2 · Qualification',name:'Bid / No-Bid & Compliance Check',cost:'$84K',hours:31,people:'Capture manager · Coordinator · VP Sales',
+        tasks:[
+          {t:'Read solicitation; build compliance matrix',w:'Capture manager',h:14},
+          {t:'Check set-aside & certification eligibility',w:'Capture coordinator',h:5,tag:'Out of order'},
+          {t:'Go / no-go review',w:'Capture manager + VP',h:6},
+          {t:'Submit questions in Q&A window',w:'Capture manager',h:6}
+        ]},
+    B3:{motion:'B · Government Portal RFP',grouping:'Stage 3 · Proposal',name:'Response Assembly & Pricing',cost:'$296K',hours:104,people:'Capture manager · 2 writers · Pricing · Coordinator',
+        tasks:[
+          {t:'Assign volumes & writers',w:'Capture manager',h:8},
+          {t:'Draft technical volume',w:'Proposal writers',h:34},
+          {t:'Draft past performance & résumés',w:'Proposal writers',h:20,tag:'Rework'},
+          {t:'Build cost volume & rate justification',w:'Pricing',h:18},
+          {t:'Compliance review & formatting',w:'Capture manager',h:14},
+          {t:'Upload via portal before deadline',w:'Capture coordinator',h:10,tag:'Deadline risk'}
+        ]},
+    B4:{motion:'B · Government Portal RFP',grouping:'Stage 4 · Closing',name:'Award, Protest Window & Contract Vehicle',cost:'$78K',hours:28,people:'Coordinator · Capture manager · Contracts',
+        tasks:[
+          {t:'Monitor award notices',w:'Capture coordinator',h:4},
+          {t:'Debrief request; watch protest window',w:'Capture manager',h:6,tag:'Wait'},
+          {t:'Register onto contract vehicle',w:'Contracts',h:10,tag:'Second submission'},
+          {t:'Hand off to delivery & PM',w:'Capture manager',h:8}
+        ]},
+
+    C1:{motion:'C · Inside Sales',grouping:'Stage 1 · Prospecting',name:'Outbound Sequences & Inbound Triage',cost:'$392K',hours:226,people:'6 SDRs',
+        tasks:[
+          {t:'Build & clean lead lists',w:'SDR',h:48},
+          {t:'Personalise outbound sequences',w:'SDR',h:62},
+          {t:'Cold calls',w:'SDR',h:58},
+          {t:'Triage & route inbound leads',w:'SDR',h:28},
+          {t:'Log activity in engagement platform + CRM',w:'SDR',h:30,tag:'Double entry'}
+        ]},
+    C2:{motion:'C · Inside Sales',grouping:'Stage 2 · Qualification',name:'Discovery & Fit Scoring',cost:'$248K',hours:141,people:'6 SDRs · 5 AEs',
+        tasks:[
+          {t:'Book discovery call',w:'SDR',h:18},
+          {t:'Run discovery call',w:'AE',h:52},
+          {t:'Re-type SDR notes at handoff',w:'SDR + AE',h:21,tag:'Rework'},
+          {t:'Score fit in CRM',w:'AE',h:20,tag:'From memory'},
+          {t:'Confirm stakeholders & timeline',w:'AE',h:30}
+        ]},
+    C3:{motion:'C · Inside Sales',grouping:'Stage 3 · Proposal',name:'Demo, Pilot Scope & Quote',cost:'$226K',hours:118,people:'5 AEs · 2 solutions engineers',
+        tasks:[
+          {t:'Tailor demo environment',w:'Solutions engineer',h:30},
+          {t:'Run demo',w:'AE + Solutions engineer',h:28},
+          {t:'Scope pilot',w:'Solutions engineer',h:20},
+          {t:'Build quote in spreadsheet',w:'AE',h:24,tag:'3 price lists'},
+          {t:'Send quote & follow up',w:'AE',h:16}
+        ]},
+    C4:{motion:'C · Inside Sales',grouping:'Stage 4 · Closing',name:'Procurement, Security Review & Signature',cost:'$172K',hours:94,people:'5 AEs · SE · IT · Legal · Onboarding',
+        tasks:[
+          {t:'Answer security questionnaire',w:'Solutions engineer + IT',h:28,tag:'From scratch'},
+          {t:'Vendor registration in buyer portal',w:'AE + Ops',h:22,tag:'Second submission'},
+          {t:'Negotiate terms',w:'AE + Legal',h:20},
+          {t:'Signature & CRM close-out',w:'AE',h:12},
+          {t:'Hand off to onboarding',w:'AE + CSM',h:12}
+        ]}
+  };
+
+
+  document.querySelectorAll('.acts').forEach(function(box){
+    var f = FLOWS[box.dataset.flow]; if(!f) return;
+    box.innerHTML = '<button class="acts-btn" data-open="'+box.dataset.flow+'"><span>'+f.tasks.length+' activities · '+f.hours+' h/wk</span><span class="arr">View flow →</span></button>';
+  });
+
+  var modal = document.getElementById('flowModal');
+  var arrow = '<svg viewBox="0 0 18 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M0 6h16M11 1l5 5-5 5"/></svg>';
+  function openFlow(key){
+    var f = FLOWS[key]; if(!f) return;
+    var max = Math.max.apply(null, f.tasks.map(function(k){return k.h;}));
+    document.getElementById('mEyebrow').textContent = f.motion + '  ·  ' + f.grouping;
+    document.getElementById('mTitle').textContent = f.name;
+    document.getElementById('mSub').textContent = f.people + '.';
+    document.getElementById('mMetrics').innerHTML='';
+    var out = '';
+    f.tasks.forEach(function(k,i){
+      out += '<div class="step">'+
+        (k.tag?'<span class="tag">'+k.tag+'</span>':'')+
+        '<div class="idx">'+(i+1)+'</div>'+
+        '<div class="task">'+k.t+'</div>'+
+        '<div class="who">'+k.w+'</div>'+
+      '</div>';
+      if(i < f.tasks.length-1) out += '<div class="conn">'+arrow+'</div>';
+    });
+    document.getElementById('mFlow').innerHTML = out;
+    document.getElementById('mFoot').innerHTML='';
+    modal.classList.add('open'); document.body.classList.add('locked');
+  }
+  function closeFlow(){ modal.classList.remove('open'); document.body.classList.remove('locked'); }
+  document.addEventListener('click', function(e){
+    var o = e.target.closest('[data-open]'); if(o){ openFlow(o.dataset.open); return; }
+    if(e.target.closest('[data-close]')) closeFlow();
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){ closeFlow(); return; }
+    if(modal.classList.contains('open')) return;
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    var ids = Array.prototype.map.call(tabs, function(t){ return t.dataset.panel; });
+    var cur = ids.indexOf(document.querySelector('.panel.active').id);
+    var next = e.key === 'ArrowRight' ? (cur + 1) % ids.length : (cur - 1 + ids.length) % ids.length;
+    show(ids[next]);
+  });
+
+  /* ---------- TO-BE DATA (same task order as FLOWS) m: auto | ai | human | rm ; t: tier 1 quick win, 2 next, 3 ambitious ; h: hours after ---------- */
+  var TOBE = {
+    A1:{tasks:[{m:'human',h:14,how:'Relationships are the motion. Left alone.'},{m:'human',h:16,how:'Partner check-ins stay personal.'},{m:'auto',t:1,h:1,how:'Email and text referrals captured straight into the CRM; partner just forwards.'},{m:'ai',t:1,h:3,how:'AI account brief: firm, stack, recent news, past contact.'},{m:'ai',t:2,h:6,how:'Intro email drafted from the brief; partner edits and sends.'}],
+        stays:'Network calls and event time stay with the partners. They get more of it back.'},
+    A2:{tasks:[{m:'ai',t:1,h:3,how:'Prep pack generated from the brief and CRM history.'},{m:'human',h:22,how:'Discovery meeting stays with partner and architect.'},{m:'auto',t:2,h:4,how:'Short client form captures budget and timeline into the CRM instead of email back-and-forth.'},{m:'ai',t:1,h:3,how:'Meeting transcribed and summarised into notes and next steps.'},{m:'auto',t:2,h:3,how:'Delivery lead assigned by rule on skills and availability.'}],
+        stays:'The discovery meeting is untouched. Fit is still judged by people in the room.'},
+    A3:{tasks:[{m:'human',h:24,how:'Solution design workshop stays human.'},{m:'ai',t:2,h:12,how:'Estimate assistant proposes effort from similar past projects; architect adjusts.'},{m:'ai',t:1,h:6,how:'SOW generated from the estimate and a template library.'},{m:'auto',t:2,h:4,how:'Pricing approval routed by threshold; CFO sees only exceptions.'},{m:'human',h:14,how:'Presenting and negotiating scope stays with the partner.'}],
+        stays:'Design and the client conversation stay human. Only the assembly is automated.'},
+    A4:{tasks:[{m:'ai',t:3,h:10,how:'AI first-pass review of MSA redlines against Halden positions; legal handles the rest.'},{m:'auto',t:1,h:4,how:'Signature reminders sent automatically.'},{m:'auto',t:1,h:2,how:'Signed SOW creates the PSA project. No re-keying.'},{m:'human',h:14,how:'Staffing and kickoff stay with delivery.'},{m:'ai',t:1,h:3,how:'Thank-you and outcome note to the referral source drafted automatically.'}],
+        stays:'Kickoff and staffing stay human. Referral sources now hear back every time.'},
+    B1:{tasks:[{m:'auto',t:1,h:2,how:'Portal aggregator plus AI matching on capability, not keywords.'},{m:'ai',t:1,h:2,how:'AI triages and ranks new solicitations.'},{m:'auto',t:1,h:1,how:'Tracker row created automatically.'},{m:'auto',t:2,h:1,how:'Documents pulled and interest registered by the tool.'}],
+        stays:'Nothing needs to stay manual here. The coordinator moves to bid support.'},
+    B2:{tasks:[{m:'ai',t:2,h:5,how:'Compliance matrix extracted from the solicitation by AI; capture manager checks it.'},{m:'auto',t:1,h:1,how:'Set-aside and certification check is a lookup.'},{m:'human',h:6,how:'Go / no-go stays a human decision.'},{m:'ai',t:2,h:3,how:'Clarifying questions drafted from gaps in the matrix.'}],
+        stays:'The go / no-go call stays with the capture manager and VP. It just starts with a finished matrix.'},
+    B3:{tasks:[{m:'human',h:8,how:'Assigning volumes and writers stays with the capture manager.'},{m:'ai',t:3,h:16,how:'Technical volume first draft from a content library and the compliance matrix; writers rewrite, not retype.'},{m:'auto',t:1,h:4,how:'Past performance and résumés pulled from a maintained library.'},{m:'ai',t:2,h:8,how:'Cost volume built from rate tables with AI-drafted justification.'},{m:'ai',t:2,h:7,how:'AI compliance check against the matrix before human review.'},{m:'auto',t:2,h:5,how:'Submission checklist and packaging automated.'}],
+        stays:'Writers still write. They start at 40% instead of 0%.'},
+    B4:{tasks:[{m:'auto',t:1,h:1,how:'Award notices monitored automatically.'},{m:'human',h:6,how:'Debrief and protest decisions stay human.'},{m:'auto',t:2,h:4,how:'Contract vehicle registration pre-filled from the bid.'},{m:'human',h:8,how:'Handoff to delivery stays a conversation.'}],
+        stays:'Debriefs and the delivery handoff stay human.'},
+    C1:{tasks:[{m:'auto',t:1,h:10,how:'Lists from a data provider with automatic enrichment.'},{m:'ai',t:1,h:20,how:'Sequence steps drafted by AI from the account brief; SDR reviews.'},{m:'human',h:58,how:'Cold calls stay human. This is where SDRs should spend their time.'},{m:'auto',t:1,h:6,how:'Inbound routed by rule to the right SDR.'},{m:'auto',t:1,h:2,how:'Engagement platform and CRM finally sync. One entry.'}],
+        stays:'Calling stays human. SDRs spend the freed time on more calls.'},
+    C2:{tasks:[{m:'auto',t:1,h:5,how:'Scheduling link; no back-and-forth.'},{m:'human',h:52,how:'Discovery call stays with the AE.'},{m:'rm',t:1,h:0,how:'Removed. SDR and AE work from the same record.'},{m:'ai',t:2,h:5,how:'Fit score proposed from the call transcript; AE confirms.'},{m:'human',h:30,how:'Stakeholder mapping stays with the AE.'}],
+        stays:'The discovery call and stakeholder work stay human. The handoff re-typing disappears.'},
+    C3:{tasks:[{m:'auto',t:2,h:12,how:'Demo environment built from templates by segment.'},{m:'human',h:28,how:'Running the demo stays with AE and SE.'},{m:'ai',t:2,h:10,how:'Pilot scope drafted from the discovery transcript.'},{m:'auto',t:1,h:6,how:'One price list in a quoting tool. Quote in minutes.'},{m:'ai',t:1,h:6,how:'Follow-ups drafted and timed.'}],
+        stays:'The demo stays human. Nobody buys from a template.'},
+    C4:{tasks:[{m:'ai',t:2,h:8,how:'Security questionnaire answered from an approved answer library; SE reviews.'},{m:'auto',t:2,h:10,how:'Vendor registration pre-filled from a company profile.'},{m:'human',h:20,how:'Negotiation stays with AE and legal.'},{m:'auto',t:1,h:4,how:'Signature closes the CRM record automatically.'},{m:'auto',t:2,h:5,how:'Onboarding kicked off from the closed deal.'}],
+        stays:'Negotiation stays human. Paperwork does not.'}
+  };
+  var MODE_NAME={auto:'Automated',ai:'AI-assisted',human:'Stays human',rm:'Removed'};
+  var TIER_NAME={1:'Quick win · 0 to 3 mo',2:'Next · 3 to 9 mo',3:'Ambitious · 9 to 18 mo'};
+  var MOTIONS={A:{name:'Relationship & Referral',rev:'$31.0M',fte:'8.2'},B:{name:'Government Portal RFP',rev:'$12.8M',fte:'4.6'},C:{name:'Inside Sales',rev:'$18.2M',fte:'13.1'}};
+  var STAGE=['Prospecting','Qualification','Proposal','Closing'];
+
+  function tbStats(key){
+    var f=FLOWS[key], t=TOBE[key], now=0, after=0, mix={auto:0,ai:0,human:0,rm:0};
+    f.tasks.forEach(function(k,i){ now+=k.h; after+=t.tasks[i].h; mix[t.tasks[i].m]+=k.h; });
+    return {now:now,after:after,freed:now-after,mix:mix};
+  }
+  function mixBar(mix,total){
+    return '<div class="mix">'+['auto','ai','human','rm'].map(function(m){return '<i class="'+m+'" style="width:'+(mix[m]/total*100)+'%"></i>';}).join('')+'</div>'+
+      '<div class="mixk">'+['auto','ai','human','rm'].filter(function(m){return mix[m]>0;}).map(function(m){return '<span><b>'+mix[m]+' h</b>'+MODE_NAME[m].toLowerCase()+'</span>';}).join('')+'</div>';
+  }
+  /* ---------- TO-BE = clone of As-is with deltas ---------- */
+  var TBD={
+    A1:{vol:[39,42],days:'8 d',hand:0,sys:'CRM (referrals auto-captured)',note:'Referrals from email and text land in the CRM on their own. Partners get a one-page brief on every referred account before they call. Nothing is lost between inbox and pipeline.'},
+    A2:{vol:[22,23],days:'12 d',hand:1,sys:'CRM',note:'Partner and architect still run discovery together. Notes, budget and timeline are captured from the call and a short client form, so fit is written down the same day.'},
+    A3:{vol:[12,13],days:'12 d',hand:1,sys:'Estimation tool + SOW templates',note:'Estimates start from similar past projects and SOWs generate from the estimate. The CFO sees only exceptions. Proposal turnaround roughly halves.'},
+    A4:{vol:[8,9],days:'22 d',hand:1,sys:'DocuSign → PSA (synced)',note:'Signed SOW creates the PSA project. Reminders go out on their own. Every referral source hears what the deal became.'},
+    B1:{vol:[34,36],days:'4 d',hand:0,sys:'Portal aggregator + capture tracker',note:'One aggregator watches all 24 portals and matches on capability, not keywords. Solicitations are seen the day they post, not nine days later.'},
+    B2:{vol:[10,10],days:'4 d',hand:1,sys:'AI compliance matrix',note:'The compliance matrix is extracted, not typed. Set-aside eligibility is checked first. Go / no-go is still a Friday decision, now made with a finished matrix.'},
+    B3:{vol:[5,6],days:'14 d',hand:2,sys:'Content library + shared drive',note:'Past performance and résumés come from a maintained library. The technical volume starts from a first draft. Same four people, 25% to 50% more responses.'},
+    B4:{vol:[5,6],days:'72 d',hand:2,sys:'Contract-vehicle portals (pre-filled)',note:'Award notices are watched automatically and the contract-vehicle registration is pre-filled from the bid. Protest window and debriefs are unchanged; they belong to the buyer.'},
+    C1:{vol:[2350,2650],days:'10 d',hand:1,sys:'Engagement platform ↔ CRM (synced)',note:'Lists come enriched from a data provider, sequence drafts come from AI, and the two systems finally share one record. SDRs spend the time on calls.'},
+    C2:{vol:[110,125],days:'8 d',hand:0,sys:'CRM',note:'Buyers book through a link. SDR and AE work from the same record, so nothing is re-typed. Fit is scored from the transcript and confirmed by the AE.'},
+    C3:{vol:[55,62],days:'10 d',hand:1,sys:'Demo templates + quoting tool',note:'Demo environments come from templates by segment. One price list in a quoting tool; a quote takes minutes. The demo itself is still run by AE and SE.'},
+    C4:{vol:[24,27],days:'24 d',hand:2,sys:'Answer library + buyer portals',note:'Security questionnaires are answered from an approved library. Vendor registration is pre-filled. Negotiation is unchanged. Closing takes 24 days instead of 34.'}
+  };
+  var TBS={ /* strip per motion: rev lo/hi, days to close, handoffs per deal */
+    A:{rev:[35.2,38.3],days:54,hand:3,deals:'8 to 9 / mo',win:'37%'},
+    B:{rev:[16.0,19.2],days:94,hand:5,deals:'5 to 6 / yr',win:'8%'},
+    C:{rev:[20.9,23.7],days:52,hand:4,deals:'24 to 27 / mo',win:'22%'}
+  };
+  var TBMAP={A:['CRM (auto-capture)','CRM','Estimation tool · SOW templates','DocuSign → PSA'],B:['Aggregator · capture tracker','AI compliance matrix','Content library · shared drive','Contract-vehicle portals'],C:['Engagement platform ↔ CRM','CRM','Demo templates · quoting tool','Answer library · buyer portals'],overview:['CRM · aggregator · engagement platform','CRM · AI matrix','Estimation tool · content library · quoting tool','PSA · portals, pre-filled']};
+  var TBINTRO={
+    overview:'Selling hours drop from 1,041 a week to 553 and every freed hour goes back into calls, meetings and bids. Deals won rise from 28 a month to 32 to 36 with conversion rates held flat. Manual handoffs fall from 32 to 12.',
+    referral:'Partners spend more time in their networks and less on logging, research and paperwork. Referral conversations rise from 34 to about 40 a month. Proposal turnaround halves. Signed engagements go from 7 to 8 or 9 a month.',
+    gov:'The same four people answer 25% to 50% more solicitations. Portal scanning and the compliance matrix are automatic. The technical volume starts from a draft. Awards rise from 4 a year to 5 or 6.',
+    inside:'SDRs spend their time on calls, not lists and re-typing. Touches rise 15% to 30%, discovery calls follow at the same 4.7%, and closed deals go from 21 a month to 24 to 27. Closing takes 24 days instead of 34.'
+  };
+  function fmt(n){return n>=1000?n.toLocaleString('en-US'):String(n);}
+  function delta(oldTxt,newTxt,d,unit){ if(d!==undefined && /^[−+-]?0(\.0)?( |$)/.test(String(d))) return same(newTxt); return '<span class="dv">'+oldTxt+'</span>'+newTxt+(d!==undefined?'<span class="dd">'+d+(unit||'')+'</span>':'');}
+  function same(txt){return txt+'<span class="du">unchanged</span>';}
+  function num(t){return parseFloat(String(t).replace(/[^0-9.]/g,''));}
+
+  function buildTobe(){
+    var src=document.getElementById('s-asis');
+    var root=document.getElementById('tb-root');
+    var bar=src.querySelector('.motions').cloneNode(true);
+    bar.setAttribute('data-group','tobe');
+    bar.querySelectorAll('.motion').forEach(function(b){b.dataset.panel='tb-'+b.dataset.panel;});
+    root.appendChild(bar);
+    src.querySelectorAll('.panel').forEach(function(pn){
+      var c=pn.cloneNode(true); var pid=pn.id; c.id='tb-'+pid;
+      c.querySelector('.panel-intro').textContent=TBINTRO[pid];
+      /* strip */
+      var m=c.querySelector('.metrics'), mo={referral:'A',gov:'B',inside:'C'}[pid];
+      if(mo){
+        var st=TBS[mo], todayRev=MOTIONS[mo].rev, todayDays={A:72,B:110,C:70}[mo], todayHand={A:9,B:11,C:12}[mo];
+        m.innerHTML='<div class="metric rev"><div class="fig">'+delta(todayRev,'$'+st.rev[0].toFixed(1)+'M','+$'+(st.rev[0]-num(todayRev)).toFixed(1)+'M')+'</div><div class="lbl">Revenue won · low case · high case $'+st.rev[1].toFixed(1)+'M</div></div>'+
+          '<div class="metric"><div class="fig">'+same(st.win)+'</div><div class="lbl">Win rate · held flat</div></div>'+
+          '<div class="metric"><div class="fig">'+delta(todayDays,st.days,'−'+(todayDays-st.days))+'</div><div class="lbl">Median days to close</div></div>'+
+          '<div class="metric"><div class="fig">'+delta(todayHand,st.hand,'−'+(todayHand-st.hand))+'</div><div class="lbl">Manual handoffs per deal</div></div>'+
+          '<div class="metric"><div class="fig">'+same(MOTIONS[mo].fte)+'</div><div class="lbl">Selling FTE</div></div>'+
+          '<div class="metric"><div class="fig">'+same({A:'$842K',B:'$516K',C:'$1.04M'}[mo])+'</div><div class="lbl">People cost of selling</div></div>';
+      } else {
+        m.innerHTML='<div class="metric rev"><div class="fig">'+delta('$62.0M','$72.1M','+$10.1M')+'</div><div class="lbl">Revenue won · low case · high case $81.2M</div></div>'+
+          '<div class="metric"><div class="fig">'+delta('28 / mo','32 to 36','+4 to +8')+'</div><div class="lbl">Deals won · all motions</div></div>'+
+          '<div class="metric"><div class="fig">'+delta('70 to 110','52 to 94')+'</div><div class="lbl">Median days to close · by motion</div></div>'+
+          '<div class="metric"><div class="fig">'+delta('32','12','−20')+'</div><div class="lbl">Manual handoffs across motions</div></div>'+
+          '<div class="metric"><div class="fig">'+same('25.9')+'</div><div class="lbl">Selling FTE</div></div>';
+      }
+      /* cards */
+      c.querySelectorAll('.card').forEach(function(card,ci){
+        card.classList.add('tb');
+        var acts=card.querySelector('.acts'); var key=acts?acts.dataset.flow:null;
+        var rows=card.querySelectorAll(':scope > .row');
+        if(key){
+          var d=TBD[key], st=tbStats(key), f=FLOWS[key];
+          var v0=rows[0].querySelector('.v'), oldVol=v0.textContent; var lo=d.vol[0],hi=d.vol[1];
+          v0.innerHTML=delta(oldVol,fmt(lo)+(hi>lo?' to '+fmt(hi):''),'+'+fmt(lo-num(oldVol))+(hi>lo?' to +'+fmt(hi-num(oldVol)):''));
+          var v1=rows[1].querySelector('.v'), t1=v1.textContent; var parts=t1.split(' · ');
+          var oldDays=parts.length>1?parts[1]:parts[0]; var conv=parts.length>1?parts[0]+' · ':'';
+          v1.innerHTML=conv+delta(oldDays,d.days,'−'+(num(oldDays)-num(d.days))+' d');
+          rows[2].querySelector('.v').innerHTML=delta(st.now+' h',st.after+' h','−'+st.freed+' h');
+          rows[2].querySelector('.k').textContent='per week · freed time goes back into selling';
+          rows[3].querySelector('.v').innerHTML=same(rows[3].querySelector('.v').textContent);
+          var sp=rows[4].querySelector('.split'); var oldH=num(sp.textContent);
+          rows[4].querySelector('.v').textContent=d.sys;
+          sp.innerHTML='<span>'+delta(oldH,d.hand,'−'+(oldH-d.hand))+' manual handoffs</span>';
+          card.querySelector('.note').textContent=d.note;
+          var ml=document.createElement('div'); ml.className='modeline';
+          ml.innerHTML=['auto','ai','human','rm'].filter(function(x){return st.mix[x]>0;}).map(function(x){return '<span><b>'+st.mix[x]+' h</b>'+MODE_NAME[x].toLowerCase()+'</span>';}).join('');
+          acts.innerHTML='';
+          acts.appendChild(ml);
+          acts.insertAdjacentHTML('beforeend','<button class="acts-btn" data-open-tb="'+key+'"><span>'+f.tasks.length+' tasks · before and after</span><span class="arr">View flow →</span></button>');
+        } else {
+          /* overview card ci = stage index */
+          var keys=['A','B','C'].map(function(x){return x+(ci+1);});
+          var aggs=card.querySelectorAll('.agg');
+          aggs[0].querySelectorAll('div').forEach(function(line,i){var k=keys[i], d=TBD[k]; var n=line.querySelector('.n'); var old=n.textContent; n.innerHTML=delta(old,fmt(d.vol[0])+(d.vol[1]>d.vol[0]?' to '+fmt(d.vol[1]):''));});
+          aggs[1].querySelectorAll('div').forEach(function(line,i){var k=keys[i], d=TBD[k]; var kk=line.querySelector('.k'); var oldD=kk.textContent.match(/(\d+) d/)[1]; var dd=oldD-num(d.days); kk.innerHTML=kk.innerHTML.replace(oldD+' d', dd>0?'<span class="dv">'+oldD+' d</span>'+d.days+'<span class="dd">−'+dd+' d</span>':d.days);});
+          var now=0,after=0,hand=0,oldHand=0; keys.forEach(function(k){var st=tbStats(k);now+=st.now;after+=st.after;hand+=TBD[k].hand;});
+          rows[2].querySelector('.v').innerHTML=delta(now+' h',after+' h','−'+(now-after)+' h');
+          rows[3].querySelector('.v').innerHTML=same(rows[3].querySelector('.v').textContent);
+          var sp2=rows[4].querySelector('.split'); oldHand=num(sp2.textContent);
+          rows[4].querySelector('.v').textContent=TBMAP.overview[ci];
+          sp2.innerHTML='<span>'+delta(oldHand,hand,'−'+(oldHand-hand))+' manual handoffs across the three motions</span>';
+          card.querySelector('.note').textContent={0:'Referrals, solicitations and outbound touches all rise because the people who find them have the hours to find them. Every lead lands in a system on its own.',1:'Qualification is still a conversation. It is just written down automatically: transcripts, forms and matrices instead of memory and free text.',2:'Still the heaviest stage, at about half the hours. Estimates, technical volumes and quotes all start from something instead of nothing.',3:'Paperwork and re-keying are gone. Negotiation, debriefs and kickoff stay with people. Every motion closes faster.'}[ci];
+        }
+      });
+      root.appendChild(c);
+    });
+  }
+  buildTobe();
+
+  /* to-be flow modal */
+  var RATE={A:79,B:86,C:58};
+  function usd(v){return v>=1000000?'$'+(v/1000000).toFixed(2)+'M':v>=1000?'$'+Math.round(v/1000)+'K':'$'+Math.round(v);}
+  function openTobe(key){
+    var f=FLOWS[key], t=TOBE[key], s=tbStats(key), rate=RATE[key[0]];
+    document.getElementById('mEyebrow').textContent=f.motion+'  ·  '+f.grouping;
+    document.getElementById('mTitle').textContent=f.name;
+    document.getElementById('mSub').innerHTML='What changes for each task.<div class="m-legend"><span><i class="sw auto"></i>Automated: software does it end to end</span><span><i class="sw ai"></i>AI-assisted: a person owns it, starts from a draft</span><span><i class="sw human"></i>Stays human on purpose</span><span><i class="sw rm"></i>Removed: two systems now share one record</span></div>';
+    document.getElementById('mMetrics').innerHTML='';
+    var out='';
+    f.tasks.forEach(function(k,i){
+      var tt=t.tasks[i];
+      out+='<div class="step'+(tt.m==='human'?' hum':'')+'"><div class="modehead"><span class="mode '+tt.m+'">'+MODE_NAME[tt.m]+'</span>'+(tt.t?'<span class="tierchip">Tier '+tt.t+'</span>':'')+'</div><div class="task">'+k.t+'</div><div class="who">'+k.w+'</div><p class="how">'+tt.how+'</p>'+
+        '</div>';
+      if(i<f.tasks.length-1) out+='<div class="conn">'+arrow+'</div>';
+    });
+    document.getElementById('mFlow').innerHTML=out;
+    document.getElementById('mFoot').innerHTML='Tier 1 quick win (0 to 3 months) · Tier 2 next (3 to 9) · Tier 3 ambitious (9 to 18)';
+    modal.classList.add('open'); document.body.classList.add('locked');
+  }
+  document.addEventListener('click',function(e){var o=e.target.closest('[data-open-tb]'); if(o) openTobe(o.dataset.openTb);});
+
+  /* ---------- IMPACT ---------- */
+  var IMPACT={
+    A:{deals:{now:7,lo:8,hi:9,unit:'/ mo'},days:{now:72,lo:60,hi:52},freed:null,revlo:4.4,revhi:8.9,avg:'$369K avg deal'},
+    B:{deals:{now:4,lo:5,hi:7,unit:'/ yr'},days:{now:110,lo:95,hi:85},freed:null,revlo:3.2,revhi:9.6,avg:'$3.2M avg award'},
+    C:{deals:{now:21,lo:25,hi:29,unit:'/ mo'},days:{now:70,lo:58,hi:52},freed:null,revlo:3.5,revhi:6.9,avg:'$72K avg deal'}
+  };
+  ['A','B','C'].forEach(function(m){var fr=0;[1,2,3,4].forEach(function(i){fr+=tbStats(m+i).freed;});IMPACT[m].freed=fr;});
+  function rbar(now,lo,hi,max,invert){
+    // width proportional to max; for days (invert) lower is better so bars shrink
+    var w=function(v){return Math.round(v/max*100);};
+    if(invert) return '<div class="rbar"><div class="base" style="width:'+w(now)+'%"></div><div class="lo" style="left:0;width:'+w(lo)+'%"></div><div class="hi" style="left:0;width:'+w(hi)+'%"></div></div>';
+    return '<div class="rbar"><div class="base" style="width:'+w(now)+'%"></div><div class="lo" style="left:'+w(now)+'%;width:'+(w(hi)-w(now))+'%"></div><div class="hi" style="left:'+w(now)+'%;width:'+(w(lo)-w(now))+'%"></div></div>';
+  }
+  /* ---------- INTERVENTIONS · one shape each: base → assumption → arithmetic → result. Conversion held flat. Hours routed to volume. ---------- */
+  var IV=[
+    {m:'A',t:1,n:'Capture referrals from email into the CRM',base:'34 referral conversations / mo, about a third never logged',src:'Partner interviews',assume:'Logged referrals up 8% to 15%. Not all lost referrals were real; some were dropped on purpose.',arith:'34 × 8–15% = 2.7–5.1 more / mo × 20.6% (7 of 34, held flat) × $369K',lo:2.5,hi:4.6,wlo:7,whi:13,h:7,why:'A third of referrals never reach the CRM, so nobody follows them up. We assume only a quarter to a half of those were worth chasing, hence 8 to 15%, not 33%.'},
+    {m:'A',t:1,n:'AI account brief, intro drafting, meeting notes',base:'62 h/wk in Prospecting, 58 h/wk in Qualification',src:'Partner time survey',assume:'38 h/wk freed. Half to three quarters goes back into network calls. One new referral conversation per 10 partner hours.',arith:'38 h × 50–75% ÷ 10 h × 4.3 wk = 1.9–2.9 conv / mo × 20.6% × $369K',lo:1.7,hi:2.7,wlo:5,whi:7,h:38,why:'Partners say network time is the first thing squeezed when admin piles up. Ten hours per new conversation is deliberately slow; partners themselves guess five.'},
+    {m:'A',t:2,n:'Estimate assistant, SOW generation, approval routing',base:'11 SOWs / mo at 96 h/wk; Proposal stage 21 days',src:'Estimation workbook, partner interviews',assume:'36 h/wk freed. Proposal stage drops to about 12 days. Extra SOW capacity only pays if the two rows above deliver the demand.',arith:'36 h freed ÷ 5.5 h per SOW = capacity for 6 more SOWs / mo',lo:0,hi:0,wlo:0,whi:0,h:36,cap:'+6 SOWs / mo capacity',why:'Counted as zero revenue on purpose. It removes the bottleneck the first two rows would otherwise hit. Faster proposals may also lift win rate; that is in the sensitivity table, not here.'},
+    {m:'A',t:1,n:'PSA sync, signature reminders, referral loop-back',base:'61 h/wk in Closing; 7 signed / mo',src:'PMO and partner interviews',assume:'28 h/wk freed. Referral sources now hear the outcome every time, which tends to raise referral rate, but we do not count it.',arith:'28 h/wk × 52 = 1,456 h / yr back into selling',lo:0,hi:0,wlo:0,whi:0,h:28,cap:'1,456 h / yr',why:'Loop-back to referral sources is the cheapest goodwill in the firm. Any effect on referral rate is unproven, so it stays out of the headline.'},
+
+    {m:'B',t:1,n:'Portal aggregator and AI triage',base:'31 solicitations screened / mo; 2 relevant RFPs missed last year',src:'Capture tracker, coordinator interview',assume:'10% to 15% more relevant solicitations found. Only useful if the bid desk has capacity to answer them.',arith:'9 go decisions / mo × 10–15% = 1 more go / mo',lo:0,hi:0,wlo:0,whi:0,h:16,cap:'+1 go decision / mo',why:'Finding more bids is worth nothing without the capacity to write them. That capacity is the row below, so the revenue is counted there, once.'},
+    {m:'B',t:1,n:'Content library, then AI first draft of the technical volume',base:'48 responses / yr, 4 awards (8.3%), $3.2M per award; 104 h/wk in Proposal',src:'Bid log, finance close list',assume:'Same four people submit 25% to 50% more responses. Award rate held at 8.3%.',arith:'48 × 25–50% = 12–24 more responses × 8.3% = 1.0–2.0 awards × $3.2M',lo:3.2,hi:6.4,wlo:1,whi:2,h:56,why:'The library alone (tier 1) is worth the low case. The AI first draft (tier 3) is what gets to the high case. One award is $3.2M, so this line is lumpy: it is one or two extra wins a year, not a smooth curve.'},
+    {m:'B',t:2,n:'AI compliance matrix, cost volume, compliance check',base:'31 h/wk in Qualification; 9 go / no-go decisions / mo',src:'Capture manager interview',assume:'16 h/wk freed. Go / no-go starts from a finished matrix. No revenue counted.',arith:'16 h/wk × 52 = 832 h / yr into capture',lo:0,hi:0,wlo:0,whi:0,h:16,cap:'832 h / yr',why:'Feeds the response capacity above. Counting it again would double count.'},
+    {m:'B',t:2,n:'Contract vehicle registration pre-filled',base:'28 h/wk in Closing; 4 awards / yr',src:'Contracts interview',assume:'9 h/wk freed. No revenue effect.',arith:'9 h/wk × 52 = 468 h / yr',lo:0,hi:0,wlo:0,whi:0,h:9,cap:'468 h / yr',why:'Small. Included because it is the second submission nobody budgets for.'},
+
+    {m:'C',t:1,n:'Sync engagement platform and CRM, list automation, AI sequence drafts',base:'2,040 touches / mo; 4.7% reach discovery; 21.9% of discovery closes; $72K per deal',src:'Engagement platform, CRM',assume:'130 h/wk freed on the floor. Touches up 15% to 30%. Both conversion rates held flat.',arith:'2,040 × 15–30% = 306–612 touches × 4.7% × 21.9% × 12 × $72K',lo:2.7,hi:5.5,wlo:38,whi:76,h:130,why:'130 hours is 57% of SDR time. We assume only a quarter to a half of it turns into extra touches, because list quality, not effort, caps outbound.'},
+    {m:'C',t:1,n:'Scheduling link, shared record, AI fit score',base:'141 h/wk in Qualification; 96 discovery calls / mo',src:'AE and SDR interviews',assume:'49 h/wk freed. AE time back into discovery. No revenue counted here; discovery volume is driven by the row above.',arith:'49 h/wk × 52 = 2,548 h / yr into discovery',lo:0,hi:0,wlo:0,whi:0,h:49,cap:'2,548 h / yr',why:'Removes the SDR-to-AE re-typing, which is 21 hours a week of pure waste. Its value shows up as the capacity to run the extra discovery calls the first row creates.'},
+    {m:'C',t:2,n:'Quoting tool, demo templates, pilot scope draft',base:'48 quotes / mo at 118 h/wk; Proposal stage 16 days',src:'Quote spreadsheet, SE interviews',assume:'56 h/wk freed. Proposal stage drops to about 10 days. Win rate effect not counted.',arith:'56 h/wk × 52 = 2,912 h / yr into demos and quotes',lo:0,hi:0,wlo:0,whi:0,h:56,cap:'2,912 h / yr',why:'Quote turnaround is where inside sales loses deals to faster competitors, per the AEs. That is a win-rate story and sits in the sensitivity table.'},
+    {m:'C',t:2,n:'Security answer library, vendor registration, close-out automation',base:'94 h/wk in Closing; Closing stage 34 days',src:'SE and ops interviews',assume:'47 h/wk freed. Closing drops to about 22 days. No revenue counted.',arith:'47 h/wk × 52 = 2,444 h / yr',lo:0,hi:0,wlo:0,whi:0,h:47,cap:'2,444 h / yr',why:'Pure cycle-time. Deals that close in 22 days instead of 34 are the same deals, just sooner.'}
+  ];
+  var TODAY={A:{wins:84,rev:31.0,unit:'/ yr',mo:7},B:{wins:4,rev:12.8,unit:'/ yr',mo:0.33},C:{wins:252,rev:18.2,unit:'/ yr',mo:21}};
+  (function(){
+    var totLo=0,totHi=0,wLo=0,wHi=0,totH=0;
+    IV.forEach(function(r){totLo+=r.lo;totHi+=r.hi;wLo+=r.wlo;wHi+=r.whi;totH+=r.h;});
+    var dealsLo=(28+wLo/12), dealsHi=(28+wHi/12);
+    var html='';
+    ['A','B','C'].forEach(function(m){
+      var rows=IV.filter(function(r){return r.m===m;}), lo=0,hi=0,h=0,wl=0,wh=0;
+      html+='<div class="iv"><div class="stage-no">'+m+'</div><h3>'+MOTIONS[m].name+'</h3><div class="sub">$'+TODAY[m].rev.toFixed(1)+'M today · '+TODAY[m].wins+' wins '+TODAY[m].unit+'</div>'+
+        '<table><colgroup><col style="width:22%"><col style="width:20%"><col style="width:22%"><col style="width:20%"><col style="width:16%"></colgroup><thead><tr><th>Intervention</th><th>Base figure today</th><th>Assumption</th><th>Arithmetic</th><th>Result · low to high</th></tr></thead><tbody>';
+      rows.forEach(function(r,i){
+        lo+=r.lo;hi+=r.hi;h+=r.h;wl+=r.wlo;wh+=r.whi;
+        var res = r.cap ? '<b>'+r.cap+'</b>'+r.h+' h/wk freed · counted as $0' : '+$'+r.lo.toFixed(1)+'M to +$'+r.hi.toFixed(1)+'M<small>+'+Math.round(r.wlo)+' to +'+Math.round(r.whi)+' wins / yr · '+r.h+' h/wk freed</small>';
+        html+='<tr class="r" data-why="'+m+i+'"><td class="n">'+r.n+'<br><span class="tier">Tier '+r.t+'</span></td><td>'+r.base+'<span class="src">'+r.src+'</span></td><td>'+r.assume+'</td><td>'+r.arith+'</td><td class="res'+(r.cap?' cap':'')+'">'+res+'</td></tr>'+
+          '<tr class="why" id="why-'+m+i+'"><td colspan="5"><b>Why</b>'+r.why+'</td></tr>';
+      });
+      html+='<tr class="tot"><td colspan="4">Motion total · '+h+' h/wk freed and routed into volume</td><td class="res">+$'+lo.toFixed(1)+'M to +$'+hi.toFixed(1)+'M<small>+'+Math.round(wl)+' to +'+Math.round(wh)+' wins / yr</small></td></tr></tbody></table></div>';
+    });
+    document.getElementById('imp-tables').innerHTML=html;
+    document.getElementById('imp-tables').addEventListener('click',function(e){var tr=e.target.closest('tr.r'); if(!tr) return; document.getElementById('why-'+tr.dataset.why).classList.toggle('open');});
+  })();
+
+  /* ---------- top nav + generic inner tabs ---------- */
+  var top=document.querySelectorAll('.topnav button'), secs=document.querySelectorAll('.section');
+  top.forEach(function(b){b.addEventListener('click',function(){
+    top.forEach(function(x){x.setAttribute('aria-selected',String(x===b));});
+    secs.forEach(function(s){s.classList.toggle('active',s.id===b.dataset.section);});
+    window.scrollTo({top:0});
+  });});
+  document.querySelectorAll('.motions').forEach(function(bar){
+    var sec=bar.closest('.section');
+    bar.querySelectorAll('.motion').forEach(function(t){t.addEventListener('click',function(){
+      bar.querySelectorAll('.motion').forEach(function(x){x.setAttribute('aria-selected',String(x===t));});
+      sec.querySelectorAll('.panel').forEach(function(p){p.classList.toggle('active',p.id===t.dataset.panel);});
+    });});
+  });
+
+})();
+</script>
+
+</body>
+</html>

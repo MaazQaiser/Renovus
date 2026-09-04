@@ -90,7 +90,6 @@ export function ChatComposer({
           label="Send answer"
           variant="primary"
           size="md"
-          className="rounded-full"
           disabled={disabled || sendDisabled}
           onClick={submit}
         />

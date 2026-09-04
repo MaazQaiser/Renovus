@@ -225,7 +225,7 @@ Seed list in `companies.ts`. Users can also add a custom company from the chat p
 | --- | --- | --- |
 | Profit Optics | Profit Optics | Technology Services |
 | Collegies | Collegies | Education |
-| xFact | xFact | Technology Services |
+| Halden | Halden | Technology Services |
 | DataServe | DataServe | Technology Services |
 | Behaviour Framework | Behaviour Framework | Healthcare Services |
 | EOSIS | EOSIS | Professional Services |

@@ -328,7 +328,7 @@ export function SalesBaselineReport({
       <nav
         role="tablist"
         aria-label="Report sections"
-        className="sticky top-0 z-30 flex gap-8 overflow-x-auto border-b border-glass-border bg-glass-strong px-6 backdrop-blur-2xl md:px-12"
+        className="sticky top-0 z-30 flex gap-8 overflow-x-auto border-b border-glass-border bg-glass-strong px-8 backdrop-blur-2xl"
       >
         {SECTIONS.map((item, index) => {
           const active = section === item.id;
@@ -355,7 +355,7 @@ export function SalesBaselineReport({
         })}
       </nav>
 
-      <div className="mx-auto max-w-[1520px] px-6 py-10 md:px-12">
+      <div className="mx-auto max-w-[1520px] px-8 py-10">
         {/* ── 01 Data we have ── */}
         {section === "data" ? (
           <section>

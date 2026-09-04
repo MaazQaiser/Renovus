@@ -17,7 +17,7 @@ export function OffshoringProcessing() {
   }, [router]);
 
   return (
-    <div className="flex flex-1 flex-col items-center justify-center px-6 py-16 text-center">
+    <div className="flex flex-1 flex-col items-center justify-center px-8 py-16 text-center">
       <Spinner
         size="lg"
         tone="accent"

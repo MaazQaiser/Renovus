@@ -65,7 +65,7 @@ function AnswerCard({
               <button
                 type="button"
                 onClick={() => onPickCompany(company)}
-                className="inline-flex items-center gap-1.5 rounded-full border border-glass-border bg-glass px-2.5 py-1 text-[13px] leading-5 text-secondary transition-colors duration-[140ms] hover:bg-glass-strong hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                className="inline-flex items-center gap-1.5 rounded-control border border-glass-border bg-glass px-2.5 py-1 text-[13px] leading-5 text-secondary transition-colors duration-[140ms] hover:bg-glass-strong hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
               >
                 <CompanyAvatar company={company} size="sm" className="size-4 rounded" />
                 {company.name}

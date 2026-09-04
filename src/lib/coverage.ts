@@ -158,10 +158,25 @@ export function departmentRecords(
     workflow: newestFirst(
       own.filter((record) => WORKFLOW_DEPARTMENT[record.agent] === departmentId),
     ),
-    process: newestFirst(
+    process: preferFullProcess(
       own.filter((record) => PROCESS_DEPARTMENT[record.agent] === departmentId),
     ),
   };
+}
+
+/**
+ * The full process write-up wins over the short one even when the short one is
+ * newer. Both agents map to the same department, so picking purely by date lets
+ * a quick "baseline" run hide the full report the card is meant to open.
+ */
+function preferFullProcess(
+  records: AssessmentRecord[],
+): AssessmentRecord[] {
+  const ordered = newestFirst(records);
+  return [
+    ...ordered.filter((record) => record.agent === "process"),
+    ...ordered.filter((record) => record.agent !== "process"),
+  ];
 }
 
 export function companyCoverage(
@@ -194,7 +209,7 @@ export function companyCoverage(
           )
         : [];
     const newestWorkflow = workflowRecords[0];
-    const newestProcess = newestFirst(
+    const newestProcess = preferFullProcess(
       own.filter((record) => PROCESS_DEPARTMENT[record.agent] === department.id),
     )[0];
 

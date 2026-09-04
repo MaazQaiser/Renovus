@@ -47,7 +47,7 @@ export function IntakeProgress({
   }, [durationMs, steps, onDone]);
 
   return (
-    <div className="flex flex-1 flex-col items-center justify-center px-6 py-16">
+    <div className="flex flex-1 flex-col items-center justify-center px-8 py-16">
       <div className="flex w-full max-w-[30rem] flex-col items-center text-center">
         <Spinner
           size="lg"

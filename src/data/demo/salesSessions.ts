@@ -19,7 +19,7 @@ import type {
 /**
  * Completed sales assessments for demo purposes.
  *
- * Not every PortCo appears here. xFact deliberately has no posture: it is the
+ * Not every PortCo appears here. Halden deliberately has no posture: it is the
  * portfolio's untouched company, so the product can be shown starting a
  * baseline from nothing rather than only re-opening finished ones.
  *

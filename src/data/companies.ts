@@ -31,9 +31,9 @@ export const companies: Company[] = [
   },
   {
     id: "xfact",
-    name: "xFact",
-    shortName: "xFact",
-    initials: "XF",
+    name: "Halden",
+    shortName: "Halden",
+    initials: "HA",
     sector: "Technology Services",
     stage: "Not started",
     description: "Public sector technology platform and related services.",

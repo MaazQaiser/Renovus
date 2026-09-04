@@ -70,7 +70,7 @@ export function initialsFromName(name: string): string {
  * Bumped whenever data/companies.ts gains a field that already-stored rosters
  * predate. Revision 1 added the portfolio logos.
  */
-const SEED_REVISION = 5;
+const SEED_REVISION = 7;
 
 /**
  * Seed companies dropped from data/companies.ts. Removing the entry alone would
@@ -84,11 +84,19 @@ const RETIRED_SEED_IDS = new Set(["dataserve"]);
  * Companies whose stored stage is replaced by the seed's during the upgrade.
  *
  * A stage is otherwise the user's to change, so this names exact ids rather
- * than resetting the field for everyone. Revision 5: xFact became the
+ * than resetting the field for everyone. Revision 5: Halden (then xFact) became the
  * portfolio's unassessed PortCo, and any roster stored before that still calls
  * it "Roadmap defined".
  */
 const STAGE_RESET_IDS = new Set(["xfact"]);
+
+/**
+ * Seed companies that were renamed. The upgrade otherwise leaves `name` alone
+ * — it is the user's to edit — so a rename in data/companies.ts would never
+ * reach a roster already in storage. Revision 7 renamed xFact to Halden; the
+ * id stays `xfact` so saved assessments keep resolving.
+ */
+const RENAMED_SEED_IDS = new Set(["xfact"]);
 
 /**
  * First read with nothing stored seeds from data/companies.ts and folds in any
@@ -136,10 +144,16 @@ function upgradeStoredSeeds(stored: Company[]): Company[] {
           : (seed?.stage ?? "Not started");
 
     if (!seed) return { ...company, stage };
+
+    const renamed = RENAMED_SEED_IDS.has(company.id)
+      ? { name: seed.name, shortName: seed.shortName, initials: seed.initials }
+      : {};
+
     return {
       ...company,
       logoUrl: company.logoUrl ?? seed.logoUrl,
       stage,
+      ...renamed,
     };
   });
 

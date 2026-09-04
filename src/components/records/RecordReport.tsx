@@ -11,7 +11,7 @@ import { OffshoringReport } from "@/components/offshoring/OffshoringReport";
 import { SalesReport } from "@/components/sales/SalesReport";
 import { WorkflowReport } from "@/components/workflow/WorkflowReport";
 import { SalesBaselineReport } from "@/components/pre-assessment/SalesBaselineReport";
-import { SalesPreAssessment } from "@/components/pre-assessment/SalesPreAssessment";
+import { EmbeddedReport } from "@/components/report/EmbeddedReport";
 import { listRecords, subscribeToRecords } from "@/lib/records";
 import type { AssessmentRecord } from "@/types/record";
 
@@ -80,8 +80,15 @@ export function RecordReport({ recordId }: RecordReportProps) {
     );
   }
 
+  // The pre-assessment is served as a prepared standalone document rather than
+  // built from the payload — see /reports/pre-assessment.
   if (record.payload.kind === "process") {
-    return <SalesPreAssessment report={record.payload.report} backHref={backHref} />;
+    return (
+      <EmbeddedReport
+        src={`/reports/pre-assessment?portco=${encodeURIComponent(record.companyName)}`}
+        title={record.companyName}
+      />
+    );
   }
 
   if (record.payload.kind === "workflow") {

@@ -49,7 +49,7 @@ export function Scale({
                 "flex size-12 items-center justify-center rounded-md border text-[15px] font-semibold",
                 selected
                   ? "border-accent bg-accent text-inverse"
-                  : "border-border bg-surface text-foreground hover:border-border-strong",
+                  : "border-glass-border bg-glass text-foreground backdrop-blur-xl hover:border-border-strong",
               )}
             >
               {entry}

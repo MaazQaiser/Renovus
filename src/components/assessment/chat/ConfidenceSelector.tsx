@@ -35,11 +35,11 @@ export function ConfidenceSelector({
                 title={`${option.label} — ${option.hint}`}
                 onClick={() => onChange(option.id)}
                 className={cn(
-                  "inline-flex h-8 items-center gap-1.5 rounded-full border px-2.5 text-[12px] font-semibold transition-colors",
+                  "inline-flex h-8 items-center gap-1.5 rounded-control border px-2.5 text-[12px] font-semibold transition-colors",
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
                   selected
                     ? "border-accent bg-accent text-inverse"
-                    : "border-border bg-surface text-secondary hover:border-border-strong hover:text-foreground",
+                    : "border-border bg-glass text-secondary backdrop-blur-xl hover:border-border-strong hover:text-foreground",
                 )}
               >
                 <span aria-hidden>{option.id}</span>

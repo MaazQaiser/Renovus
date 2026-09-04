@@ -16,7 +16,7 @@ export interface RecordRowProps {
 
 export function RecordRow({ record, onDelete }: RecordRowProps) {
   return (
-    <li className="group relative flex items-center gap-4 border-b border-border-subtle px-4 py-3.5 last:border-b-0 hover:bg-surface-tertiary">
+    <li className="group relative flex items-center gap-4 border-b border-border-subtle px-4 py-3.5 last:border-b-0 hover:bg-glass-strong">
       <div className="min-w-0 flex-1">
         <Link
           href={recordHref(record.id)}

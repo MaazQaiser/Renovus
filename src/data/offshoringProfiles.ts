@@ -114,7 +114,7 @@ const xfact: OffshoringProfile = {
 };
 
 /**
- * Technology Services · managed services. Smaller than xFact and far more
+ * Technology Services · managed services. Smaller than Halden and far more
  * movable: the delivery model is already queue-driven and documented.
  */
 const dataserve: OffshoringProfile = {
@@ -194,7 +194,7 @@ const eosis: OffshoringProfile = {
 /** Keyed by company name, matching what the report generator is handed. */
 export const OFFSHORING_PROFILES: Record<string, OffshoringProfile> = {
   Collegies: collegies,
-  xFact: xfact,
+  Halden: xfact,
   DataServe: dataserve,
   "Behaviour Framework": behaviourFramework,
   EOSIS: eosis,

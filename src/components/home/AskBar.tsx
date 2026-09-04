@@ -40,7 +40,7 @@ export function AskBar({
   return (
     <form
       className={cn(
-        "flex w-full max-w-[560px] items-center gap-1 rounded-full border border-glass-border bg-glass-strong py-1.5 pl-5 pr-1.5 shadow-[var(--shadow-raised)] backdrop-blur-3xl",
+        "flex w-full max-w-[560px] items-center gap-1 rounded-control border border-glass-border bg-glass-strong py-1.5 pl-5 pr-1.5 shadow-[var(--shadow-raised)] backdrop-blur-3xl",
         listening && "border-accent",
       )}
       onSubmit={(event) => {

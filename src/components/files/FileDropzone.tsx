@@ -81,7 +81,7 @@ export function FileDropzone({
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
         active
           ? "border-accent bg-accent-subtle"
-          : "border-border bg-surface hover:border-border-strong",
+          : "border-glass-border bg-glass backdrop-blur-xl hover:border-border-strong",
         disabled && "cursor-not-allowed opacity-50",
         className,
       )}

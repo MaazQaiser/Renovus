@@ -113,7 +113,7 @@ export function AskPanel() {
         the page's warm foot as it passes underneath — without it, rows show
         through the gaps either side of the composer.
       */}
-      <div className="sticky bottom-0 z-10 -mx-6 flex flex-col items-center gap-2 bg-gradient-to-t from-[#f6f4e9] via-[#f6f4e9]/95 to-transparent px-6 pb-4 pt-10 md:-mx-8 md:px-8 xl:-mx-10 xl:px-10">
+      <div className="sticky bottom-0 z-10 -mx-8 flex flex-col items-center gap-2 bg-gradient-to-t from-[#f6f4e9] via-[#f6f4e9]/95 to-transparent px-8 pb-4 pt-10">
         {turns.length === 0 ? (
           <ul className="flex w-full max-w-[560px] flex-wrap justify-center gap-1.5">
             {SUGGESTED_PROMPTS.map((prompt) => (
@@ -121,7 +121,7 @@ export function AskPanel() {
                 <button
                   type="button"
                   onClick={() => ask(prompt)}
-                  className="rounded-full border border-glass-border bg-glass px-3 py-1 text-[13px] leading-5 text-secondary backdrop-blur-xl transition-colors duration-[140ms] hover:bg-glass-strong hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                  className="rounded-control border border-glass-border bg-glass px-3 py-1 text-[13px] leading-5 text-secondary backdrop-blur-xl transition-colors duration-[140ms] hover:bg-glass-strong hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
                 >
                   {prompt}
                 </button>

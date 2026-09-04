@@ -33,7 +33,7 @@ export function RespondentPrompt({ onSubmit }: RespondentPromptProps) {
           value={name}
           onChange={(event) => setName(event.target.value)}
           placeholder="e.g. Dana Whitfield"
-          className="h-11 rounded-md border border-border bg-surface px-3 text-[15px] text-foreground placeholder:text-tertiary focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+          className="h-11 rounded-control border border-border bg-glass px-3 text-[15px] text-foreground backdrop-blur-xl placeholder:text-tertiary focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
         />
       </div>
 
@@ -51,7 +51,7 @@ export function RespondentPrompt({ onSubmit }: RespondentPromptProps) {
             if (event.key === "Enter" && ready) onSubmit(name.trim(), role.trim());
           }}
           placeholder="e.g. CEO"
-          className="h-11 rounded-md border border-border bg-surface px-3 text-[15px] text-foreground placeholder:text-tertiary focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+          className="h-11 rounded-control border border-border bg-glass px-3 text-[15px] text-foreground backdrop-blur-xl placeholder:text-tertiary focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
         />
         <div className="flex flex-wrap gap-1.5">
           {ROLE_SUGGESTIONS.map((suggestion) => (
@@ -59,7 +59,7 @@ export function RespondentPrompt({ onSubmit }: RespondentPromptProps) {
               key={suggestion}
               type="button"
               onClick={() => setRole(suggestion)}
-              className="rounded-full border border-border bg-surface px-3 py-1 text-[12px] font-medium text-secondary transition-colors hover:border-border-strong hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+              className="rounded-control border border-border bg-glass px-3 py-1 backdrop-blur-xl text-[12px] font-medium text-secondary transition-colors hover:border-border-strong hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
             >
               {suggestion}
             </button>

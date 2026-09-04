@@ -30,7 +30,7 @@ const DEMO_PREFIX = "rec-demo-";
 /**
  * Offshoring companies to seed, in the order they should appear.
  *
- * xFact is left out on purpose — it is the portfolio's untouched PortCo, and a
+ * Halden is left out on purpose — it is the portfolio's untouched PortCo, and a
  * cross-department assessment would make it read as partly assessed.
  */
 const OFFSHORING_COMPANY_IDS = [
@@ -268,7 +268,7 @@ export function seedDemoRecords(): number {
  * 11 — each stage's agent is named.
  * 12 — a sales process baseline per department.
  * 13 — that baseline became the full pre-assessment: data, as-is, to-be, impact.
- * 14 — xFact left unassessed, so one PortCo starts from nothing.
+ * 14 — Halden left unassessed, so one PortCo starts from nothing.
  * 15 — re-seeding drops demo records the portfolio no longer includes.
  * 16 — pre-assessment data requirements carry a collected percentage.
  */

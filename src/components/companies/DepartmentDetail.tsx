@@ -117,7 +117,15 @@ export function DepartmentDetail({ companyId, departmentId }: DepartmentDetailPr
         recordId={baselineRecord?.id}
         completedAt={baselineRecord?.completedAt}
         departmentName={department.name}
-        onStart={department.available ? () => start("sales") : undefined}
+        /*
+         * Nothing left to run once the department is fully covered, so the
+         * Start action goes and only the report links remain.
+         */
+        onStart={
+          department.available && item.status !== "covered"
+            ? () => start("sales")
+            : undefined
+        }
       />
 
       {/* Current beside agentic so the two read line for line. The grid's

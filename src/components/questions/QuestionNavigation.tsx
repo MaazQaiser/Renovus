@@ -17,7 +17,7 @@ export function QuestionNavigation({
   continueDisabled,
 }: QuestionNavigationProps) {
   return (
-    <div className="sticky bottom-0 -mx-6 mt-10 border-t border-border bg-background px-6 py-4 md:static md:mx-0 md:border-0 md:bg-transparent md:px-0">
+    <div className="sticky bottom-0 -mx-8 mt-10 border-t border-border bg-background px-8 py-4 md:static md:mx-0 md:border-0 md:bg-transparent md:px-0">
       <ButtonGroup align="start" stackOn="sm" reverseOnStack>
         <Button variant="ghost" onClick={onBack}>
           {backLabel}
