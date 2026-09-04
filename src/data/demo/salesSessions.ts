@@ -19,6 +19,10 @@ import type {
 /**
  * Completed sales assessments for demo purposes.
  *
+ * Not every PortCo appears here. xFact deliberately has no posture: it is the
+ * portfolio's untouched company, so the product can be shown starting a
+ * baseline from nothing rather than only re-opening finished ones.
+ *
  * These are real `SalesAssessmentSession` objects, not hand-written reports:
  * they run through the same `buildSalesReport` the live chat uses, so every
  * figure, gap row and AI candidate is derived exactly as it would be from a
@@ -346,100 +350,6 @@ const POSTURES: CompanyPosture[] = [
     },
   },
 
-  // ── Pipeline-driven, RFP-heavy, expensive proposals. ─────────────────────
-  {
-    companyId: "xfact",
-    companyName: "xFact",
-    respondents: [
-      { name: "Rachel Osei", role: "CEO" },
-      { name: "Tom Bracken", role: "Director of Capture" },
-    ],
-    channels: {
-      field: "using",
-      inside: "not-using",
-      rfp: "using",
-      referrals: "using",
-      events: "using",
-      linkedin: "not-using",
-      content: "want",
-      paid: "not-using",
-      marketplaces: "not-using",
-      expansion: "using",
-    },
-    dominant: ["rfp", "field"],
-    classification: "pipeline-driven",
-    defaultOptionIndex: 2,
-    defaultConfidence: "E",
-    whoBench: ["Tom Bracken, Director of Capture", "Nadia Iqbal, Bid Manager"],
-    completedDaysAgo: 21,
-    handoffNotes: [
-      {
-        topic: "Capture team is at its ceiling on bid volume",
-        quote: "We decline good work because Nadia cannot write four bids at once.",
-        suggestedAgent: "Offshoring / workforce",
-      },
-    ],
-    answers: {
-      B1a: "a public sector case-management platform and the services around it",
-      B1b: "government",
-      B1c: "different",
-      B2a: ["500k-2m", "A"],
-      B2b: ["$180k up to $6.2m on a five-year vehicle", "A"],
-      B3: ["over-12m", "A"],
-      B4a: ["50m-100m", "A"],
-      B4b: ["50m-100m", "A"],
-      B4c: "$78m. Hope, if I am honest — it depends on two recompetes.",
-      E1: "rfp",
-      E2: "dedicated",
-      E3a: "aggregator",
-      E3b: "Nadia and one analyst, about ten hours a week between them.",
-      E4a: "one-senior",
-      E4b: "yes-dedicated",
-      E5: "exists-but-no",
-      E6: ["25-50", "G", "Tom Bracken, Director of Capture"],
-      T1: ["3-5", "A"],
-      T2: ["proposals", "A"],
-      T3a: "crm-only",
-      T3b: "unofficial",
-      T4: "capacity",
-      L1: "team",
-      L2: "several",
-      L3a: "volume",
-      L3b: "Two recompetes land next year and we cannot afford to lose either.",
-      "CH2:content": "time",
-      "M-RFP.1a": ["25-75", "A"],
-      "M-RFP.1b": ["many-times", "G", "Tom Bracken, Director of Capture"],
-      "M-RFP.2a": ["most", "A"],
-      "M-RFP.2b": ["several", "E", "Nadia Iqbal, Bid Manager"],
-      "M-RFP.3": "late",
-      "M-RFP.4a": ["over-100", "A"],
-      "M-RFP.4b": ["over-20", "A"],
-      "M-RFP.5a": ["half", "E", "Nadia Iqbal, Bid Manager"],
-      "M-RFP.5b": "ask-person",
-      "M-RFP.6a": ["5-15", "A"],
-      "M-RFP.6b": ["unsure-denominator", "G", "Tom Bracken, Director of Capture"],
-      "M-RFP.6c": "informal",
-      "M-RFP.7a": ["moderate", "G", "Tom Bracken, Director of Capture"],
-      "M-RFP.7b": ["drags", "E"],
-      "M-FLD.1": ["Six agency conferences and two visit cycles, about $40k each", "G", "Tom Bracken, Director of Capture"],
-      "M-FLD.2": ["Contacts and conversations; two traceable wins in three years", "G"],
-      "M-FLD.3": "Nadia adds them to a spreadsheet within a week.",
-      "M-REL.1": "Mostly incumbency — recompetes and prime relationships on existing vehicles.",
-      "M-REL.2": "Relationship history is in the CRM, but the notes are two years stale.",
-      "M-REL.4a": "drifts",
-      "M-REL.4b": "person",
-      "CAP.1": "Every senior engineer writes bid sections. It is the single biggest tax.",
-      "CAP.2": ["Perhaps 15% more delivery without hiring", "E"],
-      S1: "The aggregator daily. The CRM only when a bid closes.",
-      S2: "Past bid content and pricing precedent — all in Nadia's folders.",
-      S3: "unofficial",
-      S4: "Assembling the first draft from past bids.",
-      X1: "Cash first — these contracts bill slowly.",
-      X2: "Comfortable internally. Anything submitted to an agency needs human sign-off.",
-      X3: "Tom champions it. Engineering will resist writing time being measured.",
-      X4: "See twice as many opportunities without adding bid staff.",
-    },
-  },
 ];
 
 function isoDaysAgo(days: number): string {

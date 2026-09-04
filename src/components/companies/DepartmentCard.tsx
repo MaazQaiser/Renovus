@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ArrowRight, CircleCheck, CircleDashed, CircleSlash } from "lucide-react";
 import { Badge } from "@/components/primitives/Badge";
+import { Button } from "@/components/primitives/Button";
 import { Text } from "@/components/primitives/Text";
 import { formatDate } from "@/lib/format";
 import { STATUS_LABEL, type CoverageStatus, type DepartmentCoverage } from "@/lib/coverage";
@@ -26,18 +27,25 @@ const STATUS_TONE: Record<CoverageStatus, string> = {
 export interface DepartmentCardProps {
   companyId: string;
   item: DepartmentCoverage;
+  /**
+   * Starts the baseline from here. Passed only where there is nothing to open
+   * yet — see the note on actions below.
+   */
+  onStart?: () => void;
 }
 
 /**
  * One department at a glance, linking to its own page.
  *
- * Deliberately without action buttons: opening a report, re-assessing and the
- * workflow step all live on the department page, so this card stays a status
- * tile rather than a second place those actions can drift out of sync.
+ * It carries one action and only one: starting the baseline, and only while no
+ * baseline exists. Everything you can do to a report that *does* exist —
+ * opening it, re-running it, the workflow step after it — lives on the
+ * department page alone, so those cannot drift out of sync between two screens.
+ * A card with nothing behind it has nothing to drift.
  *
  * A department with no agent is not a link — there is nothing behind it yet.
  */
-export function DepartmentCard({ companyId, item }: DepartmentCardProps) {
+export function DepartmentCard({ companyId, item, onStart }: DepartmentCardProps) {
   const Icon = STATUS_ICON[item.status];
   const steps = [item.status === "covered", item.workflow?.status === "covered"];
   const done = steps.filter(Boolean).length;
@@ -123,14 +131,28 @@ export function DepartmentCard({ companyId, item }: DepartmentCardProps) {
     );
   }
 
+  // The action is a sibling of the link rather than inside it: a button nested
+  // in an anchor is neither valid nor clickable in isolation.
   return (
-    <li>
+    <li className="group flex h-full flex-col rounded-xl border border-glass-border bg-glass px-4 py-3.5 shadow-[var(--shadow-glass)] backdrop-blur-2xl transition-colors hover:bg-glass-strong focus-within:ring-2 focus-within:ring-accent">
       <Link
         href={href}
-        className="group block h-full rounded-xl border border-glass-border bg-glass px-4 py-3.5 shadow-[var(--shadow-glass)] backdrop-blur-2xl transition-colors hover:bg-glass-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+        className="flex flex-1 flex-col focus-visible:outline-none"
       >
         {body}
       </Link>
+
+      {onStart ? (
+        <Button
+          variant="secondary"
+          size="sm"
+          trailingIcon={ArrowRight}
+          className="mt-3 self-start"
+          onClick={onStart}
+        >
+          Start assessment
+        </Button>
+      ) : null}
     </li>
   );
 }

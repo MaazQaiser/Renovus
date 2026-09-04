@@ -11,6 +11,7 @@ const labels: Record<string, string> = {
   assessment: "Sales function Assessment",
   offshoring: "Offshoring potential assessment",
   operational: "Operational assessment",
+  intake: "From an export",
   processing: "Analysis",
   results: "Results",
   records: "Records",

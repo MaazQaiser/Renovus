@@ -504,6 +504,7 @@ export function getMockSalesPreAssessment(
         what: "Every way they win a deal, the steps in each, and who does what at each step.",
         why: "Sets the structure of the whole report. Every number hangs off a motion and a stage.",
         how: "60 to 90 minutes with the head of sales. Ask them to walk through one recent deal per motion.",
+        collectedPct: 0,
       },
       {
         source: "export",
@@ -511,6 +512,7 @@ export function getMockSalesPreAssessment(
         what: "Volume entering each stage per month, % moving on, days in stage, deals won, win rate, time to close, and last 12 months of closed revenue tagged by motion.",
         why: "Shows where deals die, where they wait, and which motion matters most. This is the core of the report.",
         how: "CRM or deal tracker export, 12 to 24 months with stage history, plus the finance close list. If deals are not tagged by motion, tag them with the sales lead in an hour. If there is no CRM, a spreadsheet or the sales lead's estimate, flagged as such.",
+        collectedPct: 65,
       },
       {
         source: "both",
@@ -518,6 +520,7 @@ export function getMockSalesPreAssessment(
         what: "Who sells, their role, full or part time, loaded cost, and how their week splits across stages and tasks.",
         why: "Gives FTE, hours per stage, cost per stage and the task flows. Effort usually does not go where the sales lead thinks.",
         how: "Headcount and payroll from HR or finance. The time split from a 15 minute interview or short survey per person. Nobody has this in a system.",
+        collectedPct: 72,
       },
       {
         source: "interview",
@@ -525,6 +528,7 @@ export function getMockSalesPreAssessment(
         what: "Which tool each stage lives in, and where a person re-keys, re-uploads or forwards information.",
         why: "Shows fragmentation and manual work. This is where automation and AI fit, so it has to be concrete.",
         how: "Sit with one person per motion for an hour and watch a deal move through their tools. List the tools and count the handoffs.",
+        collectedPct: 0,
       },
       {
         source: "interview",
@@ -532,6 +536,7 @@ export function getMockSalesPreAssessment(
         what: 'The stories: "we rebuild every SOW", "legal takes three weeks", "30% no-show".',
         why: "Becomes the card notes and task tags. Makes the numbers believable and recognisable.",
         how: 'Falls out of the interviews above. Ask "what is the most annoying part of this stage" at every step.',
+        collectedPct: 0,
       },
     ],
 

@@ -6,6 +6,7 @@ export const AGENT_LABEL: Record<AssessmentRecordAgent, string> = {
   offshoring: "Offshoring",
   workflow: "Workflow",
   process: "Process",
+  baseline: "Baseline",
 };
 
 export function recordHref(id: string): AppHref {

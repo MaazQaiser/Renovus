@@ -1,3 +1,6 @@
+import { getSalesBaselineReport } from "@/data/salesBaseline";
+import { getMockSalesPreAssessment } from "@/data/salesPreAssessment";
+import type { AssessmentRecord } from "@/types/record";
 import type {
   Intervention,
   Motion,
@@ -202,4 +205,75 @@ export function impactTotals(interventions: Intervention[]): ImpactTotals {
     }),
     { revLoM: 0, revHiM: 0, winsLo: 0, winsHi: 0, hoursFreed: 0 },
   );
+}
+
+/**
+ * A saved sales process AI pre-assessment for the archive.
+ *
+ * Pure — the caller persists it. Shared by the demo seed and the CSV intake so
+ * both write the same record shape, summary and headline metrics; the report
+ * itself renders inside the app shell from `payload.report`.
+ */
+export function buildProcessRecord(input: {
+  id: string;
+  companyId?: string;
+  companyName: string;
+  completedAt: string;
+}): AssessmentRecord {
+  const report = getMockSalesPreAssessment(input.companyName);
+  const stats = allStats(report.motions);
+  const impact = impactTotals(report.interventions);
+
+  return {
+    id: input.id,
+    agent: "process",
+    title: "Sales Process AI Pre-Assessment",
+    companyId: input.companyId,
+    companyName: input.companyName,
+    completedAt: input.completedAt,
+    summary: `${report.motions.length} sales motions mapped against four stages. ${stats.freed} of ${stats.now} selling hours a week can move to software.`,
+    metrics: [
+      {
+        label: "Revenue upside",
+        value: `+$${impact.revLoM.toFixed(1)}–${impact.revHiM.toFixed(1)}M`,
+      },
+      { label: "Hours freed a week", value: String(stats.freed) },
+      { label: "Motions", value: String(report.motions.length) },
+    ],
+    payload: { kind: "process", report },
+  };
+}
+
+/**
+ * A saved sales process pre-assessment for the archive.
+ *
+ * Its metrics are the report's own headline ranges rather than derived totals:
+ * this short version has no task-level data to total, which is exactly the
+ * difference between it and the full pre-assessment.
+ */
+export function buildBaselineRecord(input: {
+  id: string;
+  companyId?: string;
+  companyName: string;
+  completedAt: string;
+}): AssessmentRecord {
+  const report = getSalesBaselineReport(input.companyName);
+  const lo = report.interventions.reduce((sum, row) => sum + row.lo, 0);
+  const hi = report.interventions.reduce((sum, row) => sum + row.hi, 0);
+
+  return {
+    id: input.id,
+    agent: "baseline",
+    title: "Sales Process Pre-Assessment",
+    companyId: input.companyId,
+    companyName: input.companyName,
+    completedAt: input.completedAt,
+    summary: `${report.motions.length} sales motions mapped against four stages from one conversation and a partial CRM export. Every figure is an estimate.`,
+    metrics: [
+      { label: "Revenue upside", value: `+~$${lo}M to +~$${hi}M` },
+      { label: "Revenue won", value: report.overview.revenue },
+      { label: "Motions", value: String(report.motions.length) },
+    ],
+    payload: { kind: "baseline", report },
+  };
 }

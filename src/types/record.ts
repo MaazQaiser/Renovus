@@ -1,10 +1,16 @@
 import type { SalesReportData } from "@/lib/assessment/sales-report";
 import type { OffshoringSession } from "./offshoring";
 import type { WorkflowReportData } from "./workflow";
+import type { SalesBaselineData } from "./sales-baseline";
 import type { SalesPreAssessmentData } from "./sales-pre-assessment";
 import type { Sector } from "./company";
 
-export type AssessmentRecordAgent = "sales" | "offshoring" | "workflow" | "process";
+export type AssessmentRecordAgent =
+  | "sales"
+  | "offshoring"
+  | "workflow"
+  | "process"
+  | "baseline";
 
 export interface RecordMetric {
   label: string;
@@ -42,6 +48,14 @@ export type AssessmentRecordPayload =
       kind: "process";
       /** Data needed, as-is, to-be and impact, motion by motion. */
       report: SalesPreAssessmentData;
+    }
+  | {
+      kind: "baseline";
+      /**
+       * The short version of the same report: one conversation and a partial
+       * export, so every figure is an approximation and says so.
+       */
+      report: SalesBaselineData;
     }
   | {
       kind: "workflow";

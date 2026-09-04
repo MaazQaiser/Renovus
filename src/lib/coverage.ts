@@ -26,12 +26,14 @@ const WORKFLOW_DEPARTMENT: Partial<Record<AssessmentRecordAgent, string>> = {
 };
 
 /**
- * Which department each process baseline describes. Also kept separate: it is
- * the current-state write-up behind a department's baseline, not the baseline
- * itself and not the workflow step.
+ * Which department each process write-up describes. Also kept separate: these
+ * are the current-state write-ups behind a department's baseline — the full
+ * pre-assessment and its short version — not the baseline itself and not the
+ * workflow step, so neither is what makes a department count as covered.
  */
 const PROCESS_DEPARTMENT: Partial<Record<AssessmentRecordAgent, string>> = {
   process: "sales",
+  baseline: "sales",
 };
 
 export type CoverageStatus =

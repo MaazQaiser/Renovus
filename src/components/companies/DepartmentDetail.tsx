@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState, useSyncExternalStore } from "react";
-import { useRouter } from "next/navigation";
 import { Building2, FileText } from "lucide-react";
 import { EmptyState } from "@/components/feedback/EmptyState";
 import { ConfirmationDialog } from "@/components/overlay/ConfirmationDialog";
@@ -13,24 +12,10 @@ import { Text } from "@/components/primitives/Text";
 import { getDepartmentById } from "@/data/departments";
 import { companyCoverage, departmentRecords } from "@/lib/coverage";
 import {
-  getSalesSession,
-  subscribeToSalesSession,
-} from "@/lib/assessment/sales-session";
-import {
-  getOffshoringSession,
-  subscribeToOffshoringSession,
-} from "@/lib/offshoring/session";
-import {
   getServerCompanies,
   listCompanies,
   subscribeToCompanies,
 } from "@/lib/companies";
-import type { AskAgent } from "@/lib/home/ask";
-import {
-  AGENT_ROUTE,
-  conflictingSession,
-  startAssessmentFor,
-} from "@/lib/home/start-assessment";
 import {
   deleteRecord,
   getServerRecords,
@@ -39,14 +24,12 @@ import {
 } from "@/lib/records";
 import type { AssessmentRecord } from "@/types/record";
 import { companyHref } from "./companyMeta";
+import { useAssessmentStart } from "./useAssessmentStart";
 import {
   AgenticWorkflowCard,
   BottomLineCard,
   CurrentWorkflowCard,
 } from "./DepartmentSnapshots";
-
-/** Both session stores return null server-side. */
-const noSession = () => null;
 
 export interface DepartmentDetailProps {
   companyId: string;
@@ -54,30 +37,18 @@ export interface DepartmentDetailProps {
 }
 
 export function DepartmentDetail({ companyId, departmentId }: DepartmentDetailProps) {
-  const router = useRouter();
-
   const companies = useSyncExternalStore(
     subscribeToCompanies,
     listCompanies,
     getServerCompanies,
   );
   const records = useSyncExternalStore(subscribeToRecords, listRecords, getServerRecords);
-  const salesSession = useSyncExternalStore(
-    subscribeToSalesSession,
-    getSalesSession,
-    noSession,
-  );
-  const offshoringSession = useSyncExternalStore(
-    subscribeToOffshoringSession,
-    getOffshoringSession,
-    noSession,
-  );
 
   const [pendingDelete, setPendingDelete] = useState<AssessmentRecord | undefined>();
-  const [pendingStart, setPendingStart] = useState<AskAgent | undefined>();
 
   const company = companies.find((item) => item.id === companyId);
   const department = getDepartmentById(departmentId);
+  const { start, overlays } = useAssessmentStart(company);
 
   const item = useMemo(() => {
     if (!company) return undefined;
@@ -112,22 +83,6 @@ export function DepartmentDetail({ companyId, departmentId }: DepartmentDetailPr
     );
   }
 
-  function go(agent: AskAgent) {
-    startAssessmentFor(agent, company!);
-    router.push(AGENT_ROUTE[agent]);
-  }
-
-  function start(agent: AskAgent) {
-    if (conflictingSession(agent, salesSession, offshoringSession)) {
-      setPendingStart(agent);
-      return;
-    }
-    go(agent);
-  }
-
-  const conflict = pendingStart
-    ? conflictingSession(pendingStart, salesSession, offshoringSession)
-    : undefined;
 
 
   // Stored payloads already carry the full report, so a snapshot needs no new
@@ -224,29 +179,7 @@ export function DepartmentDetail({ companyId, departmentId }: DepartmentDetailPr
         }}
       />
 
-      <ConfirmationDialog
-        open={Boolean(pendingStart)}
-        onOpenChange={(open) => {
-          if (!open) setPendingStart(undefined);
-        }}
-        title="Discard the assessment in progress?"
-        description={
-          conflict
-            ? `Starting this assessment for ${company.name} replaces the one${
-                conflict.companyName ? ` for ${conflict.companyName}` : ""
-              } on this device, including ${conflict.captured} captured answer${
-                conflict.captured === 1 ? "" : "s"
-              }. This cannot be undone.`
-            : ""
-        }
-        confirmLabel="Discard and start"
-        cancelLabel="Keep progress"
-        tone="danger"
-        onConfirm={() => {
-          if (pendingStart) go(pendingStart);
-          setPendingStart(undefined);
-        }}
-      />
+      {overlays}
     </div>
   );
 }

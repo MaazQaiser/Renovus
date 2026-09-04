@@ -53,6 +53,16 @@ export interface ButtonProps
   leadingIcon?: LucideIcon;
   trailingIcon?: LucideIcon;
   href?: AppHref;
+  /**
+   * A non-route destination — a file under /public, or another origin. Opens in
+   * a new tab, and is not typed as a Route because it never resolves to one.
+   */
+  externalHref?: string;
+  /**
+   * Saves `externalHref` instead of opening it. Pass the filename to suggest,
+   * or `true` to let the response's content-disposition name it.
+   */
+  download?: string | boolean;
 }
 
 export function Button({
@@ -64,6 +74,8 @@ export function Button({
   leadingIcon: LeadingIcon,
   trailingIcon: TrailingIcon,
   href,
+  externalHref,
+  download,
   className,
   children,
   type = "button",
@@ -84,6 +96,22 @@ export function Button({
       ) : null}
     </>
   );
+
+  if (externalHref && !disabled && !loading) {
+    // A download stays in this tab: opening one in a new tab leaves a blank
+    // window behind once the browser hands the file off.
+    return (
+      <a
+        href={externalHref}
+        {...(download === undefined
+          ? { target: "_blank", rel: "noopener noreferrer" }
+          : { download: download === true ? "" : download })}
+        className={classes}
+      >
+        {content}
+      </a>
+    );
+  }
 
   if (href && !disabled && !loading) {
     return (

@@ -24,6 +24,12 @@ export interface DataRequirement {
   why: string;
   /** How to get it, concretely. */
   how: string;
+  /**
+   * How much of this requirement is actually in hand, 0–100. Drives the card's
+   * meter, and with it whether the card reads as outstanding work or as
+   * something already gathered.
+   */
+  collectedPct: number;
 }
 
 // ── 02 As-is ──────────────────────────────────────────────────────────────

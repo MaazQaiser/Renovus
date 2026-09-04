@@ -70,7 +70,7 @@ export function initialsFromName(name: string): string {
  * Bumped whenever data/companies.ts gains a field that already-stored rosters
  * predate. Revision 1 added the portfolio logos.
  */
-const SEED_REVISION = 4;
+const SEED_REVISION = 5;
 
 /**
  * Seed companies dropped from data/companies.ts. Removing the entry alone would
@@ -79,6 +79,16 @@ const SEED_REVISION = 4;
  * these exact ids are pruned.
  */
 const RETIRED_SEED_IDS = new Set(["dataserve"]);
+
+/**
+ * Companies whose stored stage is replaced by the seed's during the upgrade.
+ *
+ * A stage is otherwise the user's to change, so this names exact ids rather
+ * than resetting the field for everyone. Revision 5: xFact became the
+ * portfolio's unassessed PortCo, and any roster stored before that still calls
+ * it "Roadmap defined".
+ */
+const STAGE_RESET_IDS = new Set(["xfact"]);
 
 /**
  * First read with nothing stored seeds from data/companies.ts and folds in any
@@ -119,9 +129,11 @@ function upgradeStoredSeeds(stored: Company[]): Company[] {
      * because the field is set, just set to something that no longer exists.
      */
     const stage =
-      company.stage && validStages.has(company.stage)
-        ? company.stage
-        : (seed?.stage ?? "Not started");
+      seed?.stage && STAGE_RESET_IDS.has(company.id)
+        ? seed.stage
+        : company.stage && validStages.has(company.stage)
+          ? company.stage
+          : (seed?.stage ?? "Not started");
 
     if (!seed) return { ...company, stage };
     return {

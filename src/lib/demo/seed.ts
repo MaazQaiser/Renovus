@@ -2,13 +2,12 @@ import { DEMO_SALES_SESSIONS } from "@/data/demo/salesSessions";
 import { OFFSHORING_PROFILES } from "@/data/offshoringProfiles";
 import { getMockOffshoringReport } from "@/data/offshoringReport";
 import { getMockWorkflowReport } from "@/data/workflowReport";
-import { getMockSalesPreAssessment } from "@/data/salesPreAssessment";
 import { companies } from "@/data/companies";
 import { getCompanyById } from "@/lib/companies";
 import { buildSalesReport, buildSalesRecord } from "@/lib/assessment/sales-report";
 import { deleteRecord, listRecords, saveRecord } from "@/lib/records";
 import { readStorage, storageKeys, writeStorage } from "@/lib/storage";
-import { allStats, impactTotals } from "@/lib/pre-assessment";
+import { buildProcessRecord } from "@/lib/pre-assessment";
 import type { Sector } from "@/types/company";
 import type { AssessmentRecord } from "@/types/record";
 import type { OffshoringSession } from "@/types/offshoring";
@@ -28,10 +27,14 @@ import type { OffshoringSession } from "@/types/offshoring";
 
 const DEMO_PREFIX = "rec-demo-";
 
-/** Offshoring companies to seed, in the order they should appear. */
+/**
+ * Offshoring companies to seed, in the order they should appear.
+ *
+ * xFact is left out on purpose — it is the portfolio's untouched PortCo, and a
+ * cross-department assessment would make it read as partly assessed.
+ */
 const OFFSHORING_COMPANY_IDS = [
   "collegies",
-  "xfact",
   "behaviour-framework",
   "eosis",
 ] as const;
@@ -39,7 +42,6 @@ const OFFSHORING_COMPANY_IDS = [
 /** Days before now each offshoring assessment completed. */
 const OFFSHORING_AGE_DAYS: Record<string, number> = {
   collegies: 4,
-  xfact: 9,
   "behaviour-framework": 26,
   eosis: 34,
 };
@@ -174,25 +176,12 @@ function buildProcessDemoRecord(
   const company = getCompanyById(companyId);
   if (!company) return undefined;
 
-  const report = getMockSalesPreAssessment(company.name);
-  const stats = allStats(report.motions);
-  const impact = impactTotals(report.interventions);
-
-  return {
+  return buildProcessRecord({
     id: `${DEMO_PREFIX}process-${companyId}`,
-    agent: "process",
-    title: "Sales Process AI Pre-Assessment",
     companyId,
     companyName: company.name,
     completedAt: baselineCompletedAt,
-    summary: `${report.motions.length} sales motions mapped against four stages. ${stats.freed} of ${stats.now} selling hours a week can move to software.`,
-    metrics: [
-      { label: "Revenue upside", value: `+$${impact.revLoM.toFixed(1)}–${impact.revHiM.toFixed(1)}M` },
-      { label: "Hours freed a week", value: String(stats.freed) },
-      { label: "Motions", value: String(report.motions.length) },
-    ],
-    payload: { kind: "process", report },
-  };
+  });
 }
 
 /** Every demo record, newest first. Pure — the caller persists. */
@@ -243,9 +232,21 @@ export function hasDemoRecords(): boolean {
   return listRecords().some(isDemoRecord);
 }
 
-/** Writes the demo portfolio. Re-seeding replaces by id rather than duplicating. */
+/**
+ * Writes the demo portfolio. Re-seeding replaces by id rather than
+ * duplicating, and drops demo records the portfolio no longer includes —
+ * without that, a company removed from the fixtures would keep the records an
+ * earlier revision wrote for it and still read as assessed. Assessments the
+ * user ran are never touched: they carry no demo prefix.
+ */
 export function seedDemoRecords(): number {
   const records = buildDemoRecords();
+  const wanted = new Set(records.map((record) => record.id));
+
+  for (const stale of listRecords()) {
+    if (isDemoRecord(stale) && !wanted.has(stale.id)) deleteRecord(stale.id);
+  }
+
   for (const record of records) saveRecord(record);
   return records.length;
 }
@@ -267,8 +268,11 @@ export function seedDemoRecords(): number {
  * 11 — each stage's agent is named.
  * 12 — a sales process baseline per department.
  * 13 — that baseline became the full pre-assessment: data, as-is, to-be, impact.
+ * 14 — xFact left unassessed, so one PortCo starts from nothing.
+ * 15 — re-seeding drops demo records the portfolio no longer includes.
+ * 16 — pre-assessment data requirements carry a collected percentage.
  */
-const DEMO_REVISION = 13;
+const DEMO_REVISION = 16;
 
 /**
  * Fills a first-run browser with the demo portfolio, so the product shows

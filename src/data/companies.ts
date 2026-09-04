@@ -35,7 +35,7 @@ export const companies: Company[] = [
     shortName: "xFact",
     initials: "XF",
     sector: "Technology Services",
-    stage: "Roadmap defined",
+    stage: "Not started",
     description: "Public sector technology platform and related services.",
     headquarters: "Wayne, PA",
     employeeCount: 320,

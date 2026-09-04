@@ -14,6 +14,11 @@ export interface FileDropzoneProps {
   disabled?: boolean;
   label?: string;
   activeLabel?: string;
+  /**
+   * The line under the label. Defaults to the full accepted-type list, which
+   * would otherwise contradict a caller that narrows `accept`.
+   */
+  hint?: React.ReactNode;
   className?: string;
 }
 
@@ -25,6 +30,7 @@ export function FileDropzone({
   disabled = false,
   label = "Drop the payroll sheet here, or browse",
   activeLabel = "Drop to attach",
+  hint,
   className,
 }: FileDropzoneProps) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -85,8 +91,12 @@ export function FileDropzone({
         {active ? activeLabel : label}
       </Text>
       <Text size="caption" tone="tertiary">
-        PDF, Word, Excel, CSV, PowerPoint, or TXT · up to{" "}
-        {Math.round(maxSize / (1024 * 1024))} MB
+        {hint ?? (
+          <>
+            PDF, Word, Excel, CSV, PowerPoint, or TXT · up to{" "}
+            {Math.round(maxSize / (1024 * 1024))} MB
+          </>
+        )}
       </Text>
       <input
         ref={inputRef}

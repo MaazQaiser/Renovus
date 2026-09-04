@@ -490,7 +490,7 @@ function buildOpportunities(session: SalesAssessmentSession): SalesReportData["p
   }
 
   const e5 = session.answers["E5"]?.value;
-  if (e5 === "no-crm" || e5 === "exists-not-read") {
+  if (e5 === "no-crm" || e5 === "exists-but-no") {
     opportunities.push({
       index: opportunities.length + 1,
       opportunity: "Instrument the pipeline before optimising it",

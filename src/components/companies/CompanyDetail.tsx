@@ -11,7 +11,6 @@ import {
   FileText,
   Pencil,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { getAgentById } from "@/data/agents";
 import { EmptyState } from "@/components/feedback/EmptyState";
 import { ConfirmationDialog } from "@/components/overlay/ConfirmationDialog";
@@ -39,20 +38,7 @@ import {
   type CoverageStatus,
   type CrossDepartmentCoverage,
 } from "@/lib/coverage";
-import {
-  getSalesSession,
-  subscribeToSalesSession,
-} from "@/lib/assessment/sales-session";
-import {
-  getOffshoringSession,
-  subscribeToOffshoringSession,
-} from "@/lib/offshoring/session";
 import type { AskAgent } from "@/lib/home/ask";
-import {
-  AGENT_ROUTE,
-  conflictingSession,
-  startAssessmentFor,
-} from "@/lib/home/start-assessment";
 import {
   deleteRecord,
   getServerRecords,
@@ -67,6 +53,7 @@ import { CompanyFormDrawer } from "./CompanyFormDrawer";
 import { CoverageMeter } from "./CoverageIndicators";
 import { DepartmentCard } from "./DepartmentCard";
 import { StageBadge } from "./StageBadge";
+import { useAssessmentStart } from "./useAssessmentStart";
 
 const STATUS_ICON: Record<CoverageStatus, typeof CircleCheck> = {
   covered: CircleCheck,
@@ -98,6 +85,7 @@ function CoverageLine({
   assessmentCount,
   lastAssessedAt,
   latestRecordId,
+  reportUrl,
   explainer,
   agent,
   nested = false,
@@ -109,6 +97,8 @@ function CoverageLine({
   assessmentCount: number;
   lastAssessedAt?: string;
   latestRecordId?: string;
+  /** A prepared report served from /public. Takes precedence over the record. */
+  reportUrl?: string;
   explainer: string;
   /** Omitted where no agent covers this line, which hides the Assess action. */
   agent?: AskAgent;
@@ -173,7 +163,16 @@ function CoverageLine({
       {/* Narrow screens drop the actions onto their own line, indented past the
           status icon, rather than crushing the description to a few words. */}
       <div className="flex w-full shrink-0 items-center gap-2 pl-9 sm:w-auto sm:pl-0">
-        {latestRecordId ? (
+        {reportUrl ? (
+          <Button
+            variant="secondary"
+            size="sm"
+            leadingIcon={FileText}
+            externalHref={reportUrl}
+          >
+            View report
+          </Button>
+        ) : latestRecordId ? (
           <Button
             variant="secondary"
             size="sm"
@@ -199,38 +198,32 @@ function CoverageLine({
   );
 }
 
-/** Both session stores return null server-side. */
-const noSession = () => null;
+/**
+ * The prepared workforce sourcing report. Served through a route that swaps the
+ * PortCo's name into the sample document; it brings its own <head>, fonts and
+ * tab script, so it opens in a new tab rather than inside the app shell.
+ */
+function workforceSourcingReportUrl(portcoName: string): string {
+  return `/reports/offshoring?portco=${encodeURIComponent(portcoName)}`;
+}
 
 export interface CompanyDetailProps {
   companyId: string;
 }
 
 export function CompanyDetail({ companyId }: CompanyDetailProps) {
-  const router = useRouter();
-
   const companies = useSyncExternalStore(
     subscribeToCompanies,
     listCompanies,
     getServerCompanies,
   );
   const records = useSyncExternalStore(subscribeToRecords, listRecords, getServerRecords);
-  const salesSession = useSyncExternalStore(
-    subscribeToSalesSession,
-    getSalesSession,
-    noSession,
-  );
-  const offshoringSession = useSyncExternalStore(
-    subscribeToOffshoringSession,
-    getOffshoringSession,
-    noSession,
-  );
 
   const [formOpen, setFormOpen] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<AssessmentRecord | undefined>();
-  const [pendingAssess, setPendingAssess] = useState<AskAgent | undefined>();
 
   const company = companies.find((item) => item.id === companyId);
+  const { start, overlays } = useAssessmentStart(company);
 
   const own = useMemo(
     () => (company ? companyRecords(company, records) : []),
@@ -275,26 +268,6 @@ export function CompanyDetail({ companyId }: CompanyDetailProps) {
     updateCompany(company!.id, input);
   }
 
-  function go(agent: AskAgent) {
-    startAssessmentFor(agent, company!);
-    router.push(AGENT_ROUTE[agent]);
-  }
-
-  /**
-   * Each agent keeps a single session, so starting one here replaces whatever
-   * is in flight — confirm first when that would drop captured answers.
-   */
-  function assess(agent: AskAgent) {
-    if (conflictingSession(agent, salesSession, offshoringSession)) {
-      setPendingAssess(agent);
-      return;
-    }
-    go(agent);
-  }
-
-  const assessConflict = pendingAssess
-    ? conflictingSession(pendingAssess, salesSession, offshoringSession)
-    : undefined;
 
   return (
     <div className="flex flex-col gap-6">
@@ -361,7 +334,14 @@ export function CompanyDetail({ companyId }: CompanyDetailProps) {
 
         <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {coverage.departments.map((item) => (
-            <DepartmentCard key={item.department.id} companyId={company.id} item={item} />
+            <DepartmentCard
+              key={item.department.id}
+              companyId={company.id}
+              item={item}
+              onStart={
+                item.status === "not-assessed" ? () => start("sales") : undefined
+              }
+            />
           ))}
         </ul>
       </section>
@@ -381,9 +361,14 @@ export function CompanyDetail({ companyId }: CompanyDetailProps) {
             assessmentCount={cross.assessmentCount}
             lastAssessedAt={cross.lastAssessedAt}
             latestRecordId={cross.latestRecordId}
+            reportUrl={
+              cross.status === "covered"
+                ? workforceSourcingReportUrl(company.name)
+                : undefined
+            }
             explainer={CROSS_EXPLAINER[cross.status]}
             agent="offshoring"
-            onAssess={assess}
+            onAssess={start}
           />
         </ul>
       </section>
@@ -445,29 +430,7 @@ export function CompanyDetail({ companyId }: CompanyDetailProps) {
         }}
       />
 
-      <ConfirmationDialog
-        open={Boolean(pendingAssess)}
-        onOpenChange={(open) => {
-          if (!open) setPendingAssess(undefined);
-        }}
-        title="Discard the assessment in progress?"
-        description={
-          assessConflict
-            ? `Starting this assessment for ${company.name} replaces the one${
-                assessConflict.companyName ? ` for ${assessConflict.companyName}` : ""
-              } on this device, including ${assessConflict.captured} captured answer${
-                assessConflict.captured === 1 ? "" : "s"
-              }. This cannot be undone.`
-            : ""
-        }
-        confirmLabel="Discard and start"
-        cancelLabel="Keep progress"
-        tone="danger"
-        onConfirm={() => {
-          if (pendingAssess) go(pendingAssess);
-          setPendingAssess(undefined);
-        }}
-      />
+      {overlays}
     </div>
   );
 }

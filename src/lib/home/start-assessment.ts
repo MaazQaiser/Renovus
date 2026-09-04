@@ -27,6 +27,20 @@ export const AGENT_ROUTE: Record<AskAgent, AppHref> = {
 };
 
 /**
+ * How a sales baseline can be captured. Both end in one
+ * `SalesAssessmentSession` and one report — they differ only in where the
+ * answers come from.
+ */
+export type SalesMethod = "export" | "questionnaire";
+
+export const SALES_METHOD_ROUTE: Record<SalesMethod, AppHref> = {
+  /** Read a CRM opportunity export, then ask what it cannot answer. */
+  export: "/agents/assessment/intake",
+  /** The full conversational interview. */
+  questionnaire: AGENT_ROUTE.sales,
+};
+
+/**
  * Progress that starting a new assessment would discard.
  *
  * Both agents keep exactly one session under one key, so opening an assessment

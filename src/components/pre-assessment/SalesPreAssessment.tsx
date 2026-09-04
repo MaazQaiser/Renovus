@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
-import { ArrowRight, ChevronDown } from "lucide-react";
+import { ArrowRight, ChevronDown, MessagesSquare, Upload } from "lucide-react";
 import { Modal } from "@/components/overlay/Modal";
 import { Button } from "@/components/primitives/Button";
 import { getMockSalesPreAssessment } from "@/data/salesPreAssessment";
@@ -75,18 +75,84 @@ const CARD_HL = "border-gold-border bg-gold-subtle";
  */
 const CARD_ON_PANEL = "border-border-subtle bg-surface-tertiary";
 
-/** Uppercase eyebrow above a section heading. */
-function Eyebrow({ children }: { children: React.ReactNode }) {
+/**
+ * How much of one requirement is in hand.
+ *
+ * Shown on every card, zero included: a requirement nobody has started is the
+ * whole point of this section, so an empty meter has to be visible rather than
+ * absent.
+ */
+function DataProgress({ pct }: { pct: number }) {
+  // A record archived before this field existed carries no percentage, and a
+  // stored payload keeps the shape it was written with — so read a missing one
+  // as nothing collected rather than rendering NaN.
+  const value = Number.isFinite(pct) ? Math.max(0, Math.min(100, Math.round(pct))) : 0;
+
   return (
-    <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-gold-ink">
-      {children}
-    </p>
+    <div>
+      <div className="flex items-baseline justify-between gap-2">
+        <p className="text-[9.5px] font-semibold uppercase tracking-[0.11em] text-tertiary">
+          Collected
+        </p>
+        <p className="text-[11.5px] font-semibold tabular-nums text-foreground">
+          {value}%
+        </p>
+      </div>
+      <span
+        role="progressbar"
+        aria-valuenow={value}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-label={`${value}% collected`}
+        className="mt-1.5 flex h-1.5 overflow-hidden rounded-full bg-border-subtle"
+      >
+        <span
+          className={cn("h-full rounded-full", value === 0 ? "" : "bg-accent")}
+          style={{ width: `${value}%` }}
+        />
+      </span>
+    </div>
+  );
+}
+
+/**
+ * How to go and get this requirement. The tag decides: what a system holds is
+ * uploaded, what only people know is interviewed, and "Interview + Export"
+ * genuinely needs both.
+ */
+function DataActions({ source }: { source: DataSource }) {
+  const upload = source === "export" || source === "both";
+  const interview = source === "interview" || source === "both";
+
+  return (
+    <div className="mt-3 flex flex-wrap gap-2">
+      {upload ? (
+        <Button
+          size="sm"
+          variant="secondary"
+          leadingIcon={Upload}
+          href="/agents/assessment/intake"
+        >
+          Upload CSV
+        </Button>
+      ) : null}
+      {interview ? (
+        <Button
+          size="sm"
+          variant={source === "both" ? "ghost" : "secondary"}
+          leadingIcon={MessagesSquare}
+          href="/agents/assessment"
+        >
+          Start interview
+        </Button>
+      ) : null}
+    </div>
   );
 }
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <h1 className="mt-3 max-w-[60ch] font-display text-[30px] leading-[1.22] font-semibold tracking-[-0.01em] text-foreground md:text-[34px]">
+    <h1 className="max-w-[60ch] font-display text-[30px] leading-[1.22] font-semibold tracking-[-0.01em] text-foreground md:text-[34px]">
       {children}
     </h1>
   );
@@ -334,7 +400,6 @@ export function SalesPreAssessment({
         {/* ── 01 Data we need ── */}
         {section === "data" ? (
           <section>
-            <Eyebrow>01 · Data we need</Eyebrow>
             <SectionTitle>What this report is built on</SectionTitle>
             <p className="mt-5 max-w-[760px] text-[15px] leading-[1.6] text-secondary">
               Everything in the report comes from five kinds of information. Some of it
@@ -377,6 +442,13 @@ export function SalesPreAssessment({
                       </p>
                     </div>
                   ))}
+
+                  {/* Pinned to the foot so the meters line up across the row
+                      however much prose each card carries above them. */}
+                  <div className="mt-auto pt-4">
+                    <DataProgress pct={item.collectedPct} />
+                    <DataActions source={item.source} />
+                  </div>
                 </article>
               ))}
             </div>
@@ -401,11 +473,6 @@ export function SalesPreAssessment({
         {/* ── Section header for as-is / to-be ── */}
         {showMotionTabs ? (
           <section>
-            <Eyebrow>
-              {section === "asis"
-                ? `02 · As-is · ${report.sector} · ${report.motions.length} motions`
-                : "03 · To-be with automation and AI"}
-            </Eyebrow>
             <SectionTitle>
               {section === "asis" ? report.asIsTitle : report.toBeTitle}
             </SectionTitle>
@@ -839,7 +906,6 @@ export function SalesPreAssessment({
         {/* ── 04 Impact ── */}
         {section === "impact" ? (
           <section>
-            <Eyebrow>04 · Impact</Eyebrow>
             <SectionTitle>What this is worth</SectionTitle>
             <p className="mt-5 max-w-[820px] text-[14px] leading-[1.55] text-secondary">
               {report.impactLede}

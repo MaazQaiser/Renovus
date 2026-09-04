@@ -10,6 +10,7 @@ import { Skeleton } from "@/components/primitives/Skeleton";
 import { OffshoringReport } from "@/components/offshoring/OffshoringReport";
 import { SalesReport } from "@/components/sales/SalesReport";
 import { WorkflowReport } from "@/components/workflow/WorkflowReport";
+import { SalesBaselineReport } from "@/components/pre-assessment/SalesBaselineReport";
 import { SalesPreAssessment } from "@/components/pre-assessment/SalesPreAssessment";
 import { listRecords, subscribeToRecords } from "@/lib/records";
 import type { AssessmentRecord } from "@/types/record";
@@ -65,6 +66,16 @@ export function RecordReport({ recordId }: RecordReportProps) {
           sector: record.payload.sector,
         }}
         backHref={backHref}
+      />
+    );
+  }
+
+  if (record.payload.kind === "baseline") {
+    return (
+      <SalesBaselineReport
+        report={record.payload.report}
+        backHref={backHref}
+        companyId={record.companyId}
       />
     );
   }
